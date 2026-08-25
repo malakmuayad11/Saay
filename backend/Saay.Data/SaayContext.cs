@@ -1,0 +1,131 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Saay.Data.Entities;
+
+namespace Saay.Data;
+
+public partial class SaayContext : DbContext
+{
+    public SaayContext()
+    {
+    }
+
+    public SaayContext(DbContextOptions<SaayContext> options)
+        : base(options)
+    {
+    }
+
+    public virtual DbSet<Category> Categories { get; set; }
+
+    public virtual DbSet<Goal> Goals { get; set; }
+
+    public virtual DbSet<Habit> Habits { get; set; }
+
+    public virtual DbSet<Saay.Data.Entities.Task> Tasks { get; set; }
+
+    public virtual DbSet<Token> Tokens { get; set; }
+
+    public virtual DbSet<User> Users { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Saay;Trusted_Connection=True;TrustServerCertificate=True;");
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.Title).HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<Goal>(entity =>
+        {
+            entity.Property(e => e.GoalId).HasColumnName("GoalID");
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.TimePeriod).HasComment("0- Monthly, 1- Quarterly, 2- Biannual, 3- Annually");
+            entity.Property(e => e.Title).HasMaxLength(255);
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Goals)
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Goals_Categories");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Goals)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Goals_Users");
+        });
+
+        modelBuilder.Entity<Habit>(entity =>
+        {
+            entity.Property(e => e.HabitId).HasColumnName("HabitID");
+            entity.Property(e => e.ReasonForHabit).HasMaxLength(255);
+            entity.Property(e => e.Steps).HasMaxLength(255);
+            entity.Property(e => e.TargetDuration).HasComment("0- 30 days, 1- 60 days, 2- 90 days");
+            entity.Property(e => e.Title).HasMaxLength(255);
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Habits)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Habits_Users");
+        });
+
+        modelBuilder.Entity<Saay.Data.Entities.Task>(entity =>
+        {
+            entity.Property(e => e.TaskId).HasColumnName("TaskID");
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.DueDate).HasDefaultValueSql("(CONVERT([date],getdate()))");
+            entity.Property(e => e.Repetition).HasComment("0- Once, 1- Daily, 2- Weekly, 3- Monthly");
+            entity.Property(e => e.Title).HasMaxLength(255);
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Tasks)
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Tasks_Categories");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Tasks)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Tasks_Users");
+        });
+
+        modelBuilder.Entity<Token>(entity =>
+        {
+            entity.Property(e => e.TokenId).HasColumnName("TokenID");
+            entity.Property(e => e.ExpiresAt).HasColumnType("datetime");
+            entity.Property(e => e.RefreshTokenHash)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.RevokedAt).HasColumnType("datetime");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Tokens)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Tokens_Users");
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasIndex(e => e.Email, "UQ_Users_Email").IsUnique();
+
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.Email)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.FirstName).HasMaxLength(50);
+            entity.Property(e => e.LastName).HasMaxLength(50);
+            entity.Property(e => e.Mission).HasMaxLength(255);
+            entity.Property(e => e.PasswordHash)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.ProfilePictureUrl)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("ProfilePictureURL");
+        });
+
+        OnModelCreatingPartial(modelBuilder);
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+}
