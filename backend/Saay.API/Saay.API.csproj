@@ -20,4 +20,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Saay.Services\Saay.Services.csproj" />
+  </ItemGroup>
+
 </Project>
