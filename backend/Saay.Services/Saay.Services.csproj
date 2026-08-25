@@ -15,4 +15,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Saay.Infrastructure\Saay.Infrastructure.csproj" />
+    <ProjectReference Include="..\Saay.Repository\Saay.Repository.csproj" />
+  </ItemGroup>
+
 </Project>
