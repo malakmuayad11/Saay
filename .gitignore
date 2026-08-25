@@ -1,0 +1,18 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# .NET build files
+**/bin/
+**/obj/
+
+# React
+frontend/node_modules/
+frontend/dist/
+
+# Environment files
+.env
+
+# Logs
+*.log
