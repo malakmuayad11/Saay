@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Saay.Data;
+using Saay.Repository.Classes;
+using Saay.Repository.Interfaces;
+using Saay.Services.Classes;
+using Saay.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +19,9 @@ builder.Services.AddDbContext<SaayContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPasswordHasher, ArgonPasswordHasher>();
 
 var app = builder.Build();
 
