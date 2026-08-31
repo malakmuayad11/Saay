@@ -16,7 +16,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSaayPersistence(builder.Configuration);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPasswordHasher, ArgonPasswordHasher>();
 
 var app = builder.Build();
