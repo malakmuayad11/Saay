@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Saay.API/Saay.API.csproj" />
   <Project Path="Saay.Data/Saay.Data.csproj" Id="7ebd8956-5c2d-428c-a98d-8f5f77832c8c" />
+  <Project Path="Saay.Extensions/Saay.Extensions.csproj" Id="12d61011-bbb2-460b-8aee-34ee65962dd4" />
   <Project Path="Saay.Infrastructure/Saay.Infrastructure.csproj" Id="8dbe9031-e8ec-4760-9a9e-0188ff5ff1b9" />
   <Project Path="Saay.Repository/Saay.Repository.csproj" Id="1c4f2f40-a892-460a-8c8c-8174bf4dd629" />
   <Project Path="Saay.Services/Saay.Services.csproj" Id="deb38d99-a7a0-47bd-91b3-e8ba6aa378f2" />

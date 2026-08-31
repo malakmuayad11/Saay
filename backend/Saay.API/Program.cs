@@ -1,5 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using Saay.Data;
+using Saay.Extensions;
 using Saay.Repository.Classes;
 using Saay.Repository.Interfaces;
 using Saay.Services.Classes;
@@ -7,17 +6,14 @@ using Saay.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Configuration.AddAzureKeyVaultIfConfigured();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<SaayContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+builder.Services.AddSaayPersistence(builder.Configuration);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
