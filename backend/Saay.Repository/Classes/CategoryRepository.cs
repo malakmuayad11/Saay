@@ -11,6 +11,6 @@ namespace Saay.Repository.Classes
 
         public CategoryRepository(SaayContext context) => _context = context;
         public async Task<List<Category>> GetAllCategoriesAsync() =>
-            await _context.Categories.ToListAsync();
+            await _context.Categories.AsNoTracking().ToListAsync();
     }
 }
