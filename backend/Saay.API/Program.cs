@@ -17,9 +17,12 @@ builder.Services.AddSaayPersistence(builder.Configuration);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPasswordHasher, ArgonPasswordHasher>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
 
