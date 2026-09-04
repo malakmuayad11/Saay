@@ -89,5 +89,16 @@ namespace Saay.Repository.Classes
              await _context.Tasks
                 .Where(task => task.UserId == userId && !task.IsDone)
                 .CountAsync();
+
+        public async Task<TaskDto> GetTaskByIdAsync(int taskId) =>
+            await _context.Tasks
+            .Select(task => new TaskDto
+            {
+                TaskId = task.TaskId,
+                CategoryTitle = task.Category.Title,
+                Title = task.Title,
+                IsDone = task.IsDone
+            })
+            .FirstOrDefaultAsync(task => task.TaskId == taskId);
     }
 }

@@ -82,19 +82,7 @@ namespace Saay.Services.Classes
             return await _goalRepository.UserPendingGoalsCount(userId);
         }
 
-        public async Task<GoalDto> GetGoalByIdAsync(int goalId)
-        {
-            Goal goal = await _goalRepository.GetGoalByIdAsync(goalId);
-
-            return new GoalDto
-            {
-                GoalId = goal.GoalId,
-                CategoryTitle = goal.Category.Title,
-                Title = goal.Title,
-                TimePeriod = goal.TimePeriod,
-                Deadline = goal.Deadline,
-                IsDone = goal.IsDone
-            };
-        }
+        public async Task<GoalDto> GetGoalByIdAsync(int goalId) =>
+            await _goalRepository.GetGoalByIdAsync(goalId);
     }
 }

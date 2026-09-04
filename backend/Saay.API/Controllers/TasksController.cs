@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Saay.Data.Entities;
 using Saay.Infrastructure.DTOs.TaskDTOs;
+using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 
 namespace Saay.API.Controllers
@@ -26,7 +28,7 @@ namespace Saay.API.Controllers
             if (taskId == null)
                 return NotFound("User with the specified ID does not exist.");
 
-            return Ok(taskId); // should go to created at route
+            return CreatedAtRoute("GetTaskById", new { taskId = taskId }, addTaskDto);
         }
 
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]
@@ -115,6 +117,18 @@ namespace Saay.API.Controllers
                 return NotFound("User with the specified ID does not exist.");
 
             return Ok(count);
+        }
+
+        [HttpGet("{taskId}", Name = "GetTaskById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<TaskDto>> GetTaskByIdAsync(int taskId)
+        {
+            TaskDto task = await _taskService.GetTaskByIdAsync(taskId);
+            if (task == null)
+                return NotFound("Task with the specified ID does not exist.");
+            return Ok(task);
         }
     }
 }

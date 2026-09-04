@@ -17,5 +17,7 @@ namespace Saay.Repository.Interfaces
         public Task<int> UserCompletedTasksCount(int userId);
 
         public Task<int> UserPendingTasksCount(int userId);
+
+        public Task<TaskDto> GetTaskByIdAsync(int taskId);
     }
 }

@@ -89,7 +89,18 @@ namespace Saay.Repository.Classes
                 .Where(goal => goal.UserId == userId && !goal.IsDone)
                 .CountAsync();
 
-        public async Task<Goal> GetGoalByIdAsync(int goalId) =>
-            await _context.Goals.FindAsync(goalId);
+        public async Task<GoalDto> GetGoalByIdAsync(int goalId) =>
+            await _context.Goals
+            .Where(goal => goal.GoalId == goalId)
+            .Select(goal => new GoalDto
+            {
+                GoalId = goal.GoalId,
+                CategoryTitle = goal.Category.Title,
+                Title = goal.Title,
+                TimePeriod = goal.TimePeriod,
+                Deadline = goal.Deadline,
+                IsDone = goal.IsDone
+            })
+            .FirstOrDefaultAsync();
     }
 }

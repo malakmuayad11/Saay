@@ -19,6 +19,6 @@ namespace Saay.Repository.Interfaces
 
         public Task<int> UserPendingGoalsCount(int userId);
 
-        public Task<Goal> GetGoalByIdAsync(int goalId);
+        public Task<GoalDto> GetGoalByIdAsync(int goalId);
     }
 }

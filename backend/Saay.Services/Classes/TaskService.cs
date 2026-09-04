@@ -83,5 +83,8 @@ namespace Saay.Services.Classes
                 return null; // User not found
             return await _taskRepository.UserPendingTasksCount(userId);
         }
+
+        public async Task<TaskDto> GetTaskByIdAsync(int taskId) =>
+            await _taskRepository.GetTaskByIdAsync(taskId);
     }
 }
