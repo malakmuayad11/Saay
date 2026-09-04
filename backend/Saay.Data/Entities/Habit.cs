@@ -18,4 +18,6 @@ public partial class Habit
     public byte TargetDuration { get; set; }
 
     public virtual User User { get; set; } = null!;
+
+    public ICollection<HabitLog> HabitLogs { get; set; } = new List<HabitLog>();
 }

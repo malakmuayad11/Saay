@@ -20,6 +20,8 @@ public partial class SaayContext : DbContext
 
     public virtual DbSet<Habit> Habits { get; set; }
 
+    public DbSet<HabitLog> HabitsLogs { get; set; }
+
     public virtual DbSet<Saay.Data.Entities.Task> Tasks { get; set; }
 
     public virtual DbSet<Token> Tokens { get; set; }
@@ -64,6 +66,21 @@ public partial class SaayContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Habits)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Habits_Users");
+        });
+
+        modelBuilder.Entity<HabitLog>(entity =>
+        {
+            entity.ToTable("HabitsLogs");
+
+            entity.HasKey(log => log.HabitLogId);
+
+            entity.Property(log => log.HabitLogId)
+                .ValueGeneratedOnAdd();
+
+            entity.HasOne(log => log.Habit)
+                .WithMany(habit => habit.HabitLogs)
+                .HasForeignKey(log => log.HabitId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Saay.Data.Entities.Task>(entity =>
