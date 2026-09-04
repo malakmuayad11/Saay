@@ -19,12 +19,16 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+builder.Services.AddScoped<IHabitLogRepository, HabitLogRepository>();
+builder.Services.AddScoped<IHabitRepository, HabitRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPasswordHasher, ArgonPasswordHasher>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IGoalService, GoalService>();
+builder.Services.AddScoped<IHabitLogService, HabitLogService>();
+builder.Services.AddScoped<IHabitService, HabitService>();
 
 var app = builder.Build();
 
