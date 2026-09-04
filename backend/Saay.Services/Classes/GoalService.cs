@@ -21,7 +21,7 @@ namespace Saay.Services.Classes
             if (!await _userRepository.DoesUserExist(addGoalDto.UserId))
                 return null; // User does not exist
 
-            var goalEntity = new Goal
+            Goal goalEntity = new Goal
             {
                 UserId = addGoalDto.UserId,
                 CategoryId = addGoalDto.CategoryId,
