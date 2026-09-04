@@ -1,0 +1,95 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Saay.Data;
+using Saay.Data.Entities;
+using Saay.Infrastructure.DTOs.GoalDTOs;
+using Saay.Repository.Interfaces;
+
+namespace Saay.Repository.Classes
+{
+    public class GoalRepository : IGoalRepository
+    {
+        private readonly SaayContext _context;
+
+        public GoalRepository(SaayContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<int?> AddGoalAsync(Goal goal, int userId)
+        {
+            Goal newGoal = new Goal
+            {
+                UserId = userId,
+                CategoryId = goal.CategoryId,
+                Title = goal.Title,
+                TimePeriod = goal.TimePeriod,
+                Deadline = goal.Deadline,
+                IsDone = false
+            };
+
+            _context.Goals.Add(newGoal);
+            if (await _context.SaveChangesAsync() > 0)
+                return newGoal.GoalId;
+
+            return null;
+        }
+
+        public async Task<List<GoalDto>> GetUserGoalsAsync(int userId,
+            int pageNumber, int pageSize) =>
+            await _context.Goals
+                .Select(goal => new GoalDto
+                {
+                    GoalId = goal.GoalId,
+                    CategoryTitle = goal.Category.Title,
+                    Title = goal.Title,
+                    TimePeriod = goal.TimePeriod,
+                    Deadline = goal.Deadline,
+                    IsDone = goal.IsDone,
+                })
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+
+        public async Task<int> UserGoalsCountAsync(int userId) => await _context.Goals
+                .Where(goal => goal.UserId == userId)
+                .CountAsync();
+
+        public async Task<bool?> UpdateGoalAsync(int goalId, Goal newGoal)
+        {
+            Goal goal = await _context.Goals.FindAsync(goalId);
+
+            if (goal == null) return null;
+
+            // Update goal properties
+            goal.CategoryId = newGoal.CategoryId;
+            goal.Title = newGoal.Title;
+            goal.TimePeriod = newGoal.TimePeriod;
+            goal.Deadline = newGoal.Deadline;
+            goal.IsDone = newGoal.IsDone;
+
+            return await _context.SaveChangesAsync() >= 0;
+        }
+
+        public async Task<bool?> DeleteGoalAsync(int goalId)
+        {
+            Goal goal = await _context.Goals.FindAsync(goalId);
+            if (goal == null) return null;
+            _context.Goals.Remove(goal);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<int> UserCompletedGoalsCount(int userId) =>
+             await _context.Goals
+                .Where(goal => goal.UserId == userId && goal.IsDone)
+                .CountAsync();
+
+        public async Task<int> UserPendingGoalsCount(int userId) =>
+             await _context.Goals
+                .Where(goal => goal.UserId == userId && !goal.IsDone)
+                .CountAsync();
+
+        public async Task<Goal> GetGoalByIdAsync(int goalId) =>
+            await _context.Goals.FindAsync(goalId);
+    }
+}
