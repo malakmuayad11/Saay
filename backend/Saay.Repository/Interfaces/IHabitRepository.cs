@@ -19,5 +19,9 @@ namespace Saay.Repository.Interfaces
         public Task<int> UserPendingHabitsCount(int userId);
 
         public Task<Habit> GetHabitByIdAsync(int habitId);
+
+        public Task<bool> DoesHabitExistAsync(int habitId);
+
+        public Task<byte?>GetHabitTargetDurationAsync(int habitId);
     }
 }

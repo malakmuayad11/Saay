@@ -137,12 +137,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult>MarkHabitAsCompletedTodayAsync(int habitId)
         {
-            bool? result = await _habitLogService.MarkHabitAsCompletedTodayAsync(habitId);
-            if (result == null)
+            (bool? isMarked, string message) result = await _habitLogService.MarkHabitAsCompletedTodayAsync(habitId);
+            if (result.isMarked == null)
                 return NotFound("Habit with the specified ID does not exist.");
-            if (result == false)
-                return BadRequest("Habit has already been marked as completed today.");
-            return Ok(result);
+            if (result.isMarked == false)
+                return BadRequest(result.message);
+            return Ok(result.isMarked);
         }
     }
 }

@@ -113,5 +113,11 @@ namespace Saay.Services.Classes
                 TargetDuration = habit.TargetDuration
             };
         }
+
+        public Task<bool> DoesHabitExistAsync(int habitId) =>
+            _habitRepository.DoesHabitExistAsync(habitId);
+
+        public Task<byte?> GetHabitTargetDurationAsync(int habitId) =>
+            _habitRepository.GetHabitTargetDurationAsync(habitId);
     }
 }

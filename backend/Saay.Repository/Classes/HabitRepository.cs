@@ -67,18 +67,38 @@ namespace Saay.Repository.Classes
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> UserCompletedHabitsCount(int userId) =>
-             await _context.HabitsLogs
-                .Where(log => log.Habit.UserId == userId && log.IsDone)
-                .CountAsync();
+        public async Task<int> UserCompletedHabitsCount(int userId)
+        {
+            return await _context.Habits
+            .CountAsync(h =>
+                h.UserId == userId &&
+                _context.HabitsLogs.Count(hl => hl.HabitId == h.HabitId) ==
+                (h.TargetDuration == 0 ? 30 :
+                 h.TargetDuration == 1 ? 60 :
+                 h.TargetDuration == 2 ? 90 : 0)
+            );
+        }
 
         public async Task<int> UserPendingHabitsCount(int userId) =>
-             await _context.HabitsLogs
-                .Where(log => log.Habit.UserId == userId && !log.IsDone)
-                .CountAsync();
+            await _context.Habits.CountAsync(h =>
+                h.UserId == userId &&
+                _context.HabitsLogs.Count(hl => hl.HabitId == h.HabitId)
+                <
+                (h.TargetDuration == 0 ? 30 :
+                 h.TargetDuration == 1 ? 60 :
+                 h.TargetDuration == 2 ? 90 : 0)
+            );
 
         public async Task<Habit> GetHabitByIdAsync(int habitId) =>
             await _context.Habits.FindAsync(habitId);
-     
+
+        public Task<bool> DoesHabitExistAsync(int habitId) =>
+            _context.Habits.AnyAsync(h => h.HabitId == habitId);
+
+        public Task<byte?> GetHabitTargetDurationAsync(int habitId) =>
+            _context.Habits
+                .Where(h => h.HabitId == habitId)
+                .Select(h => (byte?)h.TargetDuration)
+                .FirstOrDefaultAsync();
     }
 }

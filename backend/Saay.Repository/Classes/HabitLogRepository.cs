@@ -16,13 +16,12 @@ namespace Saay.Repository.Classes
 
         public async Task<bool?> MarkHabitAsCompletedTodayAsync(int habitId)
         {
-            if (!await _context.Habits.AnyAsync(h => h.HabitId == habitId))
-                return null;
+            byte today = (byte)DateTime.Today.DayOfWeek;
 
             HabitLog habitLog = new HabitLog
             {
                 HabitId = habitId,
-                DayNumber = (byte)DateTime.UtcNow.DayOfWeek,
+                DayNumber = today,
                 IsDone = true
             };
 
@@ -30,15 +29,23 @@ namespace Saay.Repository.Classes
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool?> IsHabitCompletedToday(int habitId)
+        public async Task<bool> IsHabitCompletedToday(int habitId)
         {
-            if (!await _context.Habits.AnyAsync(h => h.HabitId == habitId))
-                return null;
+            byte today = (byte)DateTime.Today.DayOfWeek;
 
             return await _context.HabitsLogs
-                .AnyAsync(hl => hl.HabitId == habitId 
-                && hl.DayNumber == (byte)DateTime.UtcNow.DayOfWeek 
+                .AnyAsync(hl => hl.HabitId == habitId
+                && hl.DayNumber == today
                 && hl.IsDone);
+        }
+
+        public async Task<byte> GetHabitLogsCountAsync(int habitId)
+        {
+            int result = await _context.HabitsLogs
+                .Where(hl => hl.HabitId == habitId)
+                .CountAsync();
+
+            return (byte)result;
         }
     }
 }

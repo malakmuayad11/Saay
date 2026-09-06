@@ -2,6 +2,6 @@
 {
     public interface IHabitLogService
     {
-        public Task<bool?> MarkHabitAsCompletedTodayAsync(int habitId);
+        public Task<(bool? isMarked, string message)> MarkHabitAsCompletedTodayAsync(int habitId);
     }
 }
