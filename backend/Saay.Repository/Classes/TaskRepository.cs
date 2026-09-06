@@ -19,7 +19,7 @@ namespace Saay.Repository.Classes
             Data.Entities.Task newTask = new Data.Entities.Task
             {
                 UserId = userId,
-                CategoryId = task.CategoryId,
+                TaskCategoryId = task.TaskCategoryId,
                 Title = task.Title,
                 Repetition = task.Repetition,
                 DueDate = task.DueDate,
@@ -41,7 +41,7 @@ namespace Saay.Repository.Classes
                 .Select(task => new TaskDto
                 {
                     TaskId = task.TaskId,
-                    CategoryTitle = task.Category.Title,
+                    TaskCategoryTitle = task.TaskCategory.Title,
                     Title = task.Title,
                     IsDone = task.IsDone,
                 })
@@ -61,7 +61,7 @@ namespace Saay.Repository.Classes
             if (task == null) return null;
 
             // Update task properties
-            task.CategoryId = newTask.CategoryId;
+            task.TaskCategoryId = newTask.TaskCategoryId;
             task.Title = newTask.Title;
             task.Repetition = newTask.Repetition;
             task.DueDate = newTask.DueDate;
@@ -95,7 +95,7 @@ namespace Saay.Repository.Classes
             .Select(task => new TaskDto
             {
                 TaskId = task.TaskId,
-                CategoryTitle = task.Category.Title,
+                TaskCategoryTitle = task.TaskCategory.Title,
                 Title = task.Title,
                 IsDone = task.IsDone
             })

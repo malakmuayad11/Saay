@@ -6,7 +6,7 @@ public partial class Task
 
     public int UserId { get; set; }
 
-    public int CategoryId { get; set; }
+    public int TaskCategoryId { get; set; }
 
     public string Title { get; set; } = null!;
 
@@ -23,7 +23,7 @@ public partial class Task
 
     public bool IsReminderSent { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual TaskCategory TaskCategory { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

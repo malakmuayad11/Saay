@@ -19,7 +19,7 @@ public partial class Goal
 
     public bool IsDone { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual TaskCategory Category { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

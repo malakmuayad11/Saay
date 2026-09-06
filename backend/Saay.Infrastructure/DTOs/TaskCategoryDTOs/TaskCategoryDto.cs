@@ -1,6 +1,6 @@
 ﻿namespace Saay.Infrastructure.DTOs.CategoryDTOs
 {
-    public class CategoryDto
+    public class TaskCategoryDto
     {
         public string Title { get; set; } = null!;
     }

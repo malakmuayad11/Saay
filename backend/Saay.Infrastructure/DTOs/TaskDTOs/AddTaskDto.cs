@@ -9,8 +9,8 @@ namespace Saay.Infrastructure.DTOs.TaskDTOs
         public int UserId { get; set; }
 
         [Required]
-        [Range(1, 12, ErrorMessage = "CategoryId must be between 1 and 12.")]
-        public int CategoryId { get; set; }
+        [Range(1, 3, ErrorMessage = "CategoryId must be between 1 and 3.")]
+        public int TaskCategoryId { get; set; }
 
         [Required]
         [StringLength(255, ErrorMessage = "Title must be at most 255 characters long.")]

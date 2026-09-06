@@ -14,7 +14,7 @@ public partial class SaayContext : DbContext
     {
     }
 
-    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<TaskCategory> TasksCategories { get; set; }
 
     public virtual DbSet<Goal> Goals { get; set; }
 
@@ -30,9 +30,9 @@ public partial class SaayContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<TaskCategory>(entity =>
         {
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.TaskCategoryId).HasColumnName("TaskCategoryID");
             entity.Property(e => e.Title).HasMaxLength(255);
         });
 
@@ -86,14 +86,14 @@ public partial class SaayContext : DbContext
         modelBuilder.Entity<Saay.Data.Entities.Task>(entity =>
         {
             entity.Property(e => e.TaskId).HasColumnName("TaskID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.TaskCategoryId).HasColumnName("TaskCategoryID");
             entity.Property(e => e.DueDate).HasDefaultValueSql("(CONVERT([date],getdate()))");
             entity.Property(e => e.Repetition).HasComment("0- Once, 1- Daily, 2- Weekly, 3- Monthly");
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Tasks)
-                .HasForeignKey(d => d.CategoryId)
+            entity.HasOne(d => d.TaskCategory).WithMany(p => p.Tasks)
+                .HasForeignKey(d => d.TaskCategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Tasks_Categories");
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Saay.Data.Entities;
+using Saay.Infrastructure.DTOs.CategoryDTOs;
 using Saay.Infrastructure.DTOs.TaskDTOs;
-using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 
 namespace Saay.API.Controllers
@@ -11,10 +10,12 @@ namespace Saay.API.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
+        private readonly ITaskCategoryService _taskCategoryService;
 
-        public TasksController(ITaskService taskService)
+        public TasksController(ITaskService taskService, ITaskCategoryService taskCategoryService)
         {
             _taskService = taskService;
+            _taskCategoryService = taskCategoryService;
         }
 
         [HttpPost]
@@ -129,6 +130,19 @@ namespace Saay.API.Controllers
             if (task == null)
                 return NotFound("Task with the specified ID does not exist.");
             return Ok(task);
+        }
+
+        [HttpGet("categories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ICollection<TaskCategoryDto>>> GetAllTasksCategoriesAsync()
+        {
+            List<TaskCategoryDto> tasksCategories = await _taskCategoryService.GetAllTasksCategoriesAsync();
+
+            if (tasksCategories == null)
+                return NotFound("No categories found.");
+
+            return Ok(tasksCategories);
         }
     }
 }

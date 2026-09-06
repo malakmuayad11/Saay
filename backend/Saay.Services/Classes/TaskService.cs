@@ -23,7 +23,7 @@ namespace Saay.Services.Classes
             var taskEntity = new Data.Entities.Task
             {
                 UserId = addTaskDto.UserId,
-                CategoryId = addTaskDto.CategoryId,
+                TaskCategoryId = addTaskDto.TaskCategoryId,
                 Title = addTaskDto.Title,
                 Repetition = addTaskDto.Repetition,
                 DueDate = addTaskDto.DueDate,
@@ -54,7 +54,7 @@ namespace Saay.Services.Classes
             Data.Entities.Task task = new Data.Entities.Task
             {
                 TaskId = updateTaskDto.TaskId,
-                CategoryId = updateTaskDto.CategoryId,
+                TaskCategoryId = updateTaskDto.TaskCategoryId,
                 Title = updateTaskDto.Title,
                 Repetition = updateTaskDto.Repetition,
                 DueDate = updateTaskDto.DueDate,
