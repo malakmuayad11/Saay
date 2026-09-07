@@ -13,7 +13,7 @@ public partial class Goal
     /// <summary>
     /// 0- Monthly, 1- Quarterly, 2- Biannual, 3- Annually
     /// </summary>
-    public byte TimePeriod { get; set; }
+    public byte TimeFrame { get; set; }
 
     public DateOnly Deadline { get; set; }
 

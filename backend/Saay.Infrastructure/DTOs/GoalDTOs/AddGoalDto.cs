@@ -18,7 +18,7 @@ namespace Saay.Infrastructure.DTOs.GoalDTOs
 
         [Required]
         [Range(0, 3, ErrorMessage = "TimePeriod must be an integer between 0 and 3.")]
-        public byte TimePeriod { get; set; }
+        public byte TimeFrame { get; set; }
 
         [Required]
         [FutureDate(ErrorMessage = "Deadline must be a future date.")]

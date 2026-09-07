@@ -42,7 +42,7 @@ public partial class SaayContext : DbContext
         {
             entity.Property(e => e.GoalId).HasColumnName("GoalID");
             entity.Property(e => e.GoalCategoryId).HasColumnName("GoalCategoryID");
-            entity.Property(e => e.TimePeriod).HasComment("0- Monthly, 1- Quarterly, 2- Biannual, 3- Annually");
+            entity.Property(e => e.TimeFrame).HasComment("0- Monthly, 1- Quarterly, 2- Biannual, 3- Annually");
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 

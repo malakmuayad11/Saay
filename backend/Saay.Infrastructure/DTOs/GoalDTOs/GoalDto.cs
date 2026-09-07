@@ -5,7 +5,7 @@
         public int GoalId { get; set; }
         public string CategoryTitle { get; set; } = null!;
         public string Title { get; set; } = null!;
-        public byte TimePeriod { get; set; }
+        public byte TimeFrame { get; set; }
         public DateOnly Deadline { get; set; }
         public bool IsDone { get; set; }
     }

@@ -22,7 +22,7 @@ namespace Saay.Repository.Classes
                 UserId = userId,
                 GoalCategoryId = goal.GoalCategoryId,
                 Title = goal.Title,
-                TimePeriod = goal.TimePeriod,
+                TimeFrame = goal.TimeFrame,
                 Deadline = goal.Deadline,
                 IsDone = false
             };
@@ -42,7 +42,7 @@ namespace Saay.Repository.Classes
                     GoalId = goal.GoalId,
                     CategoryTitle = goal.GoalCategory.Title,
                     Title = goal.Title,
-                    TimePeriod = goal.TimePeriod,
+                    TimeFrame = goal.TimeFrame,
                     Deadline = goal.Deadline,
                     IsDone = goal.IsDone,
                 })
@@ -64,7 +64,7 @@ namespace Saay.Repository.Classes
             // Update goal properties
             goal.GoalCategoryId = newGoal.GoalCategoryId;
             goal.Title = newGoal.Title;
-            goal.TimePeriod = newGoal.TimePeriod;
+            goal.TimeFrame = newGoal.TimeFrame;
             goal.Deadline = newGoal.Deadline;
             goal.IsDone = newGoal.IsDone;
 
@@ -97,7 +97,7 @@ namespace Saay.Repository.Classes
                 GoalId = goal.GoalId,
                 CategoryTitle = goal.GoalCategory.Title,
                 Title = goal.Title,
-                TimePeriod = goal.TimePeriod,
+                TimeFrame = goal.TimeFrame,
                 Deadline = goal.Deadline,
                 IsDone = goal.IsDone
             })

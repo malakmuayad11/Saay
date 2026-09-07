@@ -26,7 +26,7 @@ namespace Saay.Services.Classes
                 UserId = addGoalDto.UserId,
                 GoalCategoryId = addGoalDto.GoalCategoryId,
                 Title = addGoalDto.Title,
-                TimePeriod = addGoalDto.TimePeriod,
+                TimeFrame = addGoalDto.TimeFrame,
                 Deadline = addGoalDto.Deadline,
             };
 
@@ -56,7 +56,7 @@ namespace Saay.Services.Classes
                 GoalId = updateGoalDto.GoalId,
                 GoalCategoryId = updateGoalDto.GoalCategoryId,
                 Title = updateGoalDto.Title,
-                TimePeriod = updateGoalDto.TimePeriod,
+                TimeFrame = updateGoalDto.TimeFrame,
                 Deadline = updateGoalDto.Deadline,
                 IsDone = updateGoalDto.IsDone,
             };
