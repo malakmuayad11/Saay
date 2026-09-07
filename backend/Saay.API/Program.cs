@@ -1,8 +1,4 @@
 using Saay.Extensions;
-using Saay.Repository.Classes;
-using Saay.Repository.Interfaces;
-using Saay.Services.Classes;
-using Saay.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,22 +11,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSaayPersistence(builder.Configuration);
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITaskCategoryRepository, TaskCategoryRepository>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<IGoalCategoryRepository, GoalCategoryRepository>();
-builder.Services.AddScoped<IGoalRepository, GoalRepository>();
-builder.Services.AddScoped<IHabitLogRepository, HabitLogRepository>();
-builder.Services.AddScoped<IHabitRepository, HabitRepository>();
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITaskCategoryService, TaskCategoryService>();
-builder.Services.AddScoped<IPasswordHasher, ArgonPasswordHasher>();
-builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddScoped<IGoalCategoryService, GoalCategoryService>();
-builder.Services.AddScoped<IGoalService, GoalService>();
-builder.Services.AddScoped<IHabitLogService, HabitLogService>();
-builder.Services.AddScoped<IHabitService, HabitService>();
+builder.Services.AddSaayRepositories();
+builder.Services.AddSaayServices();
 
 var app = builder.Build();
 

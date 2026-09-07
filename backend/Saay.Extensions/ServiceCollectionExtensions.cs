@@ -2,6 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Saay.Services.Interfaces;
+using Saay.Services.Classes;
+using Saay.Repository.Interfaces;
+using Saay.Repository.Classes;
 
 namespace Saay.Extensions
 {
@@ -35,6 +39,31 @@ namespace Saay.Extensions
 
             services.AddDbContext<Saay.Data.SaayContext>(opt =>
                 opt.UseSqlServer(connectionString));
+            return services;
+        }
+
+        public static IServiceCollection AddSaayServices(this IServiceCollection services)
+        {
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITaskCategoryService, TaskCategoryService>();
+            services.AddScoped<IPasswordHasher, ArgonPasswordHasher>();
+            services.AddScoped<ITaskService, TaskService>();
+            services.AddScoped<IGoalCategoryService, GoalCategoryService>();
+            services.AddScoped<IGoalService, GoalService>();
+            services.AddScoped<IHabitLogService, HabitLogService>();
+            services.AddScoped<IHabitService, HabitService>();
+            return services;
+        }
+
+        public static IServiceCollection AddSaayRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITaskCategoryRepository, TaskCategoryRepository>();
+            services.AddScoped<ITaskRepository, TaskRepository>();
+            services.AddScoped<IGoalCategoryRepository, GoalCategoryRepository>();
+            services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<IHabitLogRepository, HabitLogRepository>();
+            services.AddScoped<IHabitRepository, HabitRepository>();
             return services;
         }
     }
