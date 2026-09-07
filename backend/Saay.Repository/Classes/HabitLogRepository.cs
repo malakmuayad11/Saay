@@ -26,7 +26,7 @@ namespace Saay.Repository.Classes
             };
 
             _context.HabitsLogs.Add(habitLog);
-            return await _context.SaveChangesAsync() > 0;
+            return await _context.SaveChangesAsync() >= 0;
         }
 
         public async Task<bool> IsHabitCompletedToday(int habitId)

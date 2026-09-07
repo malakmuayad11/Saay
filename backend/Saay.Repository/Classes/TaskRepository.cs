@@ -58,9 +58,8 @@ namespace Saay.Repository.Classes
         {
             Data.Entities.Task task = await _context.Tasks.FindAsync(taskId);
 
-            if (task == null) return null;
+            if (task == null) return null; // Task not found
 
-            // Update task properties
             task.TaskCategoryId = newTask.TaskCategoryId;
             task.Title = newTask.Title;
             task.Repetition = newTask.Repetition;

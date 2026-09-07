@@ -51,7 +51,7 @@ namespace Saay.Services.Classes
 
         public async Task<bool?> UpdateGoalAsync(UpdateGoalDto updateGoalDto)
         {
-            Goal goal = new Data.Entities.Goal
+            Goal goal = new Goal
             {
                 GoalId = updateGoalDto.GoalId,
                 GoalCategoryId = updateGoalDto.GoalCategoryId,

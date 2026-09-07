@@ -48,9 +48,8 @@ namespace Saay.Repository.Classes
         {
             Habit habit = await _context.Habits.FindAsync(habitId);
 
-            if (habit == null) return null;
+            if (habit == null) return null; // Habit not found
 
-            // Update habit properties
             habit.Title = newHabit.Title;
             habit.ReasonForHabit = newHabit.ReasonForHabit;
             habit.Steps = newHabit.Steps;

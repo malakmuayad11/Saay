@@ -59,9 +59,8 @@ namespace Saay.Repository.Classes
         {
             Goal goal = await _context.Goals.FindAsync(goalId);
 
-            if (goal == null) return null;
+            if (goal == null) return null; // Goal not found
 
-            // Update goal properties
             goal.GoalCategoryId = newGoal.GoalCategoryId;
             goal.Title = newGoal.Title;
             goal.TimeFrame = newGoal.TimeFrame;

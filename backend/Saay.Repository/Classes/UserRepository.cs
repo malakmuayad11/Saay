@@ -8,6 +8,7 @@ namespace Saay.Repository.Classes
     public class UserRepository : IUserRepository
     {
         private readonly SaayContext _context;
+
         public UserRepository(SaayContext context)
         {
             _context = context;

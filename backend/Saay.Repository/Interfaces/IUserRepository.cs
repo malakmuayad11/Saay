@@ -1,4 +1,5 @@
 ﻿using Saay.Data.Entities;
+
 namespace Saay.Repository.Interfaces
 {
     public interface IUserRepository
