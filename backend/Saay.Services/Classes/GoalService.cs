@@ -24,7 +24,7 @@ namespace Saay.Services.Classes
             Goal goalEntity = new Goal
             {
                 UserId = addGoalDto.UserId,
-                CategoryId = addGoalDto.CategoryId,
+                GoalCategoryId = addGoalDto.GoalCategoryId,
                 Title = addGoalDto.Title,
                 TimePeriod = addGoalDto.TimePeriod,
                 Deadline = addGoalDto.Deadline,
@@ -54,7 +54,7 @@ namespace Saay.Services.Classes
             Goal goal = new Data.Entities.Goal
             {
                 GoalId = updateGoalDto.GoalId,
-                CategoryId = updateGoalDto.CategoryId,
+                GoalCategoryId = updateGoalDto.GoalCategoryId,
                 Title = updateGoalDto.Title,
                 TimePeriod = updateGoalDto.TimePeriod,
                 Deadline = updateGoalDto.Deadline,

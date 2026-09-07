@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Saay.Infrastructure.DTOs.CategoryDTOs;
+using Saay.Infrastructure.DTOs.GoalCategoryDTOs;
 using Saay.Infrastructure.DTOs.GoalDTOs;
+using Saay.Services.Classes;
 using Saay.Services.Interfaces;
 
 namespace Saay.API.Controllers
@@ -9,10 +12,12 @@ namespace Saay.API.Controllers
     public class GoalsController : ControllerBase
     {
         private readonly IGoalService _goalService;
+        private readonly IGoalCategoryService _goalCategoryService;
 
-        public GoalsController(IGoalService goalService)
+        public GoalsController(IGoalService goalService, IGoalCategoryService goalCategoryService)
         {
             _goalService = goalService;
+            _goalCategoryService = goalCategoryService;
         }
 
         [HttpPost]
@@ -127,6 +132,19 @@ namespace Saay.API.Controllers
             if (goal == null)
                 return NotFound("Goal with the specified ID does not exist.");
             return Ok(goal);
+        }
+
+        [HttpGet("categories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ICollection<GoalCategoryDto>>> GetAllTasksCategoriesAsync()
+        {
+            List<GoalCategoryDto> tasksCategories = await _goalCategoryService.GetAllGoalCategoriesAsync();
+
+            if (tasksCategories == null)
+                return NotFound("No categories found.");
+
+            return Ok(tasksCategories);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Saay.Repository.Classes
             Goal newGoal = new Goal
             {
                 UserId = userId,
-                CategoryId = goal.CategoryId,
+                GoalCategoryId = goal.GoalCategoryId,
                 Title = goal.Title,
                 TimePeriod = goal.TimePeriod,
                 Deadline = goal.Deadline,
@@ -40,7 +40,7 @@ namespace Saay.Repository.Classes
                 .Select(goal => new GoalDto
                 {
                     GoalId = goal.GoalId,
-                    CategoryTitle = goal.Category.Title,
+                    CategoryTitle = goal.GoalCategory.Title,
                     Title = goal.Title,
                     TimePeriod = goal.TimePeriod,
                     Deadline = goal.Deadline,
@@ -62,7 +62,7 @@ namespace Saay.Repository.Classes
             if (goal == null) return null;
 
             // Update goal properties
-            goal.CategoryId = newGoal.CategoryId;
+            goal.GoalCategoryId = newGoal.GoalCategoryId;
             goal.Title = newGoal.Title;
             goal.TimePeriod = newGoal.TimePeriod;
             goal.Deadline = newGoal.Deadline;
@@ -95,7 +95,7 @@ namespace Saay.Repository.Classes
             .Select(goal => new GoalDto
             {
                 GoalId = goal.GoalId,
-                CategoryTitle = goal.Category.Title,
+                CategoryTitle = goal.GoalCategory.Title,
                 Title = goal.Title,
                 TimePeriod = goal.TimePeriod,
                 Deadline = goal.Deadline,

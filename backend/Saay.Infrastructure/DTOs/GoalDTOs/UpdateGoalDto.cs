@@ -10,7 +10,7 @@ namespace Saay.Infrastructure.DTOs.GoalDTOs
 
         [Required]
         [Range(1, 12, ErrorMessage = "CategoryId must be an integer between 1 and 12.")]
-        public int CategoryId { get; set; }
+        public byte GoalCategoryId { get; set; }
 
         [Required]
         [MaxLength(255, ErrorMessage = "Title cannot exceed 255 characters.")]

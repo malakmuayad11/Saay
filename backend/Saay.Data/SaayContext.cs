@@ -18,6 +18,8 @@ public partial class SaayContext : DbContext
 
     public virtual DbSet<Goal> Goals { get; set; }
 
+    public virtual DbSet<GoalCategory> GoalsCategories { get; set; }
+
     public virtual DbSet<Habit> Habits { get; set; }
 
     public DbSet<HabitLog> HabitsLogs { get; set; }
@@ -39,19 +41,28 @@ public partial class SaayContext : DbContext
         modelBuilder.Entity<Goal>(entity =>
         {
             entity.Property(e => e.GoalId).HasColumnName("GoalID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.GoalCategoryId).HasColumnName("GoalCategoryID");
             entity.Property(e => e.TimePeriod).HasComment("0- Monthly, 1- Quarterly, 2- Biannual, 3- Annually");
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Goals)
-                .HasForeignKey(d => d.CategoryId)
+            entity.HasOne(d => d.GoalCategory).WithMany(p => p.Goals)
+                .HasForeignKey(d => d.GoalCategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Goals_Categories");
 
             entity.HasOne(d => d.User).WithMany(p => p.Goals)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Goals_Users");
+        });
+
+        modelBuilder.Entity<GoalCategory>(entity =>
+        {
+            entity.Property(e => e.GoalCategoryId)
+                .HasColumnName("GoalCategoryID");
+
+            entity.Property(e => e.Title)
+                .HasMaxLength(255);
         });
 
         modelBuilder.Entity<Habit>(entity =>

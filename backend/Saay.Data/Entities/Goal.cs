@@ -6,7 +6,7 @@ public partial class Goal
 
     public int UserId { get; set; }
 
-    public int CategoryId { get; set; }
+    public byte GoalCategoryId { get; set; }
 
     public string Title { get; set; } = null!;
 
@@ -19,7 +19,7 @@ public partial class Goal
 
     public bool IsDone { get; set; }
 
-    public virtual TaskCategory Category { get; set; } = null!;
+    public virtual GoalCategory GoalCategory { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }
