@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Saay.Data.Entities;
 using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 
@@ -24,10 +23,21 @@ namespace Saay.API.Controllers
         {
             int? userId = await _userService.AddUserAsync(addUserDto);
 
-            if(userId == null)
+            if (userId == null)
                 return BadRequest("User already exists with the provided email.");
             else
-                return CreatedAtRoute("GetUserById", new { userId = userId }, addUserDto);
+            {
+                GetUserDto getUserDto = new GetUserDto
+                {
+                    UserId = userId.Value,
+                    FirstName = addUserDto.FirstName,
+                    LastName = addUserDto.LastName,
+                    Email = addUserDto.Email,
+                    ProfilePictureUrl = addUserDto.ProfilePictureURL,
+                    Mission = null
+                };
+                return CreatedAtRoute("GetUserById", new { userId = userId }, getUserDto);
+            }
         }
 
         [HttpDelete("{userId}")]

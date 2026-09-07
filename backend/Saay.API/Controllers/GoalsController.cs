@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Saay.Infrastructure.DTOs.CategoryDTOs;
 using Saay.Infrastructure.DTOs.GoalCategoryDTOs;
 using Saay.Infrastructure.DTOs.GoalDTOs;
-using Saay.Services.Classes;
 using Saay.Services.Interfaces;
 
 namespace Saay.API.Controllers
@@ -24,14 +22,22 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddGoal(AddGoalDto addGoalDto)
+        public async Task<IActionResult> AddGoalAsync(AddGoalDto addGoalDto)
         {
             int? goalId = await _goalService.AddGoalAsync(addGoalDto);
 
             if (goalId == null)
                 return NotFound("User with the specified ID does not exist.");
 
-            return CreatedAtRoute("GetGoalById", new { goalId = goalId }, addGoalDto);
+            return CreatedAtRoute("GetGoalById", new { goalId = goalId }, new
+            {
+                GoalID = goalId,
+                CategoryID = addGoalDto.GoalCategoryId,
+                Title = addGoalDto.Title,
+                TimeFrame = addGoalDto.TimeFrame,
+                Deadline = addGoalDto.Deadline,
+                IsDone = false // Assuming a new goal is not done by default
+            });
         }
 
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]

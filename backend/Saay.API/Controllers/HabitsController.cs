@@ -28,7 +28,15 @@ namespace Saay.API.Controllers
             if (habitId == null)
                 return NotFound("User with the specified ID does not exist.");
 
-            return CreatedAtRoute("GetHabitById", new { habitId = habitId }, addHabitDto);
+            return CreatedAtRoute("GetHabitById", new { habitId = habitId }, new HabitDto
+            {
+                HabitId = habitId.Value,
+                UserId = addHabitDto.UserId,
+                Title = addHabitDto.Title,
+                ReasonForHabit = addHabitDto.ReasonForHabit,
+                Steps = addHabitDto.Steps,
+                TargetDuration = addHabitDto.TargetDuration
+            });
         }
 
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using Saay.Infrastructure.DTOs.CategoryDTOs;
 using Saay.Infrastructure.DTOs.TaskDTOs;
 using Saay.Services.Interfaces;
@@ -22,14 +23,23 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddTask(AddTaskDto addTaskDto)
+        public async Task<IActionResult> AddTaskAsync(AddTaskDto addTaskDto)
         {
             int? taskId = await _taskService.AddTaskAsync(addTaskDto);
 
             if (taskId == null)
                 return NotFound("User with the specified ID does not exist.");
 
-            return CreatedAtRoute("GetTaskById", new { taskId = taskId }, addTaskDto);
+            return CreatedAtRoute("GetTaskById", new { taskId = taskId }, 
+                new
+                {
+                    TaskId = taskId.Value,
+                    UserId = addTaskDto.UserId,
+                    TaskCategoryId = addTaskDto.TaskCategoryId,
+                    Title = addTaskDto.Title,
+                    DueDate = addTaskDto.DueDate,
+                    DueTime = addTaskDto.DueTime,
+                });
         }
 
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]
