@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Saay.Infrastructure
+namespace Saay.Infrastructure.Validation
 {
     public class FutureDateAttribute : ValidationAttribute
     {

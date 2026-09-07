@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Saay.Infrastructure.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Saay.Infrastructure.DTOs.UserDTOs
 {
@@ -17,7 +18,7 @@ namespace Saay.Infrastructure.DTOs.UserDTOs
         public string LastName { get; set; } = null!;
 
         [Required]
-        [RegularExpression(Validation.EMAIL_REGX, ErrorMessage = "Invalid email format.")]
+        [RegularExpression(ValidationRules.EMAIL_REGX, ErrorMessage = "Invalid email format.")]
         public string Email { get; set; } = null!;
 
         [MaxLength(255, ErrorMessage = "ProfilePictureUrl must be a string with a maximum length of 255 characters.")]

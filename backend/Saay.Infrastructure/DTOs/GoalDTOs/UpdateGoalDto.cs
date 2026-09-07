@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Saay.Infrastructure.Validation;
 
 namespace Saay.Infrastructure.DTOs.GoalDTOs
 {
