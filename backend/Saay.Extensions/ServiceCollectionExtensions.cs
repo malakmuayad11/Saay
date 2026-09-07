@@ -6,7 +6,6 @@ using Saay.Services.Interfaces;
 using Saay.Services.Classes;
 using Saay.Repository.Interfaces;
 using Saay.Repository.Classes;
-
 namespace Saay.Extensions
 {
     public static class ServiceCollectionExtensions
@@ -64,6 +63,25 @@ namespace Saay.Extensions
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<IHabitLogRepository, HabitLogRepository>();
             services.AddScoped<IHabitRepository, HabitRepository>();
+            return services;
+        }
+
+        public static IServiceCollection AddSaayCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SaayCorsPolicy", policy =>
+                {
+                    policy
+                        .WithOrigins(
+                            "http://127.0.0.1:5500",
+                            "http://localhost:5109"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             return services;
         }
     }

@@ -14,6 +14,8 @@ builder.Services.AddSaayPersistence(builder.Configuration);
 builder.Services.AddSaayRepositories();
 builder.Services.AddSaayServices();
 
+builder.Services.AddSaayCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +24,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("SaayCorsPolicy");
 
 app.UseHttpsRedirection();
 
