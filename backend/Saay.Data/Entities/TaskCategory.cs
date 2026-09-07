@@ -2,7 +2,7 @@
 
 public partial class TaskCategory
 {
-    public int TaskCategoryId { get; set; }
+    public byte TaskCategoryId { get; set; }
 
     public string Title { get; set; } = null!;
 

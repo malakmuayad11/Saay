@@ -6,7 +6,7 @@ public partial class Task
 
     public int UserId { get; set; }
 
-    public int TaskCategoryId { get; set; }
+    public byte TaskCategoryId { get; set; }
 
     public string Title { get; set; } = null!;
 
