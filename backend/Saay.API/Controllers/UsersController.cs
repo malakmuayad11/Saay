@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 
@@ -40,11 +41,13 @@ namespace Saay.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> DeleteUserAsync(int userId)
         {
             bool? result = await _userService.DeleteUserAsync(userId);
@@ -55,12 +58,14 @@ namespace Saay.API.Controllers
             else
                 return StatusCode(500, "An error occurred while deleting the user.");
         }
-
+        
+        [Authorize]
         [HttpPut("missions")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> UpdateMissionAsync(UpdateMissionDto updateMissionDto)
         {
             bool? result = await _userService.UpdateMissionAsync(updateMissionDto);
@@ -72,11 +77,13 @@ namespace Saay.API.Controllers
                 return StatusCode(500, "An error occurred while updating the mission.");
         }
 
+        [Authorize]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
             bool? result = await _userService.UpdateUserAsync(updateUserDto);
@@ -90,11 +97,13 @@ namespace Saay.API.Controllers
                 return StatusCode(500, "An error occurred while updating the user.");
         }
 
+        [Authorize]
         [HttpPut("passwords")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> UpdatePasswordAsync(UpdatePasswordDto updatePasswordDto)
         {
             bool? result = await _userService.UpdatePasswordAsync(updatePasswordDto);
@@ -106,11 +115,13 @@ namespace Saay.API.Controllers
                 return StatusCode(500, "An error occurred while updating the password.");
         }
         
+        [Authorize]
         [HttpGet("{userId}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<GetUserDto>> GetUserByIdAsync(int userId)
         {
             GetUserDto? user = await _userService.GetUserByIdAsync(userId);
@@ -121,11 +132,13 @@ namespace Saay.API.Controllers
                 return NotFound("User not found.");
         }
 
+        [Authorize]
         [HttpGet("email/{email}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<GetUserDto>> GetUserByEmailAsync(string email)
         {
             GetUserDto? user = await _userService.GetUserByEmailAsync(email);

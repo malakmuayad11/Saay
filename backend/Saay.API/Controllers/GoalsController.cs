@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Saay.Infrastructure.DTOs.GoalCategoryDTOs;
 using Saay.Infrastructure.DTOs.GoalDTOs;
 using Saay.Services.Interfaces;
@@ -18,10 +19,12 @@ namespace Saay.API.Controllers
             _goalCategoryService = goalCategoryService;
         }
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AddGoalAsync(AddGoalDto addGoalDto)
         {
             int? goalId = await _goalService.AddGoalAsync(addGoalDto);
@@ -40,10 +43,12 @@ namespace Saay.API.Controllers
             });
         }
 
+        [Authorize]
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ICollection<GoalDto>>> GetUserGoalsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             List<GoalDto> goals = await _goalService.GetUserGoalsAsync(userId, pageNumber, pageSize);
@@ -54,10 +59,12 @@ namespace Saay.API.Controllers
             return Ok(goals);
         }
 
+        [Authorize]
         [HttpGet("count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<int?>> GetUserGoalsCountAsync(int userId)
         {
             int? count = await _goalService.UserGoalsCountAsync(userId);
@@ -68,11 +75,13 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [Authorize]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateGoal(UpdateGoalDto updateGoalDto)
         {
             bool? result = await _goalService.UpdateGoalAsync(updateGoalDto);
@@ -85,11 +94,13 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete("{goalId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteGoal(int goalId)
         {
             bool? result = await _goalService.DeleteGoalAsync(goalId);
@@ -100,10 +111,12 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("completed/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<int?>> GetUserCompletedGoalsCountAsync(int userId)
         {
             int? count = await _goalService.UserCompletedGoalsCountAsync(userId);
@@ -114,10 +127,12 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [Authorize]
         [HttpGet("pending/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<int?>> GetUserPendingGoalsCountAsync(int userId)
         {
             int? count = await _goalService.UserPendingGoalsCountAsync(userId);
@@ -128,10 +143,12 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [Authorize]
         [HttpGet("{goalId}", Name = "GetGoalById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<GoalDto>> GetGoalByIdAsync(int goalId)
         {
             GoalDto goal = await _goalService.GetGoalByIdAsync(goalId);

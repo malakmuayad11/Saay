@@ -6,6 +6,11 @@ using Saay.Services.Interfaces;
 using Saay.Services.Classes;
 using Saay.Repository.Interfaces;
 using Saay.Repository.Classes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+
 namespace Saay.Extensions
 {
     public static class ServiceCollectionExtensions
@@ -51,6 +56,9 @@ namespace Saay.Extensions
             services.AddScoped<IGoalService, GoalService>();
             services.AddScoped<IHabitLogService, HabitLogService>();
             services.AddScoped<IHabitService, HabitService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserTokenService, UserTokenService>();
+
             return services;
         }
 
@@ -63,6 +71,8 @@ namespace Saay.Extensions
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<IHabitLogRepository, HabitLogRepository>();
             services.AddScoped<IHabitRepository, HabitRepository>();
+            services.AddScoped<IUserTokenRepository, UserTokenRpository>();
+
             return services;
         }
 
@@ -82,6 +92,32 @@ namespace Saay.Extensions
                 });
             });
 
+            return services;
+        }
+
+        public static IServiceCollection AddSaayAuth(this IServiceCollection services, IConfiguration config)
+        {
+            // JWT
+            var secretKey = config["JwtSigningKey"];
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new Exception("JWT Signing Key is not found in configuration.");
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "SaayAPI",
+                        ValidAudience = "SaayAPIUsers",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                        RoleClaimType = ClaimTypes.Role,
+                        NameClaimType = ClaimTypes.NameIdentifier
+                    };
+                });
             return services;
         }
     }

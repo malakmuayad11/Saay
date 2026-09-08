@@ -94,5 +94,17 @@ namespace Saay.Services.Classes
             User? user = await _userRepository.GetUserByEmailAsync(email);
             return MapUserToGetUserDto(user);
         }
+
+        public async Task<LoginUserDto?> FindUserByEmailAsync(string email)
+        {
+            User? user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null) return null;
+            return new LoginUserDto
+            {
+                UserId = user.UserId,
+                Email = user.Email,
+                PasswordHash = user.PasswordHash
+            };
+        }
     }
 }

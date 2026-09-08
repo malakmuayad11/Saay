@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Saay.Infrastructure.DTOs.CategoryDTOs;
 using Saay.Infrastructure.DTOs.TaskDTOs;
 using Saay.Services.Interfaces;
@@ -18,10 +19,12 @@ namespace Saay.API.Controllers
             _taskCategoryService = taskCategoryService;
         }
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AddTaskAsync(AddTaskDto addTaskDto)
         {
             int? taskId = await _taskService.AddTaskAsync(addTaskDto);
@@ -41,10 +44,12 @@ namespace Saay.API.Controllers
                 });
         }
 
+        [Authorize]
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ICollection<TaskDto>>> GetUserTasksAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             List<TaskDto> tasks = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize);
@@ -55,10 +60,12 @@ namespace Saay.API.Controllers
             return Ok(tasks);
         }
 
+        [Authorize]
         [HttpGet("count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<int?>> GetUserTasksCountAsync(int userId)
         {
             int? count = await _taskService.UserTasksCountAsync(userId);
@@ -69,11 +76,13 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [Authorize]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateTask(UpdateTaskDto updateTaskDto)
         {
             bool? result = await _taskService.UpdateTaskAsync(updateTaskDto);
@@ -86,11 +95,13 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete("{taskId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteTask(int taskId)
         {
             bool? result = await _taskService.DeleteTaskAsync(taskId);
@@ -101,10 +112,12 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("completed/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<int?>> GetUserCompletedTasksCountAsync(int userId)
         {
             int? count = await _taskService.UserCompletedTasksCountAsync(userId);
@@ -115,10 +128,12 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [Authorize]
         [HttpGet("pending/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<int?>> GetUserPendingTasksCountAsync(int userId)
         {
             int? count = await _taskService.UserPendingTasksCountAsync(userId);
@@ -129,10 +144,12 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [Authorize]
         [HttpGet("{taskId}", Name = "GetTaskById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<TaskDto>> GetTaskByIdAsync(int taskId)
         {
             TaskDto task = await _taskService.GetTaskByIdAsync(taskId);
