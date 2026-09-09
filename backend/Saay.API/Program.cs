@@ -7,6 +7,8 @@ builder.Configuration.AddAzureKeyVaultIfConfigured();
 
 builder.Services.AddSaayAuth(builder.Configuration);
 
+builder.Services.AddSaayPolicies();
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

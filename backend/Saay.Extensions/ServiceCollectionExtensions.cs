@@ -1,15 +1,18 @@
 ﻿using Azure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Saay.Services.Interfaces;
-using Saay.Services.Classes;
-using Saay.Repository.Interfaces;
-using Saay.Repository.Classes;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Saay.Infrastructure.Authorization.Handlers;
+using Saay.Infrastructure.Authorization.Requirements;
+using Saay.Repository.Classes;
+using Saay.Repository.Interfaces;
+using Saay.Services.Classes;
+using Saay.Services.Interfaces;
 using System.Security.Claims;
+using System.Text;
 
 namespace Saay.Extensions
 {
@@ -58,6 +61,7 @@ namespace Saay.Extensions
             services.AddScoped<IHabitService, HabitService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserTokenService, UserTokenService>();
+            services.AddScoped<IOwnershipAuthorizationService, OwnershipAuthorizationService>();
 
             return services;
         }
@@ -118,6 +122,17 @@ namespace Saay.Extensions
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
                 });
+            return services;
+        }
+
+        public static IServiceCollection AddSaayPolicies(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UserOwner", policy =>
+                    policy.Requirements.Add(new UserOwnerRequirement()));
+            });
+            services.AddScoped<IAuthorizationHandler, UserOwnerHandler>();
             return services;
         }
     }

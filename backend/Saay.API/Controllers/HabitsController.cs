@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Saay.Infrastructure.DTOs.HabitDTOs;
 using Saay.Services.Interfaces;
+using System.Security.Claims;
 
 namespace Saay.API.Controllers
 {
@@ -12,11 +13,14 @@ namespace Saay.API.Controllers
     {
         private readonly IHabitService _habitService;
         private readonly IHabitLogService _habitLogService;
+        private readonly IOwnershipAuthorizationService _ownershipAuthorizationService;
 
-        public HabitsController(IHabitService habitService, IHabitLogService habitLogService)
+        public HabitsController(IHabitService habitService, IHabitLogService habitLogService, 
+             IOwnershipAuthorizationService ownershipAuthorizationService)
         {
             _habitService = habitService;
             _habitLogService = habitLogService;
+            _ownershipAuthorizationService = ownershipAuthorizationService;
         }
 
         [HttpPost]
@@ -24,8 +28,13 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> AddHabitAsync(AddHabitDto addHabitDto)
         {
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, addHabitDto.UserId))
+                return Forbid();
+
             int? habitId = await _habitService.AddHabitAsync(addHabitDto);
 
             if (habitId == null)
@@ -47,8 +56,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ICollection<HabitDto>>> GetUserHabitsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             List<HabitDto> habits = await _habitService.GetUserHabitsAsync(userId, pageNumber, pageSize);
 
             if (habits == null)
@@ -62,8 +75,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<int?>> GetUserHabitsCountAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             int? count = await _habitService.UserHabitsCountAsync(userId);
 
             if (count == null)
@@ -78,8 +95,15 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateHabit(UpdateHabitDto updateHabitDto)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             bool? result = await _habitService.UpdateHabitAsync(updateHabitDto);
             if (result == null)
                 return NotFound("Habit with the specified ID does not exist.");
@@ -96,8 +120,15 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteHabit(int habitId)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             bool? result = await _habitService.DeleteHabitAsync(habitId);
             if (result == null)
                 return NotFound("Habit with the specified ID does not exist.");
@@ -111,8 +142,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<int?>> GetUserCompletedHabitsCountAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             int? count = await _habitService.UserCompletedHabitsCountAsync(userId);
 
             if (count == null)
@@ -126,8 +161,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<int?>> GetUserPendingHabitsCountAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             int? count = await _habitService.UserPendingHabitsCountAsync(userId);
 
             if (count == null)
@@ -141,8 +180,15 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<HabitDto>> GetHabitByIdAsync(int habitId)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             HabitDto habit = await _habitService.GetHabitByIdAsync(habitId);
             if (habit == null)
                 return NotFound("Habit with the specified ID does not exist.");
@@ -154,8 +200,15 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult>MarkHabitAsCompletedTodayAsync(int habitId)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             (bool? isMarked, string message) result = await _habitLogService.MarkHabitAsCompletedTodayAsync(habitId);
             if (result.isMarked == null)
                 return NotFound("Habit with the specified ID does not exist.");

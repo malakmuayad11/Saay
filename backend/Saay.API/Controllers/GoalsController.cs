@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Saay.Infrastructure.DTOs.GoalCategoryDTOs;
 using Saay.Infrastructure.DTOs.GoalDTOs;
 using Saay.Services.Interfaces;
+using System.Security.Claims;
 
 namespace Saay.API.Controllers
 {
@@ -13,10 +14,14 @@ namespace Saay.API.Controllers
         private readonly IGoalService _goalService;
         private readonly IGoalCategoryService _goalCategoryService;
 
-        public GoalsController(IGoalService goalService, IGoalCategoryService goalCategoryService)
+        private readonly IOwnershipAuthorizationService _ownershipAuthorizationService;
+
+        public GoalsController(IGoalService goalService, IGoalCategoryService goalCategoryService
+            , IOwnershipAuthorizationService ownershipAuthorizationService)
         {
             _goalService = goalService;
             _goalCategoryService = goalCategoryService;
+            _ownershipAuthorizationService = ownershipAuthorizationService;
         }
 
         [Authorize]
@@ -25,8 +30,13 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> AddGoalAsync(AddGoalDto addGoalDto)
         {
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, addGoalDto.UserId))
+                return Forbid();
+
             int? goalId = await _goalService.AddGoalAsync(addGoalDto);
 
             if (goalId == null)
@@ -49,8 +59,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ICollection<GoalDto>>> GetUserGoalsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             List<GoalDto> goals = await _goalService.GetUserGoalsAsync(userId, pageNumber, pageSize);
 
             if (goals == null)
@@ -65,8 +79,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<int?>> GetUserGoalsCountAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             int? count = await _goalService.UserGoalsCountAsync(userId);
 
             if (count == null)
@@ -82,10 +100,18 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateGoal(UpdateGoalDto updateGoalDto)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             bool? result = await _goalService.UpdateGoalAsync(updateGoalDto);
-            if (result == null)
+            if (result == 
+                null)
                 return NotFound("Goal with the specified ID does not exist.");
 
             if (result == false)
@@ -101,8 +127,15 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteGoal(int goalId)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             bool? result = await _goalService.DeleteGoalAsync(goalId);
             if (result == null)
                 return NotFound("Goal with the specified ID does not exist.");
@@ -117,8 +150,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<int?>> GetUserCompletedGoalsCountAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             int? count = await _goalService.UserCompletedGoalsCountAsync(userId);
 
             if (count == null)
@@ -133,8 +170,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<int?>> GetUserPendingGoalsCountAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             int? count = await _goalService.UserPendingGoalsCountAsync(userId);
 
             if (count == null)
@@ -149,8 +190,15 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<GoalDto>> GetGoalByIdAsync(int goalId)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             GoalDto goal = await _goalService.GetGoalByIdAsync(goalId);
             if (goal == null)
                 return NotFound("Goal with the specified ID does not exist.");

@@ -9,11 +9,13 @@ namespace Saay.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
+        private readonly IOwnershipAuthorizationService _ownershipAuthorizationService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IOwnershipAuthorizationService ownershipAuthorizationService)
         {
             _userService = userService;
+            _ownershipAuthorizationService = ownershipAuthorizationService;
         }
 
         [HttpPost]
@@ -48,8 +50,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> DeleteUserAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+            
             bool? result = await _userService.DeleteUserAsync(userId);
             if (result == true)
                 return Ok("Account is deleted.");
@@ -66,8 +72,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpdateMissionAsync(UpdateMissionDto updateMissionDto)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updateMissionDto.UserId))
+                return Forbid();
+
             bool? result = await _userService.UpdateMissionAsync(updateMissionDto);
             if (result == true)
                 return Ok("Mission is updated successfully.");
@@ -84,8 +94,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updateUserDto.UserId))
+                return Forbid();
+
             bool? result = await _userService.UpdateUserAsync(updateUserDto);
             if (result == true)
                 return Ok("User is updated successfully.");
@@ -104,8 +118,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpdatePasswordAsync(UpdatePasswordDto updatePasswordDto)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updatePasswordDto.UserId))
+                return Forbid();
+
             bool? result = await _userService.UpdatePasswordAsync(updatePasswordDto);
             if (result == true)
                 return Ok("Password is updated successfully.");
@@ -122,8 +140,12 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<GetUserDto>> GetUserByIdAsync(int userId)
         {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+                return Forbid();
+
             GetUserDto? user = await _userService.GetUserByIdAsync(userId);
 
             if (user != null)
@@ -139,13 +161,18 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<GetUserDto>> GetUserByEmailAsync(string email)
         {
             GetUserDto? user = await _userService.GetUserByEmailAsync(email);
-            if (user != null)
-                return Ok(user);
-            else
+
+            if(user == null)
                 return NotFound("User not found.");
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, user.UserId))
+                return Forbid();
+
+            return Ok(user);
         }
     }
 }
