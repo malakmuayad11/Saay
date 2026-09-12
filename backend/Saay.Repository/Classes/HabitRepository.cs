@@ -99,5 +99,8 @@ namespace Saay.Repository.Classes
                 .Where(h => h.HabitId == habitId)
                 .Select(h => (byte?)h.TargetDuration)
                 .FirstOrDefaultAsync();
+
+        public async Task<bool> IsHabitOwner(int userId, int habitId) =>
+            await _context.Habits.AnyAsync(h => h.UserId == userId && h.HabitId == habitId);
     }
 }

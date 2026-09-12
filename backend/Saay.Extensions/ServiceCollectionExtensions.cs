@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Saay.Infrastructure.Authorization.Handlers;
-using Saay.Infrastructure.Authorization.Requirements;
+using Saay.Services.Authorization.Handlers;
+using Saay.Services.Authorization.Requirements;
 using Saay.Repository.Classes;
 using Saay.Repository.Interfaces;
 using Saay.Services.Classes;
@@ -133,6 +133,28 @@ namespace Saay.Extensions
                     policy.Requirements.Add(new UserOwnerRequirement()));
             });
             services.AddScoped<IAuthorizationHandler, UserOwnerHandler>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GoalOwner", policy =>
+                    policy.Requirements.Add(new GoalOwnerRequirement()));
+            });
+            services.AddScoped<IAuthorizationHandler, GoalOwnerHandler>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HabitOwner", policy =>
+                    policy.Requirements.Add(new HabitOwnerRequirement()));
+            });
+            services.AddScoped<IAuthorizationHandler, HabitOwnerHandler>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("TaskOwner", policy =>
+                    policy.Requirements.Add(new TaskOwnerRequirement()));
+            });
+            services.AddScoped<IAuthorizationHandler, TaskOwnerHandler>();
+
             return services;
         }
     }

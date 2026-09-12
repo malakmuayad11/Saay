@@ -84,5 +84,8 @@ namespace Saay.Services.Classes
 
         public async Task<GoalDto> GetGoalByIdAsync(int goalId) =>
             await _goalRepository.GetGoalByIdAsync(goalId);
+
+        public async Task<bool> IsGoalOwner(int userId, int goalId) =>
+            await _goalRepository.IsGoalOwner(userId, goalId);
     }
 }

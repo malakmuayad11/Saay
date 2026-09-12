@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Saay.Infrastructure.Authorization.Requirements;
+using Saay.Services.Authorization.Requirements;
 using System.Security.Claims;
 
-namespace Saay.Infrastructure.Authorization.Handlers
+namespace Saay.Services.Authorization.Handlers
 {
     public class UserOwnerHandler : AuthorizationHandler<UserOwnerRequirement, int>
     {

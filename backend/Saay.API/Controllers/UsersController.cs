@@ -164,13 +164,13 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<GetUserDto>> GetUserByEmailAsync(string email)
         {
+            if (!await _ownershipAuthorizationService.IsEmailOwnerAsync(User, email))
+                return Forbid();
+
             GetUserDto? user = await _userService.GetUserByEmailAsync(email);
 
             if(user == null)
                 return NotFound("User not found.");
-
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, user.UserId))
-                return Forbid();
 
             return Ok(user);
         }

@@ -14,5 +14,7 @@ namespace Saay.Repository.Interfaces
         public Task<bool?> UpdatePasswordAsync(int userId, string newPasswordHash);
         public Task<User?> GetUserByIdAsync(int userId);
         public Task<User?> GetUserByEmailAsync(string email);
+        public Task<bool> IsEmailOwner(int userId, string email);
+
     }
 }

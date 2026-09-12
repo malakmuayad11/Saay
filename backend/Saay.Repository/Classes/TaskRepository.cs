@@ -99,5 +99,8 @@ namespace Saay.Repository.Classes
                 IsDone = task.IsDone
             })
             .FirstOrDefaultAsync(task => task.TaskId == taskId);
+
+        public async Task<bool> IsTaskOwner(int userId, int taskId) =>
+            await _context.Tasks.AnyAsync(t => t.UserId == userId && t.TaskId == taskId);
     }
 }

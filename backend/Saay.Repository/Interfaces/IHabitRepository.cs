@@ -23,5 +23,8 @@ namespace Saay.Repository.Interfaces
         public Task<bool> DoesHabitExistAsync(int habitId);
 
         public Task<byte?>GetHabitTargetDurationAsync(int habitId);
+
+        public Task<bool> IsHabitOwner(int userId, int habitId);
+
     }
 }

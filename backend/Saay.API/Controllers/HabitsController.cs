@@ -101,7 +101,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsHabitOwner(User, updateHabitDto.HabitId))
                 return Forbid();
 
             bool? result = await _habitService.UpdateHabitAsync(updateHabitDto);
@@ -126,7 +126,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsHabitOwner(User, habitId))
                 return Forbid();
 
             bool? result = await _habitService.DeleteHabitAsync(habitId);
@@ -186,7 +186,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsHabitOwner(User, habitId))
                 return Forbid();
 
             HabitDto habit = await _habitService.GetHabitByIdAsync(habitId);
@@ -206,7 +206,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsHabitOwner(User, habitId))
                 return Forbid();
 
             (bool? isMarked, string message) result = await _habitLogService.MarkHabitAsCompletedTodayAsync(habitId);

@@ -80,5 +80,9 @@ namespace Saay.Repository.Classes
 
         public async Task<User?> GetUserByEmailAsync(string email) =>
             await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
+
+        public async Task<bool> IsEmailOwner(int userId, string email) => 
+            await _context.Users.AnyAsync(user => user.UserId == userId && user.Email == email);
+
     }
 }

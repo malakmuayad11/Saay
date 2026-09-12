@@ -19,5 +19,7 @@ namespace Saay.Services.Interfaces
         public Task<int?> UserPendingGoalsCountAsync(int userId);
 
         public Task<GoalDto> GetGoalByIdAsync(int goalId);
+
+        public Task<bool> IsGoalOwner(int userId, int goalId);
     }
 }

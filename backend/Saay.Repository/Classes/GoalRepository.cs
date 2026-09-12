@@ -101,5 +101,8 @@ namespace Saay.Repository.Classes
                 IsDone = goal.IsDone
             })
             .FirstOrDefaultAsync();
+
+        public async Task<bool> IsGoalOwner(int userId, int goalId) =>
+            await _context.Goals.AnyAsync(g => g.UserId == userId && g.GoalId == goalId);
     }
 }

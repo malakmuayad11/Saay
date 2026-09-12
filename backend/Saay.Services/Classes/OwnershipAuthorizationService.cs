@@ -23,5 +23,52 @@ namespace Saay.Services.Classes
 
             return result.Succeeded;
         }
+
+        public async Task<bool> IsEmailOwnerAsync(
+        ClaimsPrincipal user,
+        string email)
+        {
+            var result = await _authorizationService.AuthorizeAsync(
+                user,
+                email,
+                "EmailOwner");
+
+            return result.Succeeded;
+        }
+        public async Task<bool> IsGoalOwner(
+        ClaimsPrincipal user,
+        int goalId)
+        {
+            var result = await _authorizationService.AuthorizeAsync(
+                user,
+                goalId,
+                "GoalOwner");
+
+            return result.Succeeded;
+        }
+
+        public async Task<bool> IsHabitOwner(
+        ClaimsPrincipal user,
+        int habitId)
+        {
+            var result = await _authorizationService.AuthorizeAsync(
+                user,
+                habitId,
+                "HabitOwner");
+
+            return result.Succeeded;
+        }
+
+        public async Task<bool> IsTaskOwner(
+        ClaimsPrincipal user,
+        int taskId)
+        {
+            var result = await _authorizationService.AuthorizeAsync(
+                user,
+                taskId,
+                "TaskOwner");
+
+            return result.Succeeded;
+        }
     }
 }

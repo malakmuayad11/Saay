@@ -105,7 +105,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsTaskOwner(User, updateTaskDto.TaskId))
                 return Forbid();
 
             bool? result = await _taskService.UpdateTaskAsync(updateTaskDto);
@@ -131,7 +131,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsTaskOwner(User, taskId))
                 return Forbid();
 
             bool? result = await _taskService.DeleteTaskAsync(taskId);
@@ -193,7 +193,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsTaskOwner(User, taskId))
                 return Forbid();
 
             TaskDto task = await _taskService.GetTaskByIdAsync(taskId);

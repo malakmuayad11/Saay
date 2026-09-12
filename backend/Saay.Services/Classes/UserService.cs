@@ -106,5 +106,8 @@ namespace Saay.Services.Classes
                 PasswordHash = user.PasswordHash
             };
         }
+
+        public async Task<bool> IsEmailOwner(int userId, string email) =>
+            await _userRepository.IsEmailOwner(userId, email);
     }
 }

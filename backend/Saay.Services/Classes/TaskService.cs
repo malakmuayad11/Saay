@@ -86,5 +86,8 @@ namespace Saay.Services.Classes
 
         public async Task<TaskDto> GetTaskByIdAsync(int taskId) =>
             await _taskRepository.GetTaskByIdAsync(taskId);
+
+        public async Task<bool> IsTaskOwner(int userId, int taskId) =>
+            await _taskRepository.IsTaskOwner(userId, taskId);
     }
 }

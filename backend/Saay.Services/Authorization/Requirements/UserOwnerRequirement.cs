@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Saay.Infrastructure.Authorization.Requirements
+namespace Saay.Services.Authorization.Requirements
 {
     public class UserOwnerRequirement : IAuthorizationRequirement
     {

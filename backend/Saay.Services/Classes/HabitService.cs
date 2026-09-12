@@ -119,5 +119,8 @@ namespace Saay.Services.Classes
 
         public Task<byte?> GetHabitTargetDurationAsync(int habitId) =>
             _habitRepository.GetHabitTargetDurationAsync(habitId);
+
+        public async Task<bool> IsHabitOwner(int userId, int habitId) =>
+            await _habitRepository.IsHabitOwner(userId, habitId);
     }
 }

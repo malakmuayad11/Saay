@@ -62,7 +62,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ICollection<GoalDto>>> GetUserGoalsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsGoalOwner(User, userId))
                 return Forbid();
 
             List<GoalDto> goals = await _goalService.GetUserGoalsAsync(userId, pageNumber, pageSize);
@@ -106,7 +106,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsGoalOwner(User, updateGoalDto.GoalId))
                 return Forbid();
 
             bool? result = await _goalService.UpdateGoalAsync(updateGoalDto);
@@ -133,7 +133,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsGoalOwner(User, goalId))
                 return Forbid();
 
             bool? result = await _goalService.DeleteGoalAsync(goalId);
@@ -196,7 +196,7 @@ namespace Saay.API.Controllers
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            if (!await _ownershipAuthorizationService.IsGoalOwner(User, goalId))
                 return Forbid();
 
             GoalDto goal = await _goalService.GetGoalByIdAsync(goalId);
