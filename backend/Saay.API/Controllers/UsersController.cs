@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Saay.Data.Entities;
 using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
+using System.Security.Claims;
 
 namespace Saay.API.Controllers
 {
@@ -12,11 +14,13 @@ namespace Saay.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOwnershipAuthorizationService _ownershipAuthorizationService;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(IUserService userService, IOwnershipAuthorizationService ownershipAuthorizationService)
+        public UsersController(IUserService userService, IOwnershipAuthorizationService ownershipAuthorizationService, ILogger<UsersController> logger)
         {
             _userService = userService;
             _ownershipAuthorizationService = ownershipAuthorizationService;
+            _logger = logger;
         }
 
         [EnableRateLimiting("LightOpsLimiter")]
@@ -59,7 +63,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult> DeleteUserAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to delete a user without ownership.",
+                   userId);
                 return Forbid();
+            }
             
             bool? result = await _userService.DeleteUserAsync(userId);
             if (result == true)
@@ -81,7 +89,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult> UpdateMissionAsync(UpdateMissionDto updateMissionDto)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updateMissionDto.UserId))
+            {
+                _logger.LogWarning("User {userId} attmpted to update mission without ownership.",
+                   updateMissionDto.UserId);
                 return Forbid();
+            }
 
             bool? result = await _userService.UpdateMissionAsync(updateMissionDto);
             if (result == true)
@@ -105,7 +117,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updateUserDto.UserId))
+            {
+                _logger.LogWarning("User {UserId} attmpted to update a user without ownership.",
+                   updateUserDto.UserId);
                 return Forbid();
+            }
 
             bool? result = await _userService.UpdateUserAsync(updateUserDto);
             if (result == true)
@@ -131,7 +147,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult> UpdatePasswordAsync(UpdatePasswordDto updatePasswordDto)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updatePasswordDto.UserId))
+            {
+                _logger.LogWarning("User {UserId} attmpted to update password without ownership.",
+                   updatePasswordDto.UserId);
                 return Forbid();
+            }
 
             bool? result = await _userService.UpdatePasswordAsync(updatePasswordDto);
             if (result == true)
@@ -155,7 +175,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<GetUserDto>> GetUserByIdAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get user without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             GetUserDto? user = await _userService.GetUserByIdAsync(userId);
 
@@ -177,8 +201,15 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<GetUserDto>> GetUserByEmailAsync(string email)
         {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
             if (!await _ownershipAuthorizationService.IsEmailOwnerAsync(User, email))
+            {
+                _logger.LogWarning("User {userId} attmpted to user without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             GetUserDto? user = await _userService.GetUserByEmailAsync(email);
 

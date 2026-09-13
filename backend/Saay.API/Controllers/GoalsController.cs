@@ -14,15 +14,16 @@ namespace Saay.API.Controllers
     {
         private readonly IGoalService _goalService;
         private readonly IGoalCategoryService _goalCategoryService;
-
         private readonly IOwnershipAuthorizationService _ownershipAuthorizationService;
+        private readonly ILogger<GoalsController> _logger;
 
         public GoalsController(IGoalService goalService, IGoalCategoryService goalCategoryService
-            , IOwnershipAuthorizationService ownershipAuthorizationService)
+            , IOwnershipAuthorizationService ownershipAuthorizationService, ILogger<GoalsController> logger)
         {
             _goalService = goalService;
             _goalCategoryService = goalCategoryService;
             _ownershipAuthorizationService = ownershipAuthorizationService;
+            _logger = logger;
         }
 
         [EnableRateLimiting("LightAuthLimiter")]
@@ -38,7 +39,11 @@ namespace Saay.API.Controllers
         {
 
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, addGoalDto.UserId))
+            {
+                _logger.LogWarning("User {UserId} attmpted to add a goal without ownership.",
+                    addGoalDto.UserId);
                 return Forbid();
+            }
 
             int? goalId = await _goalService.AddGoalAsync(addGoalDto);
 
@@ -68,7 +73,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<ICollection<GoalDto>>> GetUserGoalsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _ownershipAuthorizationService.IsGoalOwner(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to view a goal without ownership.",
+                  userId);
                 return Forbid();
+            }
 
             List<GoalDto> goals = await _goalService.GetUserGoalsAsync(userId, pageNumber, pageSize);
 
@@ -90,7 +99,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserGoalsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's goals count without ownership.",
+                  userId);
                 return Forbid();
+            }
 
             int? count = await _goalService.UserGoalsCountAsync(userId);
 
@@ -116,7 +129,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsGoalOwner(User, updateGoalDto.GoalId))
+            {
+                _logger.LogWarning("User {userId} attmpted to update a goal without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             bool? result = await _goalService.UpdateGoalAsync(updateGoalDto);
             if (result == 
@@ -145,7 +162,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsGoalOwner(User, goalId))
+            {
+                _logger.LogWarning("User {userId} attmpted to delete a goal without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             bool? result = await _goalService.DeleteGoalAsync(goalId);
             if (result == null)
@@ -167,7 +188,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserCompletedGoalsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's completed goals count without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             int? count = await _goalService.UserCompletedGoalsCountAsync(userId);
 
@@ -189,7 +214,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserPendingGoalsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's pending goals count without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             int? count = await _goalService.UserPendingGoalsCountAsync(userId);
 
@@ -214,7 +243,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsGoalOwner(User, goalId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get a goal without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             GoalDto goal = await _goalService.GetGoalByIdAsync(goalId);
             if (goal == null)

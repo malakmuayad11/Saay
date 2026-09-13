@@ -18,16 +18,18 @@ namespace Saay.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserTokenService _userTokenService;
 
+        private readonly ILogger<AuthController> _logger;
+
         public AuthController(IUserService userService, IPasswordHasher passwordHasher,
-            ITokenService tokenService, IConfiguration configuration, IUserTokenService usertoken)
+            ITokenService tokenService, IConfiguration configuration, IUserTokenService usertoken, ILogger<AuthController> logger)
         {
             _userService = userService;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
             _configuration = configuration;
             _userTokenService = usertoken;
+            _logger = logger;
         }
-
 
         [EnableRateLimiting("AuthLimiter")]
         [HttpPost("login")]
@@ -38,13 +40,26 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
+            string ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             LoginUserDto loginUserDto = await _userService.FindUserByEmailAsync(request.Email);
 
             if (loginUserDto == null)
+            {
+                _logger.LogWarning(
+                    "Failed login attempt for email {Email} from IP address {ip}",
+                    request.Email,
+                    ip);
                 return Unauthorized("Invalid credentials");
+            }
 
             if (!_passwordHasher.VerifyPassword(request.Password, loginUserDto.PasswordHash))
+            {
+                _logger.LogWarning(
+                    "Failed login attempt for email {Email} from IP address {ip}",
+                    request.Email,
+                    ip);
                 return Unauthorized("Invalid credentials");
+            }
 
             var token = _tokenService.GenerateJwtToken(loginUserDto, _configuration);
 
@@ -56,7 +71,12 @@ namespace Saay.API.Controllers
             bool? loginResult = await _userTokenService.LoginAsync(loginUserDto.UserId, refreshToken, DateTime.UtcNow.AddDays(7));
 
             if (loginResult is null)
+            {
+                _logger.LogError(
+                    "JWT generation failed for user {UserId}.",
+                    loginUserDto.UserId);
                 return Unauthorized("Invalid credentials");
+            }
 
             if (loginResult == false)
                 return StatusCode(500, "An error occurred while logging in");
@@ -82,23 +102,40 @@ namespace Saay.API.Controllers
             if (loginUserDto == null)
                 return Unauthorized("Invalid refresh request");
 
-
             TokenDto tokenData
                 = await _userTokenService.GetTokenDataForUserAsync(request.UserID);
 
             if (tokenData is null)
+            {
+                _logger.LogWarning(
+                    "Failed refresh attempt for unknown user {UserId}.",
+                    request.UserID);
                 return Unauthorized("Invalid refresh request");
+            }
 
             if (tokenData.RevokedAt is not null)
+            {
+                _logger.LogWarning(
+                    "Attempt to use revoked refresh token by user {UserId}.",
+                    request.UserID);
                 return Unauthorized("Refresh token is revoked");
+            }
 
             if (tokenData.ExpiresAt is null || tokenData.ExpiresAt <= DateTime.UtcNow)
+            {
+                _logger.LogWarning(
+                    "Attempt to use expired refresh token by user {UserId}.",
+                    request.UserID);
                 return Unauthorized("Refresh token expired");
+            }
 
             bool refreshValid = _passwordHasher.VerifyPassword(request.RefreshToken, tokenData.Hash);
 
             if (!refreshValid)
             {
+                _logger.LogWarning(
+                    "Invalid refresh token attempt by user {UserId}.",
+                    request.UserID);
                 return Unauthorized("Invalid refresh token");
             }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.CategoryDTOs;
+using Saay.Infrastructure.DTOs.GoalDTOs;
 using Saay.Infrastructure.DTOs.TaskDTOs;
 using Saay.Services.Interfaces;
 using System.Security.Claims;
@@ -15,13 +16,15 @@ namespace Saay.API.Controllers
         private readonly ITaskService _taskService;
         private readonly ITaskCategoryService _taskCategoryService;
         private readonly IOwnershipAuthorizationService _ownershipAuthorizationService;
+        private readonly ILogger<TasksController> _logger;
 
         public TasksController(ITaskService taskService, ITaskCategoryService taskCategoryService,
-            IOwnershipAuthorizationService ownershipAuthorizationService)
+            IOwnershipAuthorizationService ownershipAuthorizationService, ILogger<TasksController> logger)
         {
             _taskService = taskService;
             _taskCategoryService = taskCategoryService;
             _ownershipAuthorizationService = ownershipAuthorizationService;
+            _logger = logger;
         }
 
         [EnableRateLimiting("LightOpsLimiter")]
@@ -36,7 +39,11 @@ namespace Saay.API.Controllers
         public async Task<IActionResult> AddTaskAsync(AddTaskDto addTaskDto)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, addTaskDto.UserId))
+            {
+                _logger.LogWarning("User {UserId} attmpted to add a task without ownership.",
+                   addTaskDto.UserId);
                 return Forbid();
+            }
 
             int? taskId = await _taskService.AddTaskAsync(addTaskDto);
 
@@ -67,7 +74,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<ICollection<TaskDto>>> GetUserTasksAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get a task without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             List<TaskDto> tasks = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize);
 
@@ -89,7 +100,12 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserTasksCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's tasks count without ownership.",
+                   userId);
+
                 return Forbid();
+            }
 
             int? count = await _taskService.UserTasksCountAsync(userId);
 
@@ -115,7 +131,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsTaskOwner(User, updateTaskDto.TaskId))
+            {
+                _logger.LogWarning("User {userId} attmpted to update a task without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             bool? result = await _taskService.UpdateTaskAsync(updateTaskDto);
             if (result == null)
@@ -143,7 +163,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsTaskOwner(User, taskId))
+            {
+                _logger.LogWarning("User {userId} attmpted to delete a task without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             bool? result = await _taskService.DeleteTaskAsync(taskId);
             if (result == null)
@@ -165,7 +189,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserCompletedTasksCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's completed tasks count without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             int? count = await _taskService.UserCompletedTasksCountAsync(userId);
 
@@ -187,7 +215,12 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserPendingTasksCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's pending tasks count without ownership.",
+                   userId);
                 return Forbid();
+            }
+
             int? count = await _taskService.UserPendingTasksCountAsync(userId);
 
             if (count == null)
@@ -211,7 +244,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsTaskOwner(User, taskId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get a task without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             TaskDto task = await _taskService.GetTaskByIdAsync(taskId);
             if (task == null)

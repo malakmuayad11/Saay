@@ -15,13 +15,15 @@ namespace Saay.API.Controllers
         private readonly IHabitService _habitService;
         private readonly IHabitLogService _habitLogService;
         private readonly IOwnershipAuthorizationService _ownershipAuthorizationService;
+        private readonly ILogger<GoalsController> _logger;
 
         public HabitsController(IHabitService habitService, IHabitLogService habitLogService, 
-             IOwnershipAuthorizationService ownershipAuthorizationService)
+             IOwnershipAuthorizationService ownershipAuthorizationService, ILogger<GoalsController> logger)
         {
             _habitService = habitService;
             _habitLogService = habitLogService;
             _ownershipAuthorizationService = ownershipAuthorizationService;
+            _logger = logger;
         }
 
         [EnableRateLimiting("LightOpsLimiter")]
@@ -36,7 +38,11 @@ namespace Saay.API.Controllers
         {
 
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, addHabitDto.UserId))
+            {
+                _logger.LogWarning("User {UserId} attmpted to add a habit without ownership.",
+                   addHabitDto.UserId);
                 return Forbid();
+            }
 
             int? habitId = await _habitService.AddHabitAsync(addHabitDto);
 
@@ -65,7 +71,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<ICollection<HabitDto>>> GetUserHabitsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's habit without ownership.",
+                  userId);
                 return Forbid();
+            }
 
             List<HabitDto> habits = await _habitService.GetUserHabitsAsync(userId, pageNumber, pageSize);
 
@@ -86,7 +96,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserHabitsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's habits count without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             int? count = await _habitService.UserHabitsCountAsync(userId);
 
@@ -111,7 +125,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsHabitOwner(User, updateHabitDto.HabitId))
+            {
+                _logger.LogWarning("User {userId} attmpted to update a habit without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             bool? result = await _habitService.UpdateHabitAsync(updateHabitDto);
             if (result == null)
@@ -138,7 +156,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsHabitOwner(User, habitId))
+            {
+                _logger.LogWarning("User {userId} attmpted to update a habit without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             bool? result = await _habitService.DeleteHabitAsync(habitId);
             if (result == null)
@@ -159,7 +181,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserCompletedHabitsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's completed habits count without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             int? count = await _habitService.UserCompletedHabitsCountAsync(userId);
 
@@ -180,7 +206,11 @@ namespace Saay.API.Controllers
         public async Task<ActionResult<int?>> GetUserPendingHabitsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get another user's pending habits count without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             int? count = await _habitService.UserPendingHabitsCountAsync(userId);
 
@@ -204,7 +234,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsHabitOwner(User, habitId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get a habit without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             HabitDto habit = await _habitService.GetHabitByIdAsync(habitId);
             if (habit == null)
@@ -226,7 +260,11 @@ namespace Saay.API.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (!await _ownershipAuthorizationService.IsHabitOwner(User, habitId))
+            {
+                _logger.LogWarning("User {userId} attmpted to mark a habit as completed without ownership.",
+                   userId);
                 return Forbid();
+            }
 
             (bool? isMarked, string message) result = await _habitLogService.MarkHabitAsCompletedTodayAsync(habitId);
             if (result.isMarked == null)

@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using Saay.Extensions;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +74,18 @@ app.Use(async (context, next) =>
     if (context.Response.StatusCode == StatusCodes.Status429TooManyRequests)
     {
         await context.Response.WriteAsync("Too many attempts. Please try again later.");
+    }
+});
+
+// Logging Forbidden Access
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+    {
+        var userIdClaim = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        int userId = int.TryParse(userIdClaim, out var id) ? id : 0;
     }
 });
 
