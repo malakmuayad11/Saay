@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Saay.Infrastructure.DTOs.AuthDTOs;
 using Saay.Infrastructure.DTOs.UserDTOs;
+using Saay.Infrastructure.DTOs.TokenDTOs;
 using Saay.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -62,6 +63,60 @@ namespace Saay.API.Controllers
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 RefreshToken = refreshToken
+            });
+        }
+
+        [HttpPost("refresh")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto request)
+        {
+            LoginUserDto loginUserDto = await _userService.FindUserByIdAsync(request.UserID);
+
+            if (loginUserDto == null)
+                return Unauthorized("Invalid refresh request");
+
+
+            TokenDto tokenData
+                = await _userTokenService.GetTokenDataForUserAsync(request.UserID);
+
+            if (tokenData is null)
+                return Unauthorized("Invalid refresh request");
+
+            if (tokenData.RevokedAt is not null)
+                return Unauthorized("Refresh token is revoked");
+
+            if (tokenData.ExpiresAt is null || tokenData.ExpiresAt <= DateTime.UtcNow)
+                return Unauthorized("Refresh token expired");
+
+            bool refreshValid = _passwordHasher.VerifyPassword(request.RefreshToken, tokenData.Hash);
+
+            if (!refreshValid)
+            {
+                return Unauthorized("Invalid refresh token");
+            }
+
+            var token = _tokenService.GenerateJwtToken(loginUserDto, _configuration);
+            var newAccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // Rotation: replace refresh token
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            bool? refreshResult = await _userTokenService.RefreshAsync(loginUserDto.UserId, newRefreshToken, DateTime.UtcNow.AddDays(7));
+
+            if (refreshResult is null)
+                return Unauthorized("Invalid refresh request");
+
+            if (refreshResult == false)
+                return StatusCode(500, "An error occurred during refresh");
+
+            return Ok(new TokenResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
             });
         }
     }

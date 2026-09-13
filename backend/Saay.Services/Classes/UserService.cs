@@ -107,6 +107,19 @@ namespace Saay.Services.Classes
             };
         }
 
+        public async Task<LoginUserDto?> FindUserByIdAsync(int userId)
+        {
+            User? user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) return null;
+            return new LoginUserDto
+            {
+                UserId = user.UserId,
+                Email = user.Email,
+                PasswordHash = user.PasswordHash
+            };
+        }
+
+
         public async Task<bool> IsEmailOwner(int userId, string email) =>
             await _userRepository.IsEmailOwner(userId, email);
     }
