@@ -4,6 +4,7 @@ using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Infrastructure.DTOs.TokenDTOs;
 using Saay.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Saay.API.Controllers
 {
@@ -28,6 +29,7 @@ namespace Saay.API.Controllers
         }
 
 
+        [EnableRateLimiting("AuthLimiter")]
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -66,6 +68,7 @@ namespace Saay.API.Controllers
             });
         }
 
+        [EnableRateLimiting("AuthLimiter")]
         [HttpPost("refresh")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -120,6 +123,7 @@ namespace Saay.API.Controllers
             });
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [HttpPost("logout")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

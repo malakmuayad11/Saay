@@ -1,18 +1,21 @@
 ﻿using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Saay.Services.Authorization.Handlers;
-using Saay.Services.Authorization.Requirements;
 using Saay.Repository.Classes;
 using Saay.Repository.Interfaces;
+using Saay.Services.Authorization.Handlers;
+using Saay.Services.Authorization.Requirements;
 using Saay.Services.Classes;
 using Saay.Services.Interfaces;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace Saay.Extensions
 {
@@ -155,6 +158,33 @@ namespace Saay.Extensions
             });
             services.AddScoped<IAuthorizationHandler, TaskOwnerHandler>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddSaayRateLimiting(this IServiceCollection services)
+        {
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                options.AddPolicy("AuthLimiter", ctx =>
+                {
+                    var ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                    return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 });
+                });
+
+                options.AddPolicy("CriticalOpsLimiter", ctx =>
+                {
+                    string? uid = ctx.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "unknown";
+                    return RateLimitPartition.GetFixedWindowLimiter(uid, _ => new FixedWindowRateLimiterOptions { PermitLimit = 30, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 });
+                });
+
+                options.AddPolicy("LightOpsLimiter", ctx =>
+                {
+                    string? uid = ctx.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "unknown";
+                    return RateLimitPartition.GetFixedWindowLimiter(uid, _ => new FixedWindowRateLimiterOptions { PermitLimit = 70, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 });
+                });
+            });
             return services;
         }
     }

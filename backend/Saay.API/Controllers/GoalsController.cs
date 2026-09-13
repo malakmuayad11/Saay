@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.GoalCategoryDTOs;
 using Saay.Infrastructure.DTOs.GoalDTOs;
 using Saay.Services.Interfaces;
@@ -24,6 +25,7 @@ namespace Saay.API.Controllers
             _ownershipAuthorizationService = ownershipAuthorizationService;
         }
 
+        [EnableRateLimiting("LightAuthLimiter")]
         [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -31,6 +33,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> AddGoalAsync(AddGoalDto addGoalDto)
         {
 
@@ -53,6 +56,7 @@ namespace Saay.API.Controllers
             });
         }
 
+        [EnableRateLimiting("LightOpsLimter")]
         [Authorize]
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -60,6 +64,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<ICollection<GoalDto>>> GetUserGoalsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _ownershipAuthorizationService.IsGoalOwner(User, userId))
@@ -73,6 +78,7 @@ namespace Saay.API.Controllers
             return Ok(goals);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -80,6 +86,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<int?>> GetUserGoalsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -93,6 +100,7 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [EnableRateLimiting("CriticalOpsLimter")]
         [Authorize]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,6 +109,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> UpdateGoal(UpdateGoalDto updateGoalDto)
         {
             int userId = int.Parse(
@@ -120,6 +129,7 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [Authorize]
         [HttpDelete("{goalId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -128,6 +138,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> DeleteGoal(int goalId)
         {
             int userId = int.Parse(
@@ -144,6 +155,7 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("completed/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -151,6 +163,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<int?>> GetUserCompletedGoalsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -164,6 +177,7 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("pending/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -171,6 +185,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<int?>> GetUserPendingGoalsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -184,6 +199,7 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("{goalId}", Name = "GetGoalById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -191,6 +207,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<GoalDto>> GetGoalByIdAsync(int goalId)
         {
             int userId = int.Parse(
@@ -205,9 +222,11 @@ namespace Saay.API.Controllers
             return Ok(goal);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpGet("categories")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<ICollection<GoalCategoryDto>>> GetAllTasksCategoriesAsync()
         {
             List<GoalCategoryDto> tasksCategories = await _goalCategoryService.GetAllGoalCategoriesAsync();
