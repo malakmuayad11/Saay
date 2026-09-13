@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 
@@ -18,10 +19,12 @@ namespace Saay.API.Controllers
             _ownershipAuthorizationService = ownershipAuthorizationService;
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult> AddUserAsync(AddUserDto addUserDto)
         {
             int? userId = await _userService.AddUserAsync(addUserDto);
@@ -43,6 +46,7 @@ namespace Saay.API.Controllers
             }
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [Authorize]
         [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -51,6 +55,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult> DeleteUserAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -87,6 +92,7 @@ namespace Saay.API.Controllers
                 return StatusCode(500, "An error occurred while updating the mission.");
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [Authorize]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -95,6 +101,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updateUserDto.UserId))
@@ -111,6 +118,7 @@ namespace Saay.API.Controllers
                 return StatusCode(500, "An error occurred while updating the user.");
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [Authorize]
         [HttpPut("passwords")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -119,6 +127,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult> UpdatePasswordAsync(UpdatePasswordDto updatePasswordDto)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updatePasswordDto.UserId))
@@ -132,7 +141,8 @@ namespace Saay.API.Controllers
             else
                 return StatusCode(500, "An error occurred while updating the password.");
         }
-        
+
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("{userId}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -141,6 +151,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<GetUserDto>> GetUserByIdAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -154,6 +165,7 @@ namespace Saay.API.Controllers
                 return NotFound("User not found.");
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("email/{email}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -162,6 +174,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<GetUserDto>> GetUserByEmailAsync(string email)
         {
             if (!await _ownershipAuthorizationService.IsEmailOwnerAsync(User, email))

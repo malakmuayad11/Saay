@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.HabitDTOs;
 using Saay.Services.Interfaces;
 using System.Security.Claims;
@@ -23,12 +24,14 @@ namespace Saay.API.Controllers
             _ownershipAuthorizationService = ownershipAuthorizationService;
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> AddHabitAsync(AddHabitDto addHabitDto)
         {
 
@@ -51,12 +54,14 @@ namespace Saay.API.Controllers
             });
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<ICollection<HabitDto>>> GetUserHabitsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -70,12 +75,14 @@ namespace Saay.API.Controllers
             return Ok(habits);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpGet("count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<int?>> GetUserHabitsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -89,6 +96,7 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -96,6 +104,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> UpdateHabit(UpdateHabitDto updateHabitDto)
         {
             int userId = int.Parse(
@@ -114,6 +123,7 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [HttpDelete("{habitId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -121,6 +131,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult> DeleteHabit(int habitId)
         {
             int userId = int.Parse(
@@ -137,12 +148,14 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpGet("completed/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<int?>> GetUserCompletedHabitsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -156,12 +169,14 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpGet("pending/count/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<int?>> GetUserPendingHabitsCountAsync(int userId)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
@@ -175,12 +190,14 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
+        [EnableRateLimiting("LightOpsLimiter")]
         [HttpGet("{habitId}", Name = "GetHabitById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<HabitDto>> GetHabitByIdAsync(int habitId)
         {
             int userId = int.Parse(
@@ -195,12 +212,14 @@ namespace Saay.API.Controllers
             return Ok(habit);
         }
 
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [HttpPost("mark-completed/{habitId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<IActionResult>MarkHabitAsCompletedTodayAsync(int habitId)
         {
             int userId = int.Parse(

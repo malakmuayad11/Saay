@@ -41,6 +41,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddSaayRateLimiting();
 
 builder.Services.AddSaayPersistence(builder.Configuration);
 
@@ -61,6 +62,19 @@ if (app.Environment.IsDevelopment())
 app.UseCors("SaayCorsPolicy");
 
 app.UseHttpsRedirection();
+
+app.UseRateLimiter();
+
+// Safe Message for rate limiter
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == StatusCodes.Status429TooManyRequests)
+    {
+        await context.Response.WriteAsync("Too many login attempts. Please try again later.");
+    }
+});
 
 app.UseAuthentication();
 
