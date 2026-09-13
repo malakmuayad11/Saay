@@ -62,5 +62,26 @@ namespace Saay.Repository.Classes
 
             return await _context.SaveChangesAsync() > 0;
         }
+    
+        public async Task<string> GetRefreshTokenHashForUserAsync(int userId) =>
+             await _context.Tokens
+                .Where(ut => ut.UserId == userId)
+                .OrderByDescending(ut => ut.ExpiresAt)
+                .Select(ut => ut.RefreshTokenHash)
+                .FirstOrDefaultAsync();
+
+        public async Task<bool?> LogoutAsync(int userId, DateTime refreshTokenRevokedAt)
+        {
+            Token usersTokens = await _context.Tokens
+                .OrderByDescending(ut => ut.ExpiresAt)
+                .FirstOrDefaultAsync(ut => ut.UserId == userId);
+
+            if (usersTokens is null)
+                return null;
+
+            usersTokens.RevokedAt = refreshTokenRevokedAt;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

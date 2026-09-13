@@ -119,5 +119,34 @@ namespace Saay.API.Controllers
                 RefreshToken = newRefreshToken
             });
         }
+
+        [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto request)
+        {
+            LoginUserDto loginUserDto = await _userService.FindUserByEmailAsync(request.Email);
+
+            if (loginUserDto is null)
+                return Ok(); // Do not reveal if user exists
+
+            var storedHash = await _userTokenService.GetRefreshTokenHashForUserAsync(loginUserDto.UserId);
+
+            if (string.IsNullOrEmpty(storedHash) ||
+                !_passwordHasher.VerifyPassword(request.RefreshToken, storedHash))
+                return Ok();
+
+            bool? logoutResult = await _userTokenService.LogoutAsync(loginUserDto.UserId, DateTime.UtcNow);
+
+            if (logoutResult is null)
+                return Unauthorized();
+
+            if (logoutResult == false)
+                return StatusCode(500, "An error occurred while logging out");
+
+            return Ok("Logged out successfully");
+        }
     }
 }

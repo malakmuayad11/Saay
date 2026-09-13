@@ -35,5 +35,11 @@ namespace Saay.Services.Classes
 
         public async Task<bool?> RefreshAsync(int userId, string refreshToken, DateTime refreshTokenExpiresAt) =>
             await _userTokenRepository.RefreshAsync(userId, _passwordHasher.HashPassword(refreshToken), refreshTokenExpiresAt);
+
+        public async Task<string> GetRefreshTokenHashForUserAsync(int userId) =>
+            await _userTokenRepository.GetRefreshTokenHashForUserAsync(userId);
+
+        public async Task<bool?> LogoutAsync(int userId, DateTime refreshTokenRevokedAt) =>
+            await _userTokenRepository.LogoutAsync(userId, refreshTokenRevokedAt);
     }
 }

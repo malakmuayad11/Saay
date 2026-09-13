@@ -9,5 +9,9 @@ namespace Saay.Services.Interfaces
         public Task<TokenDto> GetTokenDataForUserAsync(int userId);
 
         public Task<bool?> RefreshAsync(int userId, string refreshToken, DateTime refreshTokenExpiresAt);
+
+        public Task<string> GetRefreshTokenHashForUserAsync(int userId);
+
+        public Task<bool?> LogoutAsync(int userId, DateTime refreshTokenRevokedAt);
     }
 }
