@@ -1,0 +1,249 @@
+import Label from "../form/Label";
+import Input from "../form/input/InputField";
+// import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
+import { useState } from "react";
+import { Link } from "react-router";
+import { EMAIL_REGEX, PASSWORD_REGEX } from "~/validation";
+
+export default function SignUpForm() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [firstName, setFirstName] = useState<string>("");
+  const [firstNameValid, setFirstNameValid] = useState<boolean>(true);
+
+  const [lastName, setLastName] = useState<string>("");
+  const [lastNameValid, setLastNameValid] = useState<boolean>(true);
+
+  const [email, setEmail] = useState<string>("");
+  const [emailValid, setEmailValid] = useState<boolean>(true);
+
+  const [password, setPassword] = useState<string>("");
+  const [passwordValid, setPasswordValid] = useState<boolean>(true);
+
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [confirmPasswordValid, setConfirmPasswordValid] =
+    useState<boolean>(true);
+
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    // needs better validation and divide and conquer
+    if (
+      firstName === "" ||
+      lastName === "" ||
+      email === "" ||
+      password === "" ||
+      confirmPassword === ""
+    )
+      return;
+
+    if (
+      !firstNameValid ||
+      !lastNameValid ||
+      !emailValid ||
+      !passwordValid ||
+      !confirmPasswordValid
+    )
+      return;
+
+    const url = "https://saay.runasp.net/api/saay/users";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        password,
+        profilePictureURL: null,
+      }),
+    };
+
+    try {
+      const response = await fetch(url, options);
+
+      if (response.status === 400) {
+        setError("Email already registered! Sign In instead.");
+        return;
+      }
+
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+
+      const result = await response.json();
+      // console.log(result);
+      // save userId and go to sign-in route
+    } catch (error) {
+      setError("An error occurred. Please try again later.");
+    }
+  }
+
+  return (
+    <div className="no-scrollbar flex w-full flex-1 flex-col overflow-y-auto lg:w-1/2">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
+        <div>
+          <div className="mb-5 sm:mb-8">
+            <h1 className="mt-4 mb-2 text-title-sm font-semibold text-gray-800 sm:text-title-md dark:text-white/90">
+              Sign Up
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Enter your email and password to sign up!
+            </p>
+          </div>
+        </div>
+        {error && (
+          <div className="my-2 bg-error-200 p-2 rounded-lg border-error-500">
+            <p className="text-error-500">{error}</p>
+          </div>
+        )}
+        <form onSubmit={handleSignUp}>
+          <div className="space-y-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {/* <!-- First Name --> */}
+              <div className="sm:col-span-1">
+                <Label htmlFor="fname">
+                  First Name<span className="text-error-500">*</span>
+                </Label>
+                <Input
+                  type="text"
+                  id="fname"
+                  name="fname"
+                  value={firstName}
+                  placeholder="Enter your first name"
+                  hint={!firstNameValid ? "First Name is required" : undefined}
+                  error={!firstNameValid}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  onBlur={() => setFirstNameValid(firstName !== "")}
+                />
+              </div>
+              {/* <!-- Last Name --> */}
+              <div className="sm:col-span-1">
+                <Label htmlFor="lname">
+                  Last Name<span className="text-error-500">*</span>
+                </Label>
+                <Input
+                  type="text"
+                  id="lname"
+                  name="lname"
+                  value={lastName}
+                  placeholder="Enter your last name"
+                  hint={!lastNameValid ? "Last Name is required" : undefined}
+                  error={!lastNameValid}
+                  onChange={(e) => setLastName(e.target.value)}
+                  onBlur={() => setLastNameValid(lastName !== "")}
+                />
+              </div>
+            </div>
+            {/* <!-- Email --> */}
+            <div>
+              <Label htmlFor="email">
+                Email<span className="text-error-500">*</span>
+              </Label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                placeholder="Enter your email"
+                hint={!emailValid ? "Enter a valid email" : undefined}
+                error={!emailValid}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => setEmailValid(EMAIL_REGEX.test(email))}
+              />
+            </div>
+            {/* <!-- Password --> */}
+            <div>
+              <Label htmlFor="password">
+                Password<span className="text-error-500">*</span>
+              </Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  placeholder="Enter your password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  hint={
+                    !passwordValid
+                      ? "Password must be at least 8 characters, contain a small, capital, special, and numeric characters."
+                      : undefined
+                  }
+                  error={!passwordValid}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onBlur={() => setPasswordValid(PASSWORD_REGEX.test(password))}
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-e-4 top-1/2 z-30 -translate-y-1/2 cursor-pointer"
+                >
+                  {/* {showPassword ? (
+                        <EyeIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                      ) : (
+                        <EyeCloseIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                      )} */}
+                </span>
+              </div>
+            </div>
+            {/* <!-- Confirm Password --> */}
+            <div>
+              <Label htmlFor="confirmPassword">
+                Confirm Password<span className="text-error-500">*</span>
+              </Label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  placeholder="Confirm your password"
+                  type={showPassword ? "text" : "password"}
+                  hint={
+                    !confirmPasswordValid ? "Passwords must match" : undefined
+                  }
+                  error={!confirmPasswordValid}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onBlur={() =>
+                    setConfirmPasswordValid(
+                      confirmPassword !== "" && confirmPassword === password,
+                    )
+                  }
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-e-4 top-1/2 z-30 -translate-y-1/2 cursor-pointer"
+                >
+                  {/* {showPassword ? (
+                        <EyeIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                      ) : (
+                        <EyeCloseIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                      )} */}
+                </span>
+              </div>
+            </div>
+            {/* <!-- Button --> */}
+            <div>
+              <button
+                type="submit"
+                className="flex w-full items-center justify-center rounded-lg bg-brand-500 px-4 py-3 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600"
+              >
+                Sign Up
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div className="mt-5">
+          <p className="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
+            Already have an account?{" "}
+            <Link
+              to="/signin"
+              className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
