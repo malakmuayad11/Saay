@@ -1,9 +1,12 @@
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
-// import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
+import { EyeCloseIcon, EyeIcon } from "../../assets/icons";
 import { useState } from "react";
 import { Link } from "react-router";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "~/validation";
+import { addUser } from "~/services/users";
+import type AddUserDto from "~/types/users/addUserDto";
+import Alert from "../ui/Alert";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,69 +28,67 @@ export default function SignUpForm() {
     useState<boolean>(true);
 
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [signingUp, setSigningUp] = useState<boolean>(false);
+
+  function validateFields(): boolean {
+    return (
+      firstName.trim() !== "" &&
+      firstName.trim().length <= 50 &&
+      lastName.trim() !== "" &&
+      lastName.trim().length <= 50 &&
+      EMAIL_REGEX.test(email.trim()) &&
+      PASSWORD_REGEX.test(password) &&
+      confirmPassword !== "" &&
+      confirmPassword === password
+    );
+  }
 
   async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    // needs better validation and divide and conquer
-    if (
-      firstName === "" ||
-      lastName === "" ||
-      email === "" ||
-      password === "" ||
-      confirmPassword === ""
-    )
+    if (!validateFields()) return;
+
+    setSigningUp(true);
+
+    const result = await addUser({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      password,
+      profilePictureURL: null,
+    } satisfies AddUserDto);
+
+    setSigningUp(false);
+
+    if (typeof result === "string") {
+      setError(result);
       return;
-
-    if (
-      !firstNameValid ||
-      !lastNameValid ||
-      !emailValid ||
-      !passwordValid ||
-      !confirmPasswordValid
-    )
-      return;
-
-    const url = "https://saay.runasp.net/api/saay/users";
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        email,
-        password,
-        profilePictureURL: null,
-      }),
-    };
-
-    try {
-      const response = await fetch(url, options);
-
-      if (response.status === 400) {
-        setError("Email already registered! Sign In instead.");
-        return;
-      }
-
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const result = await response.json();
-      // console.log(result);
-      // save userId and go to sign-in route
-    } catch (error) {
-      setError("An error occurred. Please try again later.");
     }
+    // Clear fields
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+
+    // Reset valiation
+    setFirstNameValid(true);
+    setLastNameValid(true);
+    setEmailValid(true);
+    setPasswordValid(true);
+    setConfirmPasswordValid(true);
+
+    setError(null);
+    setSuccess(true);
   }
 
   return (
-    <div className="no-scrollbar flex w-full flex-1 flex-col overflow-y-auto lg:w-1/2">
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
+    <div className="flex min-h-screen w-full items-center justify-center overflow-y-auto px-4 py-8 sm:px-6">
+      <div className="w-full max-w-md">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="mt-4 mb-2 text-title-sm font-semibold text-gray-800 sm:text-title-md dark:text-white/90">
+            <h1 className="mb-2 text-title-sm font-semibold text-gray-800 sm:text-title-md dark:text-white/90">
               Sign Up
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -95,10 +96,13 @@ export default function SignUpForm() {
             </p>
           </div>
         </div>
-        {error && (
-          <div className="my-2 bg-error-200 p-2 rounded-lg border-error-500">
-            <p className="text-error-500">{error}</p>
-          </div>
+        {error && <Alert variant="error" title="Error" message={error} />}
+        {success && (
+          <Alert
+            variant="success"
+            title="Success"
+            message={"Account is created successfully!"}
+          />
         )}
         <form onSubmit={handleSignUp}>
           <div className="space-y-5">
@@ -114,10 +118,18 @@ export default function SignUpForm() {
                   name="fname"
                   value={firstName}
                   placeholder="Enter your first name"
-                  hint={!firstNameValid ? "First Name is required" : undefined}
+                  hint={
+                    !firstNameValid
+                      ? "First Name is required and should not exceed 50 characters."
+                      : undefined
+                  }
                   error={!firstNameValid}
                   onChange={(e) => setFirstName(e.target.value)}
-                  onBlur={() => setFirstNameValid(firstName !== "")}
+                  onBlur={() =>
+                    setFirstNameValid(
+                      firstName !== "" && firstName.length <= 50,
+                    )
+                  }
                 />
               </div>
               {/* <!-- Last Name --> */}
@@ -131,10 +143,16 @@ export default function SignUpForm() {
                   name="lname"
                   value={lastName}
                   placeholder="Enter your last name"
-                  hint={!lastNameValid ? "Last Name is required" : undefined}
+                  hint={
+                    !lastNameValid
+                      ? "Last Name is required and should not exceed 50 characters."
+                      : undefined
+                  }
                   error={!lastNameValid}
                   onChange={(e) => setLastName(e.target.value)}
-                  onBlur={() => setLastNameValid(lastName !== "")}
+                  onBlur={() =>
+                    setLastNameValid(lastName !== "" && lastName.length <= 50)
+                  }
                 />
               </div>
             </div>
@@ -179,11 +197,11 @@ export default function SignUpForm() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-e-4 top-1/2 z-30 -translate-y-1/2 cursor-pointer"
                 >
-                  {/* {showPassword ? (
-                        <EyeIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
-                      ) : (
-                        <EyeCloseIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
-                      )} */}
+                  {showPassword ? (
+                    <EyeIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                  ) : (
+                    <EyeCloseIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                  )}
                 </span>
               </div>
             </div>
@@ -196,6 +214,7 @@ export default function SignUpForm() {
                 <Input
                   id="confirmPassword"
                   placeholder="Confirm your password"
+                  value={confirmPassword}
                   type={showPassword ? "text" : "password"}
                   hint={
                     !confirmPasswordValid ? "Passwords must match" : undefined
@@ -212,11 +231,11 @@ export default function SignUpForm() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-e-4 top-1/2 z-30 -translate-y-1/2 cursor-pointer"
                 >
-                  {/* {showPassword ? (
-                        <EyeIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
-                      ) : (
-                        <EyeCloseIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
-                      )} */}
+                  {showPassword ? (
+                    <EyeIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                  ) : (
+                    <EyeCloseIcon className="size-5 fill-gray-500 dark:fill-gray-400" />
+                  )}
                 </span>
               </div>
             </div>
@@ -225,8 +244,9 @@ export default function SignUpForm() {
               <button
                 type="submit"
                 className="flex w-full items-center justify-center rounded-lg bg-brand-500 px-4 py-3 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600"
+                disabled={signingUp}
               >
-                Sign Up
+                {signingUp === true ? "Signing Up..." : "Sign Up"}
               </button>
             </div>
           </div>
