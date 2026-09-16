@@ -59,6 +59,7 @@ export default function SignUpForm() {
       profilePictureURL: null,
     } satisfies AddUserDto);
 
+    setError(null);
     setSigningUp(false);
 
     if (typeof result === "string") {
