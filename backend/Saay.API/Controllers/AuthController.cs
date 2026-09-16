@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.AuthDTOs;
-using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Infrastructure.DTOs.TokenDTOs;
+using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace Saay.API.Controllers
 {
@@ -38,7 +39,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        public async Task<ActionResult<int>> Login([FromBody] LoginRequestDto request)
         {
             string ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             LoginUserDto loginUserDto = await _userService.FindUserByEmailAsync(request.Email);
@@ -66,6 +67,8 @@ namespace Saay.API.Controllers
             if (token is null)
                 return StatusCode(500, "JWT key missing from Key Vault");
 
+            string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
             string refreshToken = _tokenService.GenerateRefreshToken();
 
             bool? loginResult = await _userTokenService.LoginAsync(loginUserDto.UserId, refreshToken, DateTime.UtcNow.AddDays(7));
@@ -81,11 +84,29 @@ namespace Saay.API.Controllers
             if (loginResult == false)
                 return StatusCode(500, "An error occurred while logging in");
 
-            return Ok(new
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                RefreshToken = refreshToken
-            });
+            Response.Cookies.Append(
+                "accessToken",
+                accessToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+                });
+
+            Response.Cookies.Append(
+                "refreshToken",
+                refreshToken,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                });
+
+            return Ok(loginUserDto.UserId);
         }
 
         [EnableRateLimiting("AuthLimiter")]

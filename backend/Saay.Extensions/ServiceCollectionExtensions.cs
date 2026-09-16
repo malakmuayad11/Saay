@@ -97,7 +97,8 @@ namespace Saay.Extensions
                             "https://saay.vercel.app"
                         )
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
 
@@ -108,8 +109,10 @@ namespace Saay.Extensions
         {
             // JWT
             var secretKey = config["JwtSigningKey"];
+
             if (string.IsNullOrWhiteSpace(secretKey))
-                throw new Exception("JWT Signing Key is not found in configuration.");
+                throw new Exception(
+                    "JWT Signing Key is not found in configuration.");
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -120,13 +123,30 @@ namespace Saay.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
+
                         ValidIssuer = "SaayAPI",
                         ValidAudience = "SaayAPIUsers",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(secretKey)),
+
                         RoleClaimType = ClaimTypes.Role,
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token =
+                                context.Request.Cookies["accessToken"];
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
+
             return services;
         }
 
