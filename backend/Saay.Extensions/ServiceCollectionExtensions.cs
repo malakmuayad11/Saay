@@ -93,7 +93,8 @@ namespace Saay.Extensions
                         .WithOrigins(
                             "http://127.0.0.1:5500",
                             "http://localhost:5109",
-                            "http://localhost:5173"
+                            "http://localhost:5173",
+                            "https://saay.vercel.app"
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod();
