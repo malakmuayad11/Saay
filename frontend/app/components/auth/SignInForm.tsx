@@ -10,7 +10,6 @@ import { setCurrentUser } from "~/services/localStorage";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-
   const [email, setEmail] = useState<string>("");
   const [emailValid, setEmailValid] = useState<boolean>(true);
 
