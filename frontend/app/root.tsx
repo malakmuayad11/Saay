@@ -7,8 +7,13 @@ import {
   ScrollRestoration,
 } from "react-router";
 
+import "./i18n";
+
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ThemeProvider } from "./context/ThemeContext";
+import { SidebarProvider } from "./context/SidebarContext";
+import { LanguageProvider } from "./context/LanguageContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,7 +47,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <ThemeProvider>
+      <LanguageProvider>
+        <Outlet />
+      </LanguageProvider>
+    </ThemeProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
