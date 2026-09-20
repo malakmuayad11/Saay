@@ -77,7 +77,7 @@ export default function UserDropdown() {
           <img
             src={
               user?.profilePictureURL ??
-              "app/assets/profile-picture-placeholder.png"
+              "/assets/profile-picture-placeholder.png"
             }
             alt="User Profile Picture"
             loading="eager"

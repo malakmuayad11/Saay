@@ -260,26 +260,23 @@ const Sidebar: React.FC = () => {
             <>
               <img
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/assets/logo.png"
                 alt="Logo"
-                width={150}
+                width={170}
                 height={40}
+                loading="eager"
               />
               <img
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/assets/logo-dark.png"
                 alt="Logo"
-                width={150}
+                width={170}
                 height={40}
+                loading="eager"
               />
             </>
           ) : (
-            <img
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
+            <img src="/assets/logo.png" alt="Logo" width={32} height={32} />
           )}
         </Link>
       </div>
@@ -287,16 +284,7 @@ const Sidebar: React.FC = () => {
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 flex text-xs leading-5 text-gray-400 uppercase ${
-                  !isExpanded && !isHovered
-                    ? "xl:justify-center"
-                    : "justify-start"
-                }`}
-              ></h2>
-              {renderMenuItems(navItems, "main")}
-            </div>
+            <div>{renderMenuItems(navItems, "main")}</div>
 
             <div>
               <h2

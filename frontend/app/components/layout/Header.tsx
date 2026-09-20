@@ -92,13 +92,19 @@ const Header: React.FC = () => {
           <Link to="/" className="xl:hidden">
             <img
               className="dark:hidden"
-              src="/images/logo/logo.svg"
+              src="/assets/logo.png"
               alt="Logo"
+              loading="eager"
+              width={50}
+              height={50}
             />
             <img
               className="hidden dark:block"
-              src="/images/logo/logo-dark.svg"
+              src="/assets/logo-dark.png"
               alt="Logo"
+              loading="eager"
+              width={50}
+              height={50}
             />
           </Link>
 
