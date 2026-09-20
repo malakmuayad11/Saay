@@ -7,6 +7,9 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Dropdown } from "../../ui/dropdown/Dropdown";
 import { DropdownItem } from "../../ui/dropdown/DropdownItem";
+import { useAuth } from "~/context/AuthContext";
+import { getUser } from "~/services/users";
+import type { User } from "~/types/users/user";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +19,8 @@ export default function UserDropdown() {
   const { language: locale, setLanguage } = useLanguage();
   const currentLang = getLanguage(locale as Locale);
   const CurrentFlagIcon = currentLang.FlagIcon;
+  const currentUserId = useAuth()?.currentUserId;
+  const [user, setUser] = useState<User | null>(null);
 
   useClickOutside(subDropdownRef, () => {
     setIsSubDropdownOpen(false);
@@ -43,6 +48,25 @@ export default function UserDropdown() {
     };
   }, []);
 
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadUser() {
+      const result = await getUser(currentUserId ?? 0);
+
+      if (!ignore && typeof result !== "string") {
+        setUser(result);
+        alert("user is set to: " + result.email);
+      }
+    }
+
+    loadUser();
+
+    return () => {
+      ignore = true;
+    };
+  }, [currentUserId]);
+
   return (
     <div className="relative">
       <button
@@ -50,10 +74,19 @@ export default function UserDropdown() {
         className="dropdown-toggle flex items-center text-gray-700 dark:text-gray-400"
       >
         <span className="me-3 h-11 w-11 overflow-hidden rounded-full">
-          <img src="/images/user/owner.png" alt="User" />
+          <img
+            src={
+              user?.profilePictureURL ??
+              "app/assets/profile-picture-placeholder.png"
+            }
+            alt="User Profile Picture"
+            loading="eager"
+          />
         </span>
 
-        <span className="me-1 block text-theme-sm font-medium">Musharof</span>
+        <span className="me-1 block text-theme-sm font-medium">
+          {user?.firstName}
+        </span>
         <svg
           className={`stroke-gray-500 transition-transform duration-200 dark:stroke-gray-400 ${
             isOpen ? "rotate-180" : ""
@@ -81,10 +114,10 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block text-theme-sm font-medium text-gray-700 no-underline dark:text-gray-400">
-            Musharof Chowdhury
+            {user?.firstName + " " + user?.lastName}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 no-underline dark:text-gray-400">
-            randomuser@pimjo.com
+            {user?.email}
           </span>
         </div>
 

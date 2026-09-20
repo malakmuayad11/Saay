@@ -2,11 +2,12 @@ import Label from "~/components/form/Label";
 import Input from "~/components/form/input/InputField";
 import Button from "../ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "~/assets/icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { login } from "~/services/auth";
 import Alert from "../ui/Alert";
 import { setCurrentUser } from "~/services/localStorage";
+import { AuthContext } from "~/context/AuthContext";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +21,8 @@ export default function SignInForm() {
   const [signingIn, setSigningIn] = useState<boolean>(false);
 
   const navigator = useNavigate();
+
+  const setCurrentUserId = useContext(AuthContext)?.setCurrentUserId;
 
   function validateFields() {
     return password !== "" && email !== "";
@@ -55,7 +58,8 @@ export default function SignInForm() {
     setError(null);
     setSigningIn(false);
 
-    setCurrentUser(result);
+    setCurrentUser(result); // store in local storage
+    setCurrentUserId?.(result); // store in AuthContext
 
     navigator("/dashboard");
   }

@@ -1,4 +1,5 @@
 import type AddUserDto from "~/types/users/addUserDto";
+import type { User } from "~/types/users/user";
 
 const Base_URL = "https://saay.runasp.net";
 
@@ -28,8 +29,35 @@ export async function addUser(user: AddUserDto): Promise<string | null> {
 
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-    const result = await response.json();
+    await response.json();
     return null; // registeration successed
+  } catch (error) {
+    return "An error occurred. Please try again later.";
+  }
+}
+
+export async function getUser(userId: number): Promise<User | string> {
+  const url: URL = new URL(`api/saay/users/${userId}`, Base_URL);
+
+  const options: RequestInit = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  };
+
+  try {
+    const response = await fetch(url, options);
+
+    if (response.status === 404) {
+      return "User with the specified ID does not exist.";
+    }
+
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+    const user: User = await response.json();
+    return user;
   } catch (error) {
     return "An error occurred. Please try again later.";
   }

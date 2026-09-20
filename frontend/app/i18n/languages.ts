@@ -24,7 +24,7 @@ export const languages: Language[] = [
   },
   {
     id: "ar",
-    name: "Arabic (Saudi)",
+    name: "Arabic",
     shortName: "Arabic",
     dir: "rtl",
     FlagIcon: SaFlagIcon,
