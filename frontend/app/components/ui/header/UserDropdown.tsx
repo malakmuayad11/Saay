@@ -56,7 +56,6 @@ export default function UserDropdown() {
 
       if (!ignore && typeof result !== "string") {
         setUser(result);
-        alert("user is set to: " + result.email);
       }
     }
 

@@ -8,7 +8,7 @@ import {
   useContext,
 } from "react";
 
-import { getCurrentUser } from "~/services/localStorage";
+import { getCurrentUser } from "~/services/localStorage/users";
 
 type AuthContextType = {
   currentUserId: number | null;

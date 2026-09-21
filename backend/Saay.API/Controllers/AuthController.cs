@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.AuthDTOs;
 using Saay.Infrastructure.DTOs.TokenDTOs;
@@ -39,7 +38,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult<int>> Login([FromBody] LoginRequestDto request)
+        public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginRequestDto request)
         {
             string ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             LoginUserDto loginUserDto = await _userService.FindUserByEmailAsync(request.Email);
@@ -84,29 +83,12 @@ namespace Saay.API.Controllers
             if (loginResult == false)
                 return StatusCode(500, "An error occurred while logging in");
 
-            Response.Cookies.Append(
-                "accessToken",
-                accessToken,
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None,
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(15)
-                });
-
-            Response.Cookies.Append(
-                "refreshToken",
-                refreshToken,
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None,
-                    Expires = DateTimeOffset.UtcNow.AddDays(7)
-                });
-
-            return Ok(loginUserDto.UserId);
+            return Ok(new LoginResponseDto
+            {
+                UserId = loginUserDto.UserId,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            });
         }
 
         [EnableRateLimiting("AuthLimiter")]

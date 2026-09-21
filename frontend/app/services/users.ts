@@ -1,5 +1,6 @@
 import type AddUserDto from "~/types/users/addUserDto";
 import type { User } from "~/types/users/user";
+import { getAccessToken } from "./localStorage/auth";
 
 const Base_URL = "https://saay.runasp.net";
 
@@ -38,13 +39,14 @@ export async function addUser(user: AddUserDto): Promise<string | null> {
 
 export async function getUser(userId: number): Promise<User | string> {
   const url: URL = new URL(`api/saay/users/${userId}`, Base_URL);
+  const accessToken: string | null = getAccessToken();
 
   const options: RequestInit = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
-    credentials: "include",
   };
 
   try {

@@ -1,9 +1,11 @@
+import type { LoginResponseDto } from "~/types/auth/loginResponseDto";
+
 const Base_URL = "https://saay.runasp.net/api/saay/auth/";
 
 export async function login(
   email: string,
   password: string,
-): Promise<string | number> {
+): Promise<LoginResponseDto | string> {
   const url = new URL("login", Base_URL);
 
   const options: RequestInit = {
@@ -11,7 +13,6 @@ export async function login(
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify({
       email,
       password,
