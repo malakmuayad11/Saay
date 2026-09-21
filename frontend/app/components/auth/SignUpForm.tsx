@@ -2,11 +2,12 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import { EyeCloseIcon, EyeIcon } from "../../assets/icons";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "~/validation";
 import { addUser } from "~/services/users";
 import type AddUserDto from "~/types/users/addUserDto";
 import Alert from "../ui/Alert";
+import { Navigate } from "react-router";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +31,7 @@ export default function SignUpForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [signingUp, setSigningUp] = useState<boolean>(false);
+  const navigator = useNavigate();
 
   function validateFields(): boolean {
     return (
@@ -82,6 +84,7 @@ export default function SignUpForm() {
 
     setError(null);
     setSuccess(true);
+    navigator("/signin");
   }
 
   return (
