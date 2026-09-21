@@ -1,9 +1,11 @@
+import type { LoginResponseDto } from "~/types/auth/loginResponseDto";
+
 const Base_URL = "https://saay.runasp.net/api/saay/auth/";
 
 export async function login(
   email: string,
   password: string,
-): Promise<string | number> {
+): Promise<LoginResponseDto | string> {
   const url = new URL("login", Base_URL);
 
   const options: RequestInit = {
@@ -11,7 +13,6 @@ export async function login(
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify({
       email,
       password,
@@ -32,6 +33,51 @@ export async function login(
     return await response.json();
   } catch (error) {
     console.error("Login error:", error);
+    return "An error occurred. Please try again later.";
+  }
+}
+
+export async function refreshAccessToken(): Promise<
+  { accessToken: string; refreshToken: string } | string
+> {
+  try {
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (!refreshToken) {
+      return "Session expired. Please sign in again.";
+    }
+
+    const response = await fetch(new URL("refresh", Base_URL), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        refreshToken,
+      }),
+    });
+
+    if (response.status === 401) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userId");
+
+      return "Session expired. Please sign in again.";
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    localStorage.setItem("accessToken", data.accessToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
+
+    return data;
+  } catch (error) {
+    console.error("Refresh token error:", error);
+
     return "An error occurred. Please try again later.";
   }
 }

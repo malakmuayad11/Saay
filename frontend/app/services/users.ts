@@ -1,5 +1,6 @@
 import type AddUserDto from "~/types/users/addUserDto";
 import type { User } from "~/types/users/user";
+import { apiFetch } from "./main";
 
 const Base_URL = "https://saay.runasp.net";
 
@@ -44,21 +45,21 @@ export async function getUser(userId: number): Promise<User | string> {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
   };
 
-  try {
-    const response = await fetch(url, options);
+  const response = await apiFetch(url, options);
 
-    if (response.status === 404) {
-      return "User with the specified ID does not exist.";
-    }
+  if (typeof response === "string") {
+    return response;
+  }
 
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+  if (response.status === 404) {
+    return "User not found.";
+  }
 
-    const user: User = await response.json();
-    return user;
-  } catch (error) {
+  if (!response.ok) {
     return "An error occurred. Please try again later.";
   }
+
+  return (await response.json()) as User;
 }

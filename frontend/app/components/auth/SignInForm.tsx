@@ -6,8 +6,10 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { login } from "~/services/auth";
 import Alert from "../ui/Alert";
-import { setCurrentUser } from "~/services/localStorage";
+import { setCurrentUser } from "~/services/localStorage/users";
 import { AuthContext } from "~/context/AuthContext";
+import type { LoginResponseDto } from "~/types/auth/loginResponseDto";
+import { setAccessToken, setRefreshToken } from "~/services/localStorage/auth";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +43,7 @@ export default function SignInForm() {
     setError(null);
     setSigningIn(true);
 
-    const result: string | number = await login(email, password);
+    const result: string | LoginResponseDto = await login(email, password);
 
     if (typeof result === "string") {
       setError(result);
@@ -58,8 +60,10 @@ export default function SignInForm() {
     setError(null);
     setSigningIn(false);
 
-    setCurrentUser(result); // store in local storage
-    setCurrentUserId?.(result); // store in AuthContext
+    setCurrentUser(result.userId); // store in local storage
+    setAccessToken(result.accessToken);
+    setRefreshToken(result.refreshToken);
+    setCurrentUserId?.(result.userId); // store in AuthContext
 
     navigator("/dashboard");
   }
