@@ -2,6 +2,10 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import enCommon from "../locales/en/common.json";
+import { geti18nextLn } from "~/services/localStorage/languages";
+import { getLanguage } from "./languages";
+import { getLanguage as getStoredLanguage } from "~/services/localStorage/languages";
+import { get } from "http";
 
 export const resources = {
   en: {
@@ -13,9 +17,7 @@ export const defaultNS = "common";
 export const fallbackLng = "en";
 
 const savedLng =
-  typeof window !== "undefined"
-    ? localStorage.getItem("i18nextLng") || localStorage.getItem("language")
-    : null;
+  typeof window !== "undefined" ? geti18nextLn() || getStoredLanguage() : null;
 const browserLng =
   typeof window !== "undefined"
     ? navigator.language.split("-")[0]
