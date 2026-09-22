@@ -5,7 +5,7 @@ export async function apiFetch(
   options: RequestInit = {},
 ): Promise<Response | string> {
   try {
-    let accessToken = localStorage.getItem("accessToken");
+    let accessToken = sessionStorage.getItem("accessToken");
 
     const response = await fetch(input, {
       ...options,

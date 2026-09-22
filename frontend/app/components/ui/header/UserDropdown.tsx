@@ -8,7 +8,7 @@ import { Link } from "react-router";
 import { Dropdown } from "../../ui/dropdown/Dropdown";
 import { DropdownItem } from "../../ui/dropdown/DropdownItem";
 import { useAuth } from "~/context/AuthContext";
-import { getUser } from "~/services/users";
+import { getUser } from "~/services/api/users";
 import type { User } from "~/types/users/user";
 
 export default function UserDropdown() {

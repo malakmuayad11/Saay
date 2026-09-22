@@ -4,12 +4,13 @@ import Button from "../ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "~/assets/icons";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { login } from "~/services/auth";
+import { login } from "~/services/api/auth";
 import Alert from "../ui/Alert";
 import { setCurrentUser } from "~/services/localStorage/users";
 import { AuthContext } from "~/context/AuthContext";
 import type { LoginResponseDto } from "~/types/auth/loginResponseDto";
-import { setAccessToken, setRefreshToken } from "~/services/localStorage/auth";
+import { setRefreshToken } from "~/services/localStorage/auth";
+import { setAccessToken } from "~/services/sessionStorage/auth";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);

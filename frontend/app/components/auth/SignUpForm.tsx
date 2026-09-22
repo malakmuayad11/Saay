@@ -4,7 +4,7 @@ import { EyeCloseIcon, EyeIcon } from "../../assets/icons";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "~/validation";
-import { addUser } from "~/services/users";
+import { addUser } from "~/services/api/users";
 import type AddUserDto from "~/types/users/addUserDto";
 import Alert from "../ui/Alert";
 import { Navigate } from "react-router";

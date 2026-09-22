@@ -1,4 +1,7 @@
 import type { LoginResponseDto } from "~/types/auth/loginResponseDto";
+import { removeAccessToken, setAccessToken } from "../sessionStorage/auth";
+import { removeRefreshToken, setRefreshToken } from "../localStorage/auth";
+import { removeCurrentUser } from "../localStorage/users";
 
 const Base_URL = "https://saay.runasp.net/api/saay/auth/";
 
@@ -58,10 +61,9 @@ export async function refreshAccessToken(): Promise<
     });
 
     if (response.status === 401) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("userId");
-
+      removeAccessToken();
+      removeRefreshToken();
+      removeCurrentUser();
       return "Session expired. Please sign in again.";
     }
 
@@ -71,8 +73,8 @@ export async function refreshAccessToken(): Promise<
 
     const data = await response.json();
 
-    localStorage.setItem("accessToken", data.accessToken);
-    localStorage.setItem("refreshToken", data.refreshToken);
+    setAccessToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
 
     return data;
   } catch (error) {
