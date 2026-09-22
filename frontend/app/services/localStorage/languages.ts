@@ -1,9 +1,9 @@
-export function seti18nextLng(input: string) {
+export function setI18nextLng(input: string) {
   localStorage.setItem("i18nextLng", input);
 }
 
-export function geti18nextLn() {
-  return localStorage.getItem("i18nextLn");
+export function getI18nextLng() {
+  return localStorage.getItem("i18nextLng");
 }
 
 export function setLanguage(input: string) {
@@ -11,5 +11,5 @@ export function setLanguage(input: string) {
 }
 
 export function getLanguage() {
-  localStorage.getItem("language");
+  return localStorage.getItem("language");
 }

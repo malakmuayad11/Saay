@@ -2,14 +2,16 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import enCommon from "../locales/en/common.json";
-import { geti18nextLn } from "~/services/localStorage/languages";
-import { getLanguage } from "./languages";
+import { getI18nextLng } from "~/services/localStorage/languages";
 import { getLanguage as getStoredLanguage } from "~/services/localStorage/languages";
-import { get } from "http";
+import arCommon from "../locales/ar/common.json";
 
 export const resources = {
   en: {
     common: enCommon,
+  },
+  ar: {
+    common: arCommon,
   },
 } as const;
 
@@ -17,7 +19,7 @@ export const defaultNS = "common";
 export const fallbackLng = "en";
 
 const savedLng =
-  typeof window !== "undefined" ? geti18nextLn() || getStoredLanguage() : null;
+  typeof window !== "undefined" ? getI18nextLng() || getStoredLanguage() : null;
 const browserLng =
   typeof window !== "undefined"
     ? navigator.language.split("-")[0]

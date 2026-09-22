@@ -1,7 +1,8 @@
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { seti18nextLng } from "~/services/localStorage/languages";
+import { setI18n, useTranslation } from "react-i18next";
+import { setI18nextLng } from "~/services/localStorage/languages";
+import { setLanguage as setStoredLanguage } from "~/services/localStorage/languages";
 
 export type LanguageCode = "en" | "ar";
 
@@ -64,8 +65,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = dir;
-    seti18nextLng(language);
-    setLanguage(language);
+    setI18nextLng(language);
+    setStoredLanguage(language);
   }, [language, dir]);
 
   const setLanguage = (code: LanguageCode) => {
