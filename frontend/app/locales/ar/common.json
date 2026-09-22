@@ -9,6 +9,19 @@
     "filter": "Filter",
     "seeAll": "See all"
   },
+  "signup": "قم بالاشتراك",
+  "signin": {
+    "title": "تسجيل الدخول",
+    "description": "أدخل البريد الإلكتروني وكلمة المرور!",
+    "fields": {
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور"
+    },
+    "forgotPassword": "نسيت كلمة المرور ؟",
+    "signingIn": "يتم تسجيل الدخول...",
+    "noAccount": "لا تملك حسابًا؟"
+  },
   "sidebar": {
     "groups": {
       "menu": "القائمة",
@@ -16,7 +29,7 @@
       "others": "أخرى"
     },
     "badges": {
-      "new": "new",
+      "new": "جديد",
       "pro": "pro"
     },
     "items": {
@@ -32,7 +45,6 @@
     }
   },
   "header": {
-    "searchPlaceholder": "Search or type command...",
     "toggleSidebar": "Toggle Sidebar",
     "notifications": {
       "title": "Notification",
@@ -44,11 +56,11 @@
     }
   },
   "userDropdown": {
-    "editProfile": "Edit profile",
-    "accountSettings": "Account settings",
-    "support": "Support",
-    "language": "Language",
-    "signOut": "Sign out"
+    "editProfile": "تعديل الملف الشخصي",
+    "accountSettings": "إعدادات الحساب",
+    "support": "الدعم",
+    "language": "اللغة",
+    "signOut": "تسجيل الخروج"
   },
   "ecommerce": {
     "title": "E-commerce Dashboard",

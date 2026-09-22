@@ -11,6 +11,7 @@ import { AuthContext } from "~/context/AuthContext";
 import type { LoginResponseDto } from "~/types/auth/loginResponseDto";
 import { setRefreshToken } from "~/services/localStorage/auth";
 import { setAccessToken } from "~/services/sessionStorage/auth";
+import { t } from "i18next";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -75,10 +76,10 @@ export default function SignInForm() {
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 mt-4 text-title-sm font-semibold text-gray-800 sm:text-title-md dark:text-white/90">
-              Sign In
+              {t("signin.title")}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign in!
+              {t("signin.description")}
             </p>
           </div>
           <div>
@@ -87,7 +88,8 @@ export default function SignInForm() {
               <div className="space-y-6">
                 <div>
                   <Label htmlFor="email">
-                    Email <span className="text-error-500">*</span>{" "}
+                    {t("signin.fields.email")}{" "}
+                    <span className="text-error-500">*</span>{" "}
                   </Label>
                   <Input
                     id="email"
@@ -101,12 +103,13 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Label htmlFor="password">
-                    Password <span className="text-error-500">*</span>{" "}
+                    {t("signin.fields.password")}{" "}
+                    <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder={t("signin.fields.passwordPlaceholder")}
                       id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -135,12 +138,12 @@ export default function SignInForm() {
                     to="/reset-password"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                   >
-                    Forgot password?
+                    {t("signin.forgotPassword")}
                   </Link>
                 </div>
                 <div>
                   <Button className="w-full" size="sm" disabled={signingIn}>
-                    {signingIn ? "Signing in..." : "Sign in"}
+                    {signingIn ? t("signin.signingIn") : t("signin.title")}
                   </Button>
                 </div>
               </div>
@@ -148,12 +151,12 @@ export default function SignInForm() {
 
             <div className="mt-5">
               <p className="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
-                Don&apos;t have an account? {""}
+                {t("signin.noAccount")} {""}
                 <Link
                   to="/"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
-                  Sign Up
+                  {t("signup")}
                 </Link>
               </p>
             </div>

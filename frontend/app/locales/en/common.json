@@ -9,6 +9,19 @@
     "filter": "Filter",
     "seeAll": "See all"
   },
+  "signup": "Sign Up",
+  "signin": {
+    "title": "Sign In",
+    "description": "Enter your email and password to sign in!",
+    "fields": {
+      "email": " Email",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password"
+    },
+    "forgotPassword": "Forogt Password?",
+    "signingIn": "Signing In...",
+    "noAccount": "Don't have an account?"
+  },
   "sidebar": {
     "groups": {
       "menu": "Menu",
