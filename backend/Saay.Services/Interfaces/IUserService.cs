@@ -14,5 +14,6 @@ namespace Saay.Services.Interfaces
         public Task<LoginUserDto?> FindUserByEmailAsync(string email);
         public Task<LoginUserDto?> FindUserByIdAsync(int userId);
         public Task<bool> IsEmailOwner(int userId, string email);
+        public Task<string?> GetUserMissionAsync(int userId);
     }
 }

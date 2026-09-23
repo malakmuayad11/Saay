@@ -218,5 +218,29 @@ namespace Saay.API.Controllers
 
             return Ok(user);
         }
+
+
+        [EnableRateLimiting("LightOpsLimiter")]
+        [Authorize]
+        [HttpGet("mission/{userId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<GetUserDto>> GetUserMission(int userId)
+        {
+
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to user without ownership.",
+                   userId);
+                return Forbid();
+            }
+
+            return Ok(await _userService.GetUserMissionAsync(userId));
+        }
     }
 }

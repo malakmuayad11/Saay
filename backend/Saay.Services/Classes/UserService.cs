@@ -122,5 +122,8 @@ namespace Saay.Services.Classes
 
         public async Task<bool> IsEmailOwner(int userId, string email) =>
             await _userRepository.IsEmailOwner(userId, email);
+
+        public async Task<string?> GetUserMissionAsync(int userId) =>
+            await _userRepository.GetUserMission(userId);
     }
 }
