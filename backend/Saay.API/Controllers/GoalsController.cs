@@ -61,7 +61,7 @@ namespace Saay.API.Controllers
             });
         }
 
-        [EnableRateLimiting("LightOpsLimter")]
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("{userId}/{pageNumber}/{pageSize}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -72,7 +72,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<ICollection<GoalDto>>> GetUserGoalsAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
-            if (!await _ownershipAuthorizationService.IsGoalOwner(User, userId))
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
             {
                 _logger.LogWarning("User {userId} attmpted to view a goal without ownership.",
                   userId);

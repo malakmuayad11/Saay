@@ -38,6 +38,7 @@ namespace Saay.Repository.Classes
         public async Task<List<TaskDto>> GetUserTasksAsync(int userId,
             int pageNumber, int pageSize) =>
             await _context.Tasks
+                .Where(task => task.UserId == userId)
                 .Select(task => new TaskDto
                 {
                     TaskId = task.TaskId,

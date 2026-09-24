@@ -58,6 +58,8 @@ public partial class SaayContext : DbContext
 
         modelBuilder.Entity<GoalCategory>(entity =>
         {
+            entity.ToTable("GoalsCategories");
+
             entity.Property(e => e.GoalCategoryId)
                 .HasColumnName("GoalCategoryID");
 

@@ -37,6 +37,7 @@ namespace Saay.Repository.Classes
         public async Task<List<GoalDto>> GetUserGoalsAsync(int userId,
             int pageNumber, int pageSize) =>
             await _context.Goals
+                .Where(goal => goal.UserId == userId)
                 .Select(goal => new GoalDto
                 {
                     GoalId = goal.GoalId,
