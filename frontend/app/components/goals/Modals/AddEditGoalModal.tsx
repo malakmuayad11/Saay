@@ -210,7 +210,11 @@ export function AddEditGoalModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      className="w-[calc(100%-2rem)] max-w-[500px] sm:w-[500px]"
+    >
       {error && <Alert variant="error" title="Error" message={error} />}
 
       {success && (
@@ -224,108 +228,106 @@ export function AddEditGoalModal({
           }
         />
       )}
+      <div className="py-4 m-4">
+        <h3>{isEdit ? "Edit Goal" : "Add New Goal"}</h3>
 
-      <h3>{isEdit ? "Edit Goal" : "Add New Goal"}</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-6">
+            {/* Goal Title */}
+            <div>
+              <Label htmlFor="goalTitle">Goal Title</Label>
 
-      <form onSubmit={handleSubmit}>
-        <div className="space-y-6">
-          {/* Goal Title */}
-          <div>
-            <Label htmlFor="goalTitle">Goal Title</Label>
+              <Input
+                id="goalTitle"
+                value={goalTitle}
+                onChange={(e) => setGoalTitle(e.target.value.trim())}
+                hint={!goalTitleValid ? "This field is required" : undefined}
+                onBlur={() => setGoalTitleValid(goalTitle !== "")}
+                error={!goalTitleValid}
+              />
+            </div>
 
-            <Input
-              id="goalTitle"
-              value={goalTitle}
-              onChange={(e) => setGoalTitle(e.target.value.trim())}
-              hint={!goalTitleValid ? "This field is required" : undefined}
-              onBlur={() => setGoalTitleValid(goalTitle !== "")}
-              error={!goalTitleValid}
+            {/* Goal Category */}
+            <div>
+              <Label>Goal Category</Label>
+
+              <Select
+                options={categoryOptions}
+                value={goalCategoryId}
+                placeholder="Select a category"
+                onChange={(value) => {
+                  setGoalCategoryId(value);
+                  setGoalCategoryValid(value !== "");
+                }}
+              />
+
+              {!goalCategoryValid && (
+                <p className="mt-1.5 text-sm text-error-500">
+                  This field is required
+                </p>
+              )}
+            </div>
+
+            {/* Time Frame */}
+            <div>
+              <Label>Time Frame</Label>
+
+              <Select
+                options={timeFrameOptions}
+                value={timeFrame}
+                placeholder="Select a time frame"
+                onChange={(value) => {
+                  setTimeFrame(value);
+                  setTimeFrameValid(value !== "");
+                }}
+              />
+
+              {!timeFrameValid && (
+                <p className="mt-1.5 text-sm text-error-500">
+                  This field is required
+                </p>
+              )}
+            </div>
+
+            {/* Deadline */}
+            <div className="py-4">
+              <Label htmlFor="deadline">Deadline</Label>
+
+              <DatePicker
+                id="deadline"
+                minDate={isEdit ? undefined : new Date()}
+                defaultDate={deadline}
+                onChange={(selectedDates) => {
+                  if (selectedDates.length > 0) {
+                    const date = selectedDates[0];
+
+                    const formattedDate = [
+                      date.getFullYear(),
+                      String(date.getMonth() + 1).padStart(2, "0"),
+                      String(date.getDate()).padStart(2, "0"),
+                    ].join("-");
+
+                    setDeadline(formattedDate);
+                    setDeadlineValid(true);
+                  }
+                }}
+              />
+
+              {!deadlineValid && (
+                <p className="mt-1.5 text-sm text-error-500">
+                  This field is required
+                </p>
+              )}
+            </div>
+
+            {/* Is Done */}
+            <Checkbox
+              label="Mark as completed"
+              checked={isDone}
+              onChange={setIsDone}
             />
           </div>
-
-          {/* Goal Category */}
-          <div>
-            <Label>Goal Category</Label>
-
-            <Select
-              options={categoryOptions}
-              value={goalCategoryId}
-              placeholder="Select a category"
-              onChange={(value) => {
-                setGoalCategoryId(value);
-                setGoalCategoryValid(value !== "");
-              }}
-            />
-
-            {!goalCategoryValid && (
-              <p className="mt-1.5 text-sm text-error-500">
-                This field is required
-              </p>
-            )}
-          </div>
-
-          {/* Time Frame */}
-          <div>
-            <Label>Time Frame</Label>
-
-            <Select
-              options={timeFrameOptions}
-              value={timeFrame}
-              placeholder="Select a time frame"
-              onChange={(value) => {
-                setTimeFrame(value);
-                setTimeFrameValid(value !== "");
-              }}
-            />
-
-            {!timeFrameValid && (
-              <p className="mt-1.5 text-sm text-error-500">
-                This field is required
-              </p>
-            )}
-          </div>
-
-          {/* Deadline */}
-          <div>
-            <Label htmlFor="deadline">Deadline</Label>
-
-            <DatePicker
-              id="deadline"
-              minDate={isEdit ? undefined : new Date()}
-              defaultDate={deadline}
-              onChange={(selectedDates) => {
-                if (selectedDates.length > 0) {
-                  const date = selectedDates[0];
-
-                  const formattedDate = [
-                    date.getFullYear(),
-                    String(date.getMonth() + 1).padStart(2, "0"),
-                    String(date.getDate()).padStart(2, "0"),
-                  ].join("-");
-
-                  setDeadline(formattedDate);
-                  setDeadlineValid(true);
-                }
-              }}
-            />
-
-            {!deadlineValid && (
-              <p className="mt-1.5 text-sm text-error-500">
-                This field is required
-              </p>
-            )}
-          </div>
-
-          {/* Is Done */}
-          <Checkbox
-            label="Mark as completed"
-            checked={isDone}
-            onChange={setIsDone}
-          />
-        </div>
-
-        <div>
-          <Button className="my-4 w-full" size="sm" disabled={saving}>
+          <Button className="my-4 w-full" size="md" disabled={saving}>
             {saving
               ? isEdit
                 ? "Updating..."
@@ -334,8 +336,8 @@ export function AddEditGoalModal({
                 ? "Update Goal"
                 : "Add Goal"}
           </Button>
-        </div>
-      </form>
+        </form>
+      </div>
     </Modal>
   );
 }

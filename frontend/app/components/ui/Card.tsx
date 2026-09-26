@@ -15,7 +15,7 @@ export default function Card({
 }: CardProps) {
   return (
     <div
-      className={`${cardClassName && cardClassName} rounded-2xl border border-gray-200 bg-white p-5 md:p-6 dark:border-gray-800 dark:bg-white/3`}
+      className={`${cardClassName && cardClassName} rounded-2xl border border-gray-200 bg-white p-2 md:p-3 dark:border-gray-800 dark:bg-white/3`}
     >
       {/* Metric Item Start */}
       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">

@@ -151,11 +151,11 @@ export default function Goals() {
 
   return (
     <div>
-      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 xl:py-5 dark:border-gray-800 dark:bg-white/3">
-        <div className="mx-auto w-full max-w-157.5">
+      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white p-2 xl:py-3 dark:border-gray-800 dark:bg-white/3">
+        <div className="mx-auto w-full ">
           <ComponentCard title="My Goals">
             <div className="flex justify-between">
-              <h3 className="mb-4 text-theme-xl font-semibold text-gray-800 sm:text-2xl dark:text-white/90">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white/90">
                 Overview
               </h3>
 
