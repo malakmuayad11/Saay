@@ -1,6 +1,7 @@
 import Card from "../components/ui/Card";
 import { DoneIcon, PendingIcon, TotalIcon, SparklesIcon } from "~/assets/icons";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "~/context/AuthContext";
 import {
   deleteGoal,
@@ -20,6 +21,7 @@ export const meta = () => [{ title: "Goals | Saay" }];
 
 export default function Goals() {
   const currentUserId = useAuth()?.currentUserId;
+  const { t } = useTranslation();
 
   const [completedGoalsCount, setCompletedGoalsCount] = useState<number | null>(
     null,
@@ -153,35 +155,39 @@ export default function Goals() {
     <div>
       <div className="min-h-screen rounded-2xl border border-gray-200 bg-white p-2 xl:py-3 dark:border-gray-800 dark:bg-white/3">
         <div className="mx-auto w-full ">
-          <ComponentCard title="My Goals">
+          <ComponentCard title={t("goals.myGoals")}>
             <div className="flex justify-between">
               <h3 className="text-xl font-semibold text-gray-800 dark:text-white/90">
-                Overview
+                {t("common.overview")}
               </h3>
 
               <Button size="sm" onClick={handleAdd}>
-                Add Goal
+                {t("goals.addGoal")}
               </Button>
             </div>
 
             <div className="grid grid-cols-3 grid-rows-2 gap-2">
               <Card
-                title="My Mission"
+                title={t("goals.myMission")}
                 statNum={mission ?? ""}
                 Icon={SparklesIcon}
                 cardClassName="col-span-3"
               />
 
-              <Card title="Total Goals" statNum={totalGoals} Icon={TotalIcon} />
+              <Card
+                title={t("goals.total")}
+                statNum={totalGoals}
+                Icon={TotalIcon}
+              />
 
               <Card
-                title="Completed Goals"
+                title={t("goals.completed")}
                 statNum={completedGoalsCount ?? 0}
                 Icon={DoneIcon}
               />
 
               <Card
-                title="Pending Goals"
+                title={t("goals.pending")}
                 statNum={pendingGoalsCount ?? 0}
                 Icon={PendingIcon}
               />
@@ -190,12 +196,12 @@ export default function Goals() {
             <GoalsTable
               tableData={goals ?? []}
               headers={[
-                "title",
-                "category",
-                "time frame",
-                "deadline",
-                "status",
-                "actions",
+                t("goals.headers.title"),
+                t("goals.headers.category"),
+                t("goals.headers.timeFrame"),
+                t("goals.headers.deadline"),
+                t("goals.headers.status"),
+                t("goals.headers.actions.title"),
               ]}
               onEdit={handleEdit}
               onDelete={handleDeleteClick}

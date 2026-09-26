@@ -2,6 +2,7 @@ import { TableLayout, TableHeader, TableRow, TableCell, TableBody } from ".";
 import type { Goal } from "~/types/goals/Goal";
 import Badge from "../Badge";
 import Button from "../button/Button";
+import { t } from "i18next";
 
 type TableProps = {
   headers: string[];
@@ -43,17 +44,19 @@ export default function GoalsTable({
               </p>
             </TableCell>
             <TableCell className="py-3 text-theme-sm text-gray-500 dark:text-gray-400">
-              {goal.categoryTitle}
+              {t(`goals.categories.${goal.categoryTitle}`)}
             </TableCell>
             <TableCell className="py-3 text-theme-sm text-gray-500 dark:text-gray-400">
-              {goal.timeFrame}
+              {t(`goals.timeFrames.${goal.timeFrame}`)}
             </TableCell>
             <TableCell className="py-3 text-theme-sm text-gray-500 dark:text-gray-400">
               {goal.deadline.toString().slice(2)}
             </TableCell>
             <TableCell className="py-3 text-theme-sm text-gray-500 dark:text-gray-400">
               <Badge color={goal.isDone ? "success" : "warning"}>
-                {goal.isDone ? "Done" : "In Progress"}
+                {goal.isDone
+                  ? t(`goals.status.done`)
+                  : t(`goals.status.progress`)}
               </Badge>
             </TableCell>
             <TableCell className="py-3 text-theme-sm text-gray-500 dark:text-gray-400">
@@ -63,14 +66,14 @@ export default function GoalsTable({
                   className="flex-1"
                   onClick={() => onEdit(goal)}
                 >
-                  Edit
+                  {t("goals.headers.actions.edit")}
                 </Button>
                 <Button
                   size="sm"
                   className="flex-1"
                   onClick={() => onDelete(goal.goalId)}
                 >
-                  Delete
+                  {t("goals.headers.actions.delete")}
                 </Button>
               </div>
             </TableCell>

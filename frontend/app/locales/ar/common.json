@@ -7,7 +7,8 @@
     "viewMore": "View More",
     "delete": "Delete",
     "filter": "Filter",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "overview": "لمحة عامة"
   },
   "signup": "قم بالاشتراك",
   "signin": {
@@ -61,6 +62,46 @@
     "support": "الدعم",
     "language": "اللغة",
     "signOut": "تسجيل الخروج"
+  },
+  "goals": {
+    "myGoals": "أهدافي",
+    "addGoal": "إضافة هدف",
+    "myMission": "غايتي الكبرى",
+    "total": "المجموع",
+    "completed": "المكتملة",
+    "pending": "قيد التنفيذ",
+    "headers": {
+      "title": "العنوان",
+      "category": "الفئة",
+      "timeFrame": "الأمد الزمني",
+      "deadline": "موعد الإنهاء",
+      "status": "الحالة",
+      "actions": { "title": "إجراءات", "edit": "تعديل", "delete": "حذف" }
+    },
+    "categories": {
+      "Health": "الصحة",
+      "Career": "المهنة",
+      "Relationships": "العلاقات",
+      "Finance": "المال",
+      "PersonalGrowth": "النمو الشخصي",
+      "Spirituality": "الروحانية",
+      "Community": "المجتمع",
+      "Lifestyle": "نمط الحياة",
+      "Travel": "السفر",
+      "Technology": "التكنولوجيا",
+      "Legacy": "الإرث",
+      "Environment": "البيئة"
+    },
+    "timeFrames": {
+      "Monthly": "شهري",
+      "Quarterly": "ربع سنوي",
+      "Biannual": "نصف سنوي",
+      "Annually": "سنوي"
+    },
+    "status": {
+      "done": "تم",
+      "progress": "يتم.."
+    }
   },
   "ecommerce": {
     "title": "E-commerce Dashboard",

@@ -7,7 +7,8 @@
     "viewMore": "View More",
     "delete": "Delete",
     "filter": "Filter",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "overview": "Overview"
   },
   "signup": "Sign Up",
   "signin": {
@@ -36,34 +37,7 @@
       "dashboard": "Dashboard",
       "tasks": "Tasks",
       "goals": "Goals",
-      "habits": "Habits",
-      "apiKeys": "API Keys",
-      "integrations": "Integrations",
-      "blankPage": "Blank Page",
-      "error404": "404 Error",
-      "error500": "500 Error",
-      "error503": "503 Error",
-      "comingSoon": "Coming Soon",
-      "maintenance": "Maintenance",
-      "successPage": "Success",
-      "layouts": "Layouts",
-      "layoutOne": "Layout One",
-      "layoutTwo": "Layout Two",
-      "layoutThree": "Layout Three",
-      "layoutFour": "Layout Four",
-      "layoutFive": "Layout Five",
-      "layoutSix": "Layout Six",
-      "charts": "Charts",
-      "lineChart": "Line Chart",
-      "barChart": "Bar Chart",
-      "pieChart": "Pie Chart",
-      "radarChart": "Radar Chart",
-      "radialChart": "Radial Chart",
-      "maps": "Maps",
-      "authentication": "Authentication",
-      "signIn": "Sign In",
-      "signUp": "Sign Up",
-      "chat": "Chat"
+      "habits": "Habits"
     },
     "widget": {
       "title": "Need assistance with building your system?",
@@ -89,6 +63,46 @@
     "support": "Support",
     "language": "Language",
     "signOut": "Sign out"
+  },
+  "goals": {
+    "myGoals": "My Goals",
+    "addGoal": "Add Goal",
+    "myMission": "My Mission",
+    "total": "Total",
+    "completed": "Completed",
+    "pending": "Pending",
+    "headers": {
+      "title": "Title",
+      "category": "Category",
+      "timeFrame": "Time Frame",
+      "deadline": "Deadline",
+      "status": "Status",
+      "actions": { "title": "Actions", "edit": "Edit", "delete": "Delete" }
+    },
+    "categories": {
+      "Health": "Health",
+      "Career": "Career",
+      "Relationships": "Relationships",
+      "Finance": "Finance",
+      "PersonalGrowth": "Personal Growth",
+      "Spirituality": "Spirituality",
+      "Community": "Community",
+      "Lifestyle": "Life Style",
+      "Travel": "Travel",
+      "Technology": "Technology",
+      "Legacy": "Legacy",
+      "Environment": "Environment"
+    },
+    "timeFrames": {
+      "Monthly": "Monthly",
+      "Quarterly": "Quarterly",
+      "Biannual": "Biannual",
+      "Annually": "Annually"
+    },
+    "status": {
+      "done": "Done",
+      "progress": "Pending"
+    }
   },
   "ecommerce": {
     "title": "E-commerce Dashboard",
