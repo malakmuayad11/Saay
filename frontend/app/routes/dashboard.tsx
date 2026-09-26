@@ -21,6 +21,7 @@ const LayoutContent: React.FC = () => {
       >
         <Header />
         <main className="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
+          Dashboard is not implemented yet, go to goals
           <Outlet />
         </main>
       </div>

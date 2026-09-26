@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
     icon: <GoalIcon fontSize={24} />,
     name: "Goals",
     key: "goals",
-    path: "/goals",
+    path: "/dashboard/goals",
   },
   {
     icon: <HabitIcon fontSize={24} />,

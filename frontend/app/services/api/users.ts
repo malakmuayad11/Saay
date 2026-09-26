@@ -63,3 +63,30 @@ export async function getUser(userId: number): Promise<User | string> {
 
   return (await response.json()) as User;
 }
+
+export async function getUserMission(userId: number): Promise<string | null> {
+  const url: URL = new URL(`api/saay/users/mission/${userId}`, Base_URL);
+
+  const options: RequestInit = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const response = await apiFetch(url, options);
+
+  if (typeof response === "string") {
+    return response;
+  }
+
+  if (response.status === 404) {
+    return "User not found.";
+  }
+
+  if (!response.ok) {
+    return "An error occurred. Please try again later.";
+  }
+
+  return (await response.json()) as string | null;
+}

@@ -52,7 +52,8 @@ export default function UserDropdown() {
     let ignore = false;
 
     async function loadUser() {
-      const result = await getUser(currentUserId ?? 0);
+      if (currentUserId === null || currentUserId === undefined) return;
+      const result = await getUser(currentUserId);
 
       if (!ignore && typeof result !== "string") {
         setUser(result);
