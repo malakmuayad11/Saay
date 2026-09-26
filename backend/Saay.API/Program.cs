@@ -1,6 +1,5 @@
 using Microsoft.OpenApi.Models;
 using Saay.Extensions;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 

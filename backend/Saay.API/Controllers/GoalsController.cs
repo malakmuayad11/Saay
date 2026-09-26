@@ -26,7 +26,7 @@ namespace Saay.API.Controllers
             _logger = logger;
         }
 
-        [EnableRateLimiting("LightAuthLimiter")]
+        [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -113,7 +113,7 @@ namespace Saay.API.Controllers
             return Ok(count);
         }
 
-        [EnableRateLimiting("CriticalOpsLimter")]
+        [EnableRateLimiting("CriticalOpsLimiter")]
         [Authorize]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]

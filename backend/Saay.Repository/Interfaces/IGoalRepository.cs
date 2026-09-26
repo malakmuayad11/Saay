@@ -1,5 +1,4 @@
 ﻿using Saay.Data.Entities;
-using Saay.Infrastructure.DTOs.GoalDTOs;
 
 namespace Saay.Repository.Interfaces
 {
@@ -7,7 +6,7 @@ namespace Saay.Repository.Interfaces
     {
         public Task<int?> AddGoalAsync(Goal goal, int userId);
 
-        public Task<List<GoalDto>> GetUserGoalsAsync(int userId, int pageNumber, int pageSize);
+        public Task<List<Goal>> GetUserGoalsAsync(int userId, int pageNumber, int pageSize);
 
         public Task<int> UserGoalsCountAsync(int userId);
 
@@ -19,7 +18,7 @@ namespace Saay.Repository.Interfaces
 
         public Task<int> UserPendingGoalsCount(int userId);
 
-        public Task<GoalDto> GetGoalByIdAsync(int goalId);
+        public Task<Goal> GetGoalByIdAsync(int goalId);
 
         public Task<bool> IsGoalOwner(int userId, int goalId);
     }

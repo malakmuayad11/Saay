@@ -9,6 +9,7 @@ namespace Saay.Services.Classes
     {
         private readonly IGoalRepository _goalRepository;
         private readonly IUserRepository _userRepository;
+        
 
         public GoalService(IGoalRepository goalRepository, IUserRepository userRepository)
         {
@@ -38,7 +39,17 @@ namespace Saay.Services.Classes
             if (!await _userRepository.DoesUserExist(userId))
                 return null; // User does not exist
 
-            return await _goalRepository.GetUserGoalsAsync(userId, pageNumber, pageSize);
+            List<Goal> goals = await _goalRepository.GetUserGoalsAsync(userId, pageNumber, pageSize);
+
+            return goals.Select(goal => new GoalDto
+            {
+                GoalId = goal.GoalId,
+                CategoryTitle = ((IGoalCategoryService.GoalCategory)goal.GoalCategoryId).ToString(),
+                Title = goal.Title,
+                TimeFrame = ((IGoalService.GoalTimeFrame)goal.TimeFrame).ToString(),
+                Deadline = goal.Deadline,
+                IsDone = goal.IsDone
+            }).ToList();
         }
 
         public async Task<int?> UserGoalsCountAsync(int userId)
@@ -82,8 +93,22 @@ namespace Saay.Services.Classes
             return await _goalRepository.UserPendingGoalsCount(userId);
         }
 
-        public async Task<GoalDto> GetGoalByIdAsync(int goalId) =>
-            await _goalRepository.GetGoalByIdAsync(goalId);
+        public async Task<GoalDto> GetGoalByIdAsync(int goalId)
+        {
+           Goal goal = await _goalRepository.GetGoalByIdAsync(goalId);
+
+            if (goal == null) return null;
+
+            return new GoalDto
+            {
+                GoalId = goal.GoalId,
+                CategoryTitle = ((IGoalCategoryService.GoalCategory)goal.GoalCategoryId).ToString(),
+                Title = goal.Title,
+                TimeFrame = ((IGoalService.GoalTimeFrame)goal.TimeFrame).ToString(),
+                Deadline = goal.Deadline,
+                IsDone = goal.IsDone
+            };
+        }
 
         public async Task<bool> IsGoalOwner(int userId, int goalId) =>
             await _goalRepository.IsGoalOwner(userId, goalId);

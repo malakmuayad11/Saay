@@ -4,6 +4,13 @@ namespace Saay.Services.Interfaces
 {
     public interface IGoalService
     {
+        public enum GoalTimeFrame : byte
+        {
+            Monthly,
+            Quarterly,
+            Biannual,
+            Annually
+        }
         public Task<int?> AddGoalAsync(AddGoalDto addGoalDto);
 
         public Task<List<GoalDto>> GetUserGoalsAsync(int userId, int pageNumber, int pageSize);

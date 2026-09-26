@@ -20,6 +20,7 @@ namespace Saay.Services.Classes
             {
                 categoryDtos.Add(new GoalCategoryDto
                 {
+                    CategoryId = category.GoalCategoryId,
                     Title = category.Title
                 });
             }

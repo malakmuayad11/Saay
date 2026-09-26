@@ -34,14 +34,14 @@ namespace Saay.Repository.Classes
             return null;
         }
 
-        public async Task<List<GoalDto>> GetUserGoalsAsync(int userId,
+        public async Task<List<Goal>> GetUserGoalsAsync(int userId,
             int pageNumber, int pageSize) =>
             await _context.Goals
                 .Where(goal => goal.UserId == userId)
-                .Select(goal => new GoalDto
+                .Select(goal => new Goal
                 {
                     GoalId = goal.GoalId,
-                    CategoryTitle = goal.GoalCategory.Title,
+                    GoalCategoryId = goal.GoalCategoryId,
                     Title = goal.Title,
                     TimeFrame = goal.TimeFrame,
                     Deadline = goal.Deadline,
@@ -89,13 +89,13 @@ namespace Saay.Repository.Classes
                 .Where(goal => goal.UserId == userId && !goal.IsDone)
                 .CountAsync();
 
-        public async Task<GoalDto> GetGoalByIdAsync(int goalId) =>
+        public async Task<Goal> GetGoalByIdAsync(int goalId) =>
             await _context.Goals
             .Where(goal => goal.GoalId == goalId)
-            .Select(goal => new GoalDto
+            .Select(goal => new Goal
             {
                 GoalId = goal.GoalId,
-                CategoryTitle = goal.GoalCategory.Title,
+                GoalCategoryId = goal.GoalCategoryId,
                 Title = goal.Title,
                 TimeFrame = goal.TimeFrame,
                 Deadline = goal.Deadline,
