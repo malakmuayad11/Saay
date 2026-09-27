@@ -88,5 +88,39 @@ export async function getUserMission(userId: number): Promise<string | null> {
     return "An error occurred. Please try again later.";
   }
 
-  return (await response.json()) as string | null;
+  return (await response.text()) as string | null;
+}
+
+export async function updateMission(
+  userId: number,
+  mission: string,
+): Promise<boolean | string> {
+  const url: URL = new URL("api/saay/users/missions", Base_URL);
+
+  const options: RequestInit = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId,
+      newMission: mission,
+    }),
+  };
+
+  const response = await apiFetch(url, options);
+
+  if (typeof response === "string") {
+    return response;
+  }
+
+  if (response.status === 404) {
+    return "User not found.";
+  }
+
+  if (!response.ok) {
+    return "An error occurred. Please try again later.";
+  }
+
+  return (await response.json()) as boolean;
 }

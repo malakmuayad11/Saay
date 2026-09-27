@@ -1,4 +1,4 @@
-import Card from "../components/ui/Card";
+import Card from "../components/ui/cards/Card";
 import { DoneIcon, PendingIcon, TotalIcon, SparklesIcon } from "~/assets/icons";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,10 +12,11 @@ import {
 import { getUserMission } from "~/services/api/users";
 import type { Goal } from "~/types/goals/Goal";
 import GoalsTable from "~/components/ui/table/GoalsTable";
-import ComponentCard from "~/components/ui/ComponentCard";
+import ComponentCard from "~/components/ui/cards/ComponentCard";
 import Button from "~/components/ui/button/Button";
 import { AddEditGoalModal } from "~/components/goals/Modals/AddEditGoalModal";
 import { DeleteGoalModal } from "~/components/goals/Modals/DeleteGoalModal";
+import MissionCard from "~/components/ui/cards/MissionCard";
 
 export const meta = () => [{ title: "Goals | Saay" }];
 
@@ -80,24 +81,16 @@ export default function Goals() {
     };
   }, [currentUserId]);
 
+  async function loadUserMission() {
+    if (currentUserId === null || currentUserId === undefined) return;
+
+    const result = await getUserMission(currentUserId);
+
+    setMission(result);
+  }
+
   useEffect(() => {
-    let ignore = false;
-
-    async function loadUserMission() {
-      if (currentUserId === null || currentUserId === undefined) return;
-
-      const result = await getUserMission(currentUserId);
-
-      if (!ignore) {
-        setMission(result);
-      }
-    }
-
     loadUserMission();
-
-    return () => {
-      ignore = true;
-    };
   }, [currentUserId]);
 
   async function loadUserGoals() {
@@ -167,11 +160,11 @@ export default function Goals() {
             </div>
 
             <div className="grid grid-cols-3 grid-rows-2 gap-2">
-              <Card
-                title={t("goals.myMission")}
-                statNum={mission ?? ""}
-                Icon={SparklesIcon}
+              <MissionCard
+                userId={currentUserId ?? 0}
+                initialMission={mission || ""}
                 cardClassName="col-span-3"
+                onMissionUpdated={loadUserMission}
               />
 
               <Card
