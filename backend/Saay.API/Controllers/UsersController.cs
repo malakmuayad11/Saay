@@ -97,7 +97,7 @@ namespace Saay.API.Controllers
 
             bool? result = await _userService.UpdateMissionAsync(updateMissionDto);
             if (result == true)
-                return Ok("Mission is updated successfully.");
+                return Ok(true);
             else if (result == null)
                 return NotFound("User is not found.");
             else
@@ -230,9 +230,8 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult<GetUserDto>> GetUserMission(int userId)
+        public async Task<ActionResult<string?>> GetUserMission(int userId)
         {
-
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
             {
                 _logger.LogWarning("User {userId} attmpted to user without ownership.",
