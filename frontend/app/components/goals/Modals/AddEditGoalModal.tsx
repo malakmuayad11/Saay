@@ -215,21 +215,31 @@ export function AddEditGoalModal({
       onClose={onClose}
       className="w-[calc(100%-2rem)] max-w-[500px] sm:w-[500px]"
     >
-      {error && <Alert variant="error" title="Error" message={error} />}
+      <div className="p-6">
+        {/* Alert */}
+        {error && (
+          <div className="mt-6 mb-4">
+            <Alert variant="error" title="Error" message={error} />
+          </div>
+        )}
 
-      {success && (
-        <Alert
-          variant="success"
-          title="Success"
-          message={
-            isEdit
-              ? "Goal is updated successfully!"
-              : "Goal is added successfully!"
-          }
-        />
-      )}
-      <div className="py-4 m-4">
-        <h3>{isEdit ? "Edit Goal" : "Add New Goal"}</h3>
+        {success && (
+          <div className="mt-6 mb-4">
+            <Alert
+              variant="success"
+              title="Success"
+              message={
+                isEdit
+                  ? "Goal is updated successfully!"
+                  : "Goal is added successfully!"
+              }
+            />
+          </div>
+        )}
+
+        <h3 className="mb-6 text-lg font-semibold">
+          {isEdit ? "Edit Goal" : "Add New Goal"}
+        </h3>
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
@@ -290,7 +300,7 @@ export function AddEditGoalModal({
             </div>
 
             {/* Deadline */}
-            <div className="py-4">
+            <div>
               <Label htmlFor="deadline">Deadline</Label>
 
               <DatePicker
@@ -327,7 +337,8 @@ export function AddEditGoalModal({
               onChange={setIsDone}
             />
           </div>
-          <Button className="my-4 w-full" size="md" disabled={saving}>
+
+          <Button className="mt-6 w-full" size="md" disabled={saving}>
             {saving
               ? isEdit
                 ? "Updating..."
