@@ -6,5 +6,6 @@ export default [
   route("signin", "routes/signin.tsx"),
   route("dashboard", "routes/dashboard.tsx", [
     route("goals", "routes/goals.tsx"),
+    route("tasks", "routes/tasks.tsx"),
   ]),
 ] satisfies RouteConfig;

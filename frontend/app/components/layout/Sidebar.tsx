@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
     icon: <TaskIcon fontSize={24} />,
     name: "Tasks",
     key: "tasks",
-    path: "/tasks",
+    path: "/dashboard/tasks",
   },
 ];
 
