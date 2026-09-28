@@ -1,14 +1,12 @@
 {
   "common": {
-    "home": "Home",
     "edit": "Edit",
-    "close": "Close",
     "save": "Save",
-    "viewMore": "View More",
-    "delete": "Delete",
-    "filter": "Filter",
-    "seeAll": "See all",
-    "overview": "Overview"
+    "overview": "Overview",
+    "showing": "Showing",
+    "of": "of",
+    "next": "Next",
+    "previous": "Previous"
   },
   "signup": "Sign Up",
   "signin": {

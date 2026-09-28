@@ -1,16 +1,13 @@
 {
   "common": {
-    "home": "Home",
-    "edit": "Edit",
-    "close": "Close",
     "save": "حفظ",
-    "viewMore": "View More",
-    "delete": "Delete",
-    "filter": "Filter",
-    "seeAll": "See all",
-    "overview": "لمحة عامة"
+    "overview": "لمحة عامة",
+    "showing": "عرض",
+    "of": "من أصل",
+    "next": "التالي",
+    "previous": "السابق"
   },
-  "signup": "قم بالاشتراك",
+  "signup": "قم بالتسجيل",
   "signin": {
     "title": "تسجيل الدخول",
     "description": "أدخل البريد الإلكتروني وكلمة المرور!",

@@ -1,5 +1,5 @@
 import Card from "../components/ui/cards/Card";
-import { DoneIcon, PendingIcon, TotalIcon, SparklesIcon } from "~/assets/icons";
+import { DoneIcon, PendingIcon, TotalIcon } from "~/assets/icons";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "~/context/AuthContext";
@@ -17,11 +17,15 @@ import Button from "~/components/ui/button/Button";
 import { AddEditGoalModal } from "~/components/goals/Modals/AddEditGoalModal";
 import { DeleteGoalModal } from "~/components/goals/Modals/DeleteGoalModal";
 import MissionCard from "~/components/ui/cards/MissionCard";
+import { PaginationRow } from "~/components/ui/PaginationRow";
 
 export const meta = () => [{ title: "Goals | Saay" }];
 
 export default function Goals() {
-  const currentUserId = useAuth()?.currentUserId;
+  const auth = useAuth();
+  const currentUserId = auth?.currentUserId;
+  const setCurrentUserId = auth?.setCurrentUserId;
+
   const { t } = useTranslation();
 
   const [completedGoalsCount, setCompletedGoalsCount] = useState<number | null>(
@@ -38,47 +42,34 @@ export default function Goals() {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null); // Used for AddEditGoalModal
   const [deleteResult, setDeleteResult] = useState<boolean | null>(null);
   const [selectedGoalId, setSelectedGoalId] = useState<number | null>(null); // Used for DeleteGoalModal
-
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const totalGoals = (completedGoalsCount ?? 0) + (pendingGoalsCount ?? 0);
 
-  useEffect(() => {
-    let ignore = false;
+  async function loadCompletedGoalsCount() {
+    if (currentUserId === null || currentUserId === undefined) return;
 
-    async function loadCompletedGoalsCount() {
-      if (currentUserId === null || currentUserId === undefined) return;
+    const result = await getCompletedGoalsCount(currentUserId);
 
-      const result = await getCompletedGoalsCount(currentUserId);
-
-      if (!ignore && typeof result !== "string") {
-        setCompletedGoalsCount(result);
-      }
+    if (typeof result !== "string") {
+      setCompletedGoalsCount(result);
     }
-
+  }
+  useEffect(() => {
     loadCompletedGoalsCount();
-
-    return () => {
-      ignore = true;
-    };
   }, [currentUserId]);
 
-  useEffect(() => {
-    let ignore = false;
+  async function loadPendingGoalsCount() {
+    if (currentUserId === null || currentUserId === undefined) return;
 
-    async function loadPendingGoalsCount() {
-      if (currentUserId === null || currentUserId === undefined) return;
+    const result = await getPendingGoalsCount(currentUserId);
 
-      const result = await getPendingGoalsCount(currentUserId);
-
-      if (!ignore && typeof result !== "string") {
-        setPendingGoalsCount(result);
-      }
+    if (typeof result !== "string") {
+      setPendingGoalsCount(result);
     }
+  }
 
+  useEffect(() => {
     loadPendingGoalsCount();
-
-    return () => {
-      ignore = true;
-    };
   }, [currentUserId]);
 
   async function loadUserMission() {
@@ -96,7 +87,7 @@ export default function Goals() {
   async function loadUserGoals() {
     if (currentUserId === null || currentUserId === undefined) return;
 
-    const result = await getUserGoals(currentUserId);
+    const result = await getUserGoals(currentUserId, currentPage);
 
     if (typeof result !== "string") {
       setGoals(result);
@@ -124,6 +115,14 @@ export default function Goals() {
     setOpenDeleteModal(true);
   }
 
+  async function loadGoalData() {
+    await Promise.all([
+      loadUserGoals(),
+      loadCompletedGoalsCount(),
+      loadPendingGoalsCount(),
+    ]);
+  }
+
   async function handleDeleteGoal() {
     if (selectedGoalId === null) return;
 
@@ -136,13 +135,20 @@ export default function Goals() {
 
     if (response === true) {
       setDeleteResult(true);
-      await loadUserGoals();
+      await loadGoalData();
     }
   }
 
   useEffect(() => {
     loadUserGoals();
-  }, [currentUserId]);
+  }, [currentUserId, currentPage]);
+
+  const to =
+    // currentPage === 1
+    //   ? 10
+    //   :
+    totalGoals < currentPage * 10 ? totalGoals : currentPage * 10;
+  const from = currentPage === 1 ? 1 : (currentPage - 1) * 11;
 
   return (
     <div>
@@ -199,12 +205,19 @@ export default function Goals() {
               onEdit={handleEdit}
               onDelete={handleDeleteClick}
             />
+            <PaginationRow
+              from={from}
+              to={to}
+              total={totalGoals}
+              onPreviousClick={() => setCurrentPage(currentPage - 1)}
+              onNextClick={() => setCurrentPage(currentPage + 1)}
+            />
           </ComponentCard>
 
           <AddEditGoalModal
             isOpen={goalModalOpen}
             onClose={handleCloseModal}
-            onGoalChanged={loadUserGoals}
+            onGoalChanged={loadGoalData}
             goal={selectedGoal}
           />
           <DeleteGoalModal
