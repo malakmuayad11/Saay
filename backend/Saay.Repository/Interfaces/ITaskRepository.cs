@@ -6,7 +6,11 @@ namespace Saay.Repository.Interfaces
     {
         public Task<int?> AddTaskAsync(Data.Entities.Task task, int userId);
 
-        public Task<List<TaskDto>> GetUserTasksAsync(int userId, int pageNumber, int pageSize);
+        public Task<List<TaskDto>> GetUserTasksTodayAsync(int userId, int pageNumber, int pageSize);
+
+        public Task<List<TaskDto>> GetUserTasksTomorrowAsync(int userId, int pageNumber, int pageSize);
+
+        public Task<List<TaskDto>> GetUserTasksForWeekAsync(int userId, int pageNumber, int pageSize);
 
         public Task<int> UserTasksCountAsync(int userId);
 
@@ -21,5 +25,7 @@ namespace Saay.Repository.Interfaces
         public Task<TaskDto> GetTaskByIdAsync(int taskId);
 
         public Task<bool> IsTaskOwner(int userId, int taskId);
+
+        public Task<bool?> MarkTaskAsCompletedAsync(int taskId);
     }
 }

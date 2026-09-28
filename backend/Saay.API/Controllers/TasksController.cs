@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.CategoryDTOs;
-using Saay.Infrastructure.DTOs.GoalDTOs;
 using Saay.Infrastructure.DTOs.TaskDTOs;
 using Saay.Services.Interfaces;
 using System.Security.Claims;
@@ -64,14 +63,14 @@ namespace Saay.API.Controllers
 
         [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
-        [HttpGet("{userId}/{pageNumber}/{pageSize}")]
+        [HttpGet("today/{userId}/{pageNumber}/{pageSize}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult<ICollection<TaskDto>>> GetUserTasksAsync(int userId, int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ICollection<TaskDto>>> GetUserTasksTodayAsync(int userId, int pageNumber = 1, int pageSize = 10)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
             {
@@ -80,7 +79,59 @@ namespace Saay.API.Controllers
                 return Forbid();
             }
 
-            List<TaskDto> tasks = await _taskService.GetUserTasksAsync(userId, pageNumber, pageSize);
+            List<TaskDto> tasks = await _taskService.GetUserTasksTodayAsync(userId, pageNumber, pageSize);
+
+            if (tasks == null)
+                return NotFound("User with the specified ID does not exist.");
+
+            return Ok(tasks);
+        }
+
+        [EnableRateLimiting("LightOpsLimiter")]
+        [Authorize]
+        [HttpGet("tomorrow/{userId}/{pageNumber}/{pageSize}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<ICollection<TaskDto>>> GetUserTasksTomorrowAsync(int userId, int pageNumber = 1, int pageSize = 10)
+        {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get a task without ownership.",
+                   userId);
+                return Forbid();
+            }
+
+            List<TaskDto> tasks = await _taskService.GetUserTasksTomorrowAsync(userId, pageNumber, pageSize);
+
+            if (tasks == null)
+                return NotFound("User with the specified ID does not exist.");
+
+            return Ok(tasks);
+        }
+
+        [EnableRateLimiting("LightOpsLimiter")]
+        [Authorize]
+        [HttpGet("week/{userId}/{pageNumber}/{pageSize}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<ICollection<TaskDto>>> GetUserTasksForWeekAsync(int userId, int pageNumber = 1, int pageSize = 10)
+        {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to get a task without ownership.",
+                   userId);
+                return Forbid();
+            }
+
+            List<TaskDto> tasks = await _taskService.GetUserTasksForWeekAsync(userId, pageNumber, pageSize);
 
             if (tasks == null)
                 return NotFound("User with the specified ID does not exist.");
@@ -269,6 +320,38 @@ namespace Saay.API.Controllers
                 return NotFound("No categories found.");
 
             return Ok(tasksCategories);
+        }
+
+        [EnableRateLimiting("CriticalOpsLimiter")]
+        [Authorize]
+        [HttpPut("mark-completed/{taskId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<IActionResult> MarkTaskAsCompleted(int taskId)
+        {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsTaskOwner(User, taskId))
+            {
+                _logger.LogWarning("User {userId} attmpted to update a task without ownership.",
+                   userId);
+                return Forbid();
+            }
+
+            bool? result = await _taskService.MarkTaskAsCompletedAsync(taskId);
+            if (result == null)
+                return NotFound("Task with the specified ID does not exist.");
+
+            if (result == false)
+                return StatusCode(500, "An error occurred while updating the task.");
+
+            return Ok(result);
         }
     }
 }

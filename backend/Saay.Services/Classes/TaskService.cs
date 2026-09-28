@@ -33,14 +33,30 @@ namespace Saay.Services.Classes
             return await _taskRepository.AddTaskAsync(taskEntity, addTaskDto.UserId);
         }
     
-        public async Task<List<TaskDto>> GetUserTasksAsync(int userId, int pageNumber, int pageSize)
+        public async Task<List<TaskDto>> GetUserTasksTodayAsync(int userId, int pageNumber, int pageSize)
         {
             if(!await _userRepository.DoesUserExist(userId))
                 return null; // User does not exist
 
-            return await _taskRepository.GetUserTasksAsync(userId, pageNumber, pageSize);
+            return await _taskRepository.GetUserTasksTodayAsync(userId, pageNumber, pageSize);
         }
-    
+
+        public async Task<List<TaskDto>> GetUserTasksTomorrowAsync(int userId, int pageNumber, int pageSize)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User does not exist
+
+            return await _taskRepository.GetUserTasksTomorrowAsync(userId, pageNumber, pageSize);
+        }
+
+        public async Task<List<TaskDto>> GetUserTasksForWeekAsync(int userId, int pageNumber, int pageSize)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User does not exist
+
+            return await _taskRepository.GetUserTasksForWeekAsync(userId, pageNumber, pageSize);
+        }
+
         public async Task<int?> UserTasksCountAsync(int userId)
         {
             if (!await _userRepository.DoesUserExist(userId))
@@ -89,5 +105,8 @@ namespace Saay.Services.Classes
 
         public async Task<bool> IsTaskOwner(int userId, int taskId) =>
             await _taskRepository.IsTaskOwner(userId, taskId);
+
+        public async Task<bool?> MarkTaskAsCompletedAsync(int taskId) =>
+            await _taskRepository.MarkTaskAsCompletedAsync(taskId);
     }
 }

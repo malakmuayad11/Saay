@@ -35,10 +35,43 @@ namespace Saay.Repository.Classes
             return null;
         }
 
-        public async Task<List<TaskDto>> GetUserTasksAsync(int userId,
+        public async Task<List<TaskDto>> GetUserTasksTodayAsync(int userId,
             int pageNumber, int pageSize) =>
             await _context.Tasks
-                .Where(task => task.UserId == userId)
+                .Where(task => task.UserId == userId &&
+                    task.DueDate == DateOnly.FromDateTime(DateTime.Today))
+                .Select(task => new TaskDto
+                {
+                    TaskId = task.TaskId,
+                    TaskCategoryTitle = task.TaskCategory.Title,
+                    Title = task.Title,
+                    IsDone = task.IsDone,
+                })
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+
+        public async Task<List<TaskDto>> GetUserTasksTomorrowAsync(int userId, int pageNumber, int pageSize) =>
+             await _context.Tasks
+                .Where(task => task.UserId == userId &&
+                    task.DueDate == DateOnly.FromDateTime(DateTime.Today.AddDays(1)))
+                .Select(task => new TaskDto
+                {
+                    TaskId = task.TaskId,
+                    TaskCategoryTitle = task.TaskCategory.Title,
+                    Title = task.Title,
+                    IsDone = task.IsDone,
+                })
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+
+        public async Task<List<TaskDto>> GetUserTasksForWeekAsync(int userId, int pageNumber, int pageSize) =>
+            await _context.Tasks
+                .Where(task => task.UserId == userId &&
+                    task.DueDate == DateOnly.FromDateTime(DateTime.Today).AddDays(6))
                 .Select(task => new TaskDto
                 {
                     TaskId = task.TaskId,
@@ -100,6 +133,16 @@ namespace Saay.Repository.Classes
                 IsDone = task.IsDone
             })
             .FirstOrDefaultAsync(task => task.TaskId == taskId);
+
+        public async Task<bool?> MarkTaskAsCompletedAsync(int taskId)
+        {
+            Data.Entities.Task task = await _context.Tasks.FindAsync(taskId);
+
+            if (task == null) return null; // Task not found
+
+            task.IsDone = true;
+            return await _context.SaveChangesAsync() >= 0;
+        }
 
         public async Task<bool> IsTaskOwner(int userId, int taskId) =>
             await _context.Tasks.AnyAsync(t => t.UserId == userId && t.TaskId == taskId);
