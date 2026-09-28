@@ -83,7 +83,7 @@ export function AddEditGoalModal({
     if (!isOpen) return;
 
     if (goal) {
-      setGoalTitle(goal.title);
+      setGoalTitle(goal.title.trim());
 
       const category = categories.find(
         (category) => category.title === goal.categoryTitle,
@@ -250,7 +250,7 @@ export function AddEditGoalModal({
               <Input
                 id="goalTitle"
                 value={goalTitle}
-                onChange={(e) => setGoalTitle(e.target.value.trim())}
+                onChange={(e) => setGoalTitle(e.target.value)}
                 hint={!goalTitleValid ? "This field is required" : undefined}
                 onBlur={() => setGoalTitleValid(goalTitle !== "")}
                 error={!goalTitleValid}
