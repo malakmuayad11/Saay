@@ -3,4 +3,6 @@ export interface TaskDto {
   taskCategoryTitle: string;
   title: string;
   isDone: boolean;
+  dueDate: string;
+  dueTime: string | null;
 }

@@ -22,9 +22,7 @@ import { PaginationRow } from "~/components/ui/PaginationRow";
 export const meta = () => [{ title: "Goals | Saay" }];
 
 export default function Goals() {
-  const auth = useAuth();
-  const currentUserId = auth?.currentUserId;
-  const setCurrentUserId = auth?.setCurrentUserId;
+  const currentUserId = useAuth()?.currentUserId;
 
   const { t } = useTranslation();
 

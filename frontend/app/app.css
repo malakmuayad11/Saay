@@ -1125,3 +1125,19 @@ pre[class*="language-"].line-numbers {
     min-width: 580px;
   }
 }
+.custom-calendar .fc-daygrid-body {
+  width: 100% !important;
+}
+
+.custom-calendar .fc-daygrid-day-frame {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.custom-calendar .fc-daygrid-day {
+  height: auto !important;
+}
+
+.custom-calendar .fc-daygrid-day-events {
+  min-height: 0 !important;
+}

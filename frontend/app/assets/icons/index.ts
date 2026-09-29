@@ -12,6 +12,8 @@ import PendingIcon from "./pending.svg?react";
 import TotalIcon from "./total.svg?react";
 import SparklesIcon from "./sparkles.svg?react";
 import CalendarIcon from "./calendar.svg?react";
+import CloseIcon from "./close.svg?react";
+import DeleteIcon from "./delete.svg?react";
 
 export {
   EyeIcon,
@@ -28,4 +30,6 @@ export {
   TotalIcon,
   SparklesIcon,
   CalendarIcon,
+  CloseIcon,
+  DeleteIcon,
 };

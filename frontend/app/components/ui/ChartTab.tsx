@@ -2,21 +2,48 @@ import { cn } from "~/utils";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const ChartTab: React.FC = () => {
+type ChartTabProps = {
+  onOptionOneSelected: () => void;
+  onOptionTwoSelected: () => void;
+  onOptionThreeSelected: () => void;
+};
+
+export type Option = "optionOne" | "optionTwo" | "optionThree";
+
+const ChartTab: React.FC<ChartTabProps> = ({
+  onOptionOneSelected,
+  onOptionTwoSelected,
+  onOptionThreeSelected,
+}: ChartTabProps) => {
   const { t } = useTranslation("common", { keyPrefix: "ecommerce.statistics" });
   const [selected, setSelected] = useState<
     "optionOne" | "optionTwo" | "optionThree"
   >("optionOne");
 
-  const getButtonClass = (option: "optionOne" | "optionTwo" | "optionThree") =>
+  const getButtonClass = (option: Option) =>
     selected === option
       ? "shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800"
       : "text-gray-500 dark:text-gray-400";
 
+  function handleOptionSelected(option: Option) {
+    if (option === "optionOne") {
+      setSelected("optionOne");
+      onOptionOneSelected();
+      return;
+    }
+    if (option === "optionTwo") {
+      setSelected("optionTwo");
+      onOptionTwoSelected();
+      return;
+    }
+    setSelected("optionThree");
+    onOptionThreeSelected();
+  }
+
   return (
     <div className="flex max-h-10 items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900">
       <button
-        onClick={() => setSelected("optionOne")}
+        onClick={() => handleOptionSelected("optionOne")}
         className={`w-full rounded-md px-3 py-2 text-theme-sm font-medium hover:text-gray-900 dark:hover:text-white ${getButtonClass(
           "optionOne",
         )}`}
@@ -26,7 +53,7 @@ const ChartTab: React.FC = () => {
       </button>
 
       <button
-        onClick={() => setSelected("optionTwo")}
+        onClick={() => handleOptionSelected("optionTwo")}
         className={cn(
           "w-full rounded-md px-3 py-1.5 text-theme-sm font-medium hover:text-gray-900 rtl:min-w-23 dark:hover:text-white",
           getButtonClass("optionTwo"),
@@ -37,7 +64,7 @@ const ChartTab: React.FC = () => {
       </button>
 
       <button
-        onClick={() => setSelected("optionThree")}
+        onClick={() => handleOptionSelected("optionThree")}
         className={`w-full rounded-md px-3 py-2 text-theme-sm font-medium hover:text-gray-900 dark:hover:text-white ${getButtonClass(
           "optionThree",
         )}`}
