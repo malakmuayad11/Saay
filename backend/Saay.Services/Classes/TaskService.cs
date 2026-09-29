@@ -54,7 +54,12 @@ namespace Saay.Services.Classes
             if (!await _userRepository.DoesUserExist(userId))
                 return null; // User does not exist
 
-            return await _taskRepository.GetUserTasksForWeekAsync(userId, pageNumber, pageSize);
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            int daysSinceSunday = (int)today.DayOfWeek;
+            DateOnly weekStart = today.AddDays(-daysSinceSunday);
+            DateOnly weekEnd = weekStart.AddDays(6);
+
+            return await _taskRepository.GetUserTasksForWeekAsync(userId, pageNumber, pageSize, weekStart, weekEnd);
         }
 
         public async Task<int?> UserTasksCountAsync(int userId)
@@ -106,7 +111,14 @@ namespace Saay.Services.Classes
         public async Task<bool> IsTaskOwner(int userId, int taskId) =>
             await _taskRepository.IsTaskOwner(userId, taskId);
 
-        public async Task<bool?> MarkTaskAsCompletedAsync(int taskId) =>
-            await _taskRepository.MarkTaskAsCompletedAsync(taskId);
+        public async Task<bool?> MarkTaskAsCompletedAsync(int taskId)
+        {
+            TaskDto task = await _taskRepository.GetTaskByIdAsync(taskId);
+
+            if (task.IsDone)
+                return await _taskRepository.MarkTaskAsUncompletedAsync(taskId);
+           
+            return await _taskRepository.MarkTaskAsCompletedAsync(taskId);
+        }
     }
 }

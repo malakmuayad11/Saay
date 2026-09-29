@@ -46,7 +46,11 @@ namespace Saay.Repository.Classes
                     TaskCategoryTitle = task.TaskCategory.Title,
                     Title = task.Title,
                     IsDone = task.IsDone,
+                    DueDate = task.DueDate,
+                    DueTime = task.DueTime
                 })
+                .OrderBy(task => task.DueTime == null)
+                .ThenBy(task => task.DueTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .AsNoTracking()
@@ -62,27 +66,40 @@ namespace Saay.Repository.Classes
                     TaskCategoryTitle = task.TaskCategory.Title,
                     Title = task.Title,
                     IsDone = task.IsDone,
+                    DueDate = task.DueDate,
+                    DueTime = task.DueTime
                 })
+                .OrderBy(task => task.DueTime == null)
+                .ThenBy(task => task.DueTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .AsNoTracking()
                 .ToListAsync();
 
-        public async Task<List<TaskDto>> GetUserTasksForWeekAsync(int userId, int pageNumber, int pageSize) =>
-            await _context.Tasks
-                .Where(task => task.UserId == userId &&
-                    task.DueDate == DateOnly.FromDateTime(DateTime.Today).AddDays(6))
+        public async Task<List<TaskDto>> GetUserTasksForWeekAsync(
+        int userId, int pageNumber, int pageSize, DateOnly weekStart, DateOnly weekEnd)
+        {
+            return await _context.Tasks
+                .Where(task =>
+                    task.UserId == userId &&
+                    task.DueDate >= weekStart &&
+                    task.DueDate <= weekEnd)
                 .Select(task => new TaskDto
                 {
                     TaskId = task.TaskId,
                     TaskCategoryTitle = task.TaskCategory.Title,
                     Title = task.Title,
                     IsDone = task.IsDone,
+                    DueDate = task.DueDate,
+                    DueTime = task.DueTime
                 })
+                .OrderBy(task => task.DueDate)
+                .ThenBy(task => task.DueTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .AsNoTracking()
                 .ToListAsync();
+        }
 
         public async Task<int> UserTasksCountAsync(int userId) => await _context.Tasks
                 .Where(task => task.UserId == userId)
@@ -141,6 +158,16 @@ namespace Saay.Repository.Classes
             if (task == null) return null; // Task not found
 
             task.IsDone = true;
+            return await _context.SaveChangesAsync() >= 0;
+        }
+
+        public async Task<bool?> MarkTaskAsUncompletedAsync(int taskId)
+        {
+            Data.Entities.Task task = await _context.Tasks.FindAsync(taskId);
+
+            if (task == null) return null; // Task not found
+
+            task.IsDone = false;
             return await _context.SaveChangesAsync() >= 0;
         }
 

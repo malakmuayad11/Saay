@@ -10,7 +10,7 @@ namespace Saay.Repository.Interfaces
 
         public Task<List<TaskDto>> GetUserTasksTomorrowAsync(int userId, int pageNumber, int pageSize);
 
-        public Task<List<TaskDto>> GetUserTasksForWeekAsync(int userId, int pageNumber, int pageSize);
+        public Task<List<TaskDto>> GetUserTasksForWeekAsync(int userId, int pageNumber, int pageSize, DateOnly weekStart, DateOnly weekEnd);
 
         public Task<int> UserTasksCountAsync(int userId);
 
@@ -27,5 +27,7 @@ namespace Saay.Repository.Interfaces
         public Task<bool> IsTaskOwner(int userId, int taskId);
 
         public Task<bool?> MarkTaskAsCompletedAsync(int taskId);
+
+        public Task<bool?> MarkTaskAsUncompletedAsync(int taskId);
     }
 }
