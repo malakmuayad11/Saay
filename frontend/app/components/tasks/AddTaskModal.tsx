@@ -8,6 +8,7 @@ import { addTask, getCategories } from "~/services/api/tasks";
 import { useAuth } from "~/context/AuthContext";
 import Alert from "~/components/ui/Alert";
 import type { TaskCategoryDto } from "~/types/tasks/TaskCategoryDto";
+import { t } from "i18next";
 
 type AddTaskModalProps = {
   isOpen: boolean;
@@ -75,14 +76,26 @@ export function AddTaskModal({
 
   const categoryOptions = categories.map((category) => ({
     value: String(category.taskCategoryId),
-    label: category.title,
+    label: String(t(`tasks.categories.${category.title}`)),
   }));
 
   const repetitionOptions = [
-    { value: "0", label: "Once" },
-    { value: "1", label: "Daily" },
-    { value: "2", label: "Weekly" },
-    { value: "3", label: "Monthly" },
+    {
+      value: "0",
+      label: String(t("tasks.repetition.once")),
+    },
+    {
+      value: "1",
+      label: String(t("tasks.repetition.daily")),
+    },
+    {
+      value: "2",
+      label: String(t("tasks.repetition.weekly")),
+    },
+    {
+      value: "3",
+      label: String(t("tasks.repetition.monthly")),
+    },
   ];
 
   function resetForm() {
@@ -118,7 +131,7 @@ export function AddTaskModal({
     }
 
     if (currentUserId == null) {
-      setError("User information is not available.");
+      setError(String(t("tasks.errors.userInfoUnavailable")));
       return;
     }
 
@@ -162,7 +175,11 @@ export function AddTaskModal({
         {/* Alert */}
         {error && (
           <div className="mt-6 mb-4">
-            <Alert variant="error" title="Error" message={error} />
+            <Alert
+              variant="error"
+              title={String(t("common.error"))}
+              message={error}
+            />
           </div>
         )}
 
@@ -170,25 +187,27 @@ export function AddTaskModal({
           <div className="mt-6 mb-4">
             <Alert
               variant="success"
-              title="Success"
-              message="Task is added successfully!"
+              title={String(t("common.success"))}
+              message={String(t("tasks.success.added"))}
             />
           </div>
         )}
 
-        <h3 className="mb-6 text-lg font-semibold">Add New Task</h3>
+        <h3 className="mb-6 text-lg font-semibold">{t("tasks.addNewTask")}</h3>
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             {/* Task Title */}
             <div>
-              <Label htmlFor="taskTitle">Task Title</Label>
+              <Label htmlFor="taskTitle">{t("tasks.fields.taskTitle")}</Label>
 
               <Input
                 id="taskTitle"
                 value={taskTitle}
                 onChange={(e) => setTaskTitle(e.target.value)}
-                hint={!taskTitleValid ? "This field is required" : undefined}
+                hint={
+                  !taskTitleValid ? String(t("common.required")) : undefined
+                }
                 onBlur={() => setTaskTitleValid(taskTitle.trim() !== "")}
                 error={!taskTitleValid}
               />
@@ -196,12 +215,12 @@ export function AddTaskModal({
 
             {/* Task Category */}
             <div>
-              <Label>Task Category</Label>
+              <Label>{t("tasks.fields.taskCategory")}</Label>
 
               <Select
                 options={categoryOptions}
                 value={taskCategoryId}
-                placeholder="Select a category"
+                placeholder={String(t("tasks.fields.taskCategoryPlaceholder"))}
                 onChange={(value) => {
                   setTaskCategoryId(value);
                   setTaskCategoryValid(value !== "");
@@ -210,19 +229,21 @@ export function AddTaskModal({
 
               {!taskCategoryValid && (
                 <p className="mt-1.5 text-sm text-error-500">
-                  This field is required
+                  {t("common.required")}
                 </p>
               )}
             </div>
 
             {/* Repetition */}
             <div>
-              <Label>Repetition</Label>
+              <Label>{t("tasks.fields.taskRepetition")}</Label>
 
               <Select
                 options={repetitionOptions}
                 value={repetition}
-                placeholder="Select repetition"
+                placeholder={String(
+                  t("tasks.fields.taskRepetitionPlaceholder"),
+                )}
                 onChange={(value) => {
                   setRepetition(value);
                   setRepetitionValid(value !== "");
@@ -231,7 +252,7 @@ export function AddTaskModal({
 
               {!repetitionValid && (
                 <p className="mt-1.5 text-sm text-error-500">
-                  This field is required
+                  {t("common.required")}
                 </p>
               )}
             </div>
@@ -239,7 +260,8 @@ export function AddTaskModal({
             {/* Due Time */}
             <div>
               <Label htmlFor="dueTime">
-                Due Time <span className="text-gray-400">(Optional)</span>
+                {t("tasks.fields.dueTime")}{" "}
+                <span className="text-gray-400">({t("tasks.optional")})</span>
               </Label>
 
               <Input
@@ -252,7 +274,7 @@ export function AddTaskModal({
           </div>
 
           <Button className="mt-6 w-full" size="md" disabled={saving}>
-            {saving ? "Adding..." : "Add Task"}
+            {saving ? t("tasks.adding") : t("tasks.add")}
           </Button>
         </form>
       </div>

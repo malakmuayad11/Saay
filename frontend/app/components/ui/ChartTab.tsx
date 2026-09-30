@@ -1,6 +1,6 @@
 import { cn } from "~/utils";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 type ChartTabProps = {
   onOptionOneSelected: () => void;
@@ -15,7 +15,6 @@ const ChartTab: React.FC<ChartTabProps> = ({
   onOptionTwoSelected,
   onOptionThreeSelected,
 }: ChartTabProps) => {
-  const { t } = useTranslation("common", { keyPrefix: "ecommerce.statistics" });
   const [selected, setSelected] = useState<
     "optionOne" | "optionTwo" | "optionThree"
   >("optionOne");
@@ -48,8 +47,7 @@ const ChartTab: React.FC<ChartTabProps> = ({
           "optionOne",
         )}`}
       >
-        {/* {t("monthly")} */}
-        Today
+        {t("tasks.today")}
       </button>
 
       <button
@@ -59,8 +57,7 @@ const ChartTab: React.FC<ChartTabProps> = ({
           getButtonClass("optionTwo"),
         )}
       >
-        {/* {t("quarterly")} */}
-        Tomorrow
+        {t("tasks.tomorrow")}
       </button>
 
       <button
@@ -69,8 +66,7 @@ const ChartTab: React.FC<ChartTabProps> = ({
           "optionThree",
         )}`}
       >
-        {/* {t("annually")} */}
-        This Week
+        {t("tasks.thisWeek")}
       </button>
     </div>
   );

@@ -6,7 +6,8 @@
     "showing": "Showing",
     "of": "of",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "required": "This field is required"
   },
   "signup": "Sign Up",
   "signin": {
@@ -102,6 +103,43 @@
       "done": "Done",
       "progress": "Pending"
     }
+  },
+  "tasks": {
+    "myTasks": "My Tasks",
+    "description": "Manage and track your tasks",
+    "addTask": "+ Add a Task",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "thisWeek": "This Week",
+    "noTasks": "No Tasks",
+    "noTasksDescription": "No tasks available. Add tasks to get started!",
+    "task": "Task",
+    "tasks": "Tasks",
+    "completed": "Completed",
+    "pending": "Pending",
+    "categories": {
+      "Normal": "Normal",
+      "Important": "Improtant",
+      "Urgent": "Urgent"
+    },
+    "calendarDescription": "Click on a date to add a new task",
+    "fields": {
+      "taskTitle": "Title",
+      "taskCategory": "Task Category",
+      "taskCategoryPlaceholder": "Choose a category",
+      "taskRepetition": "Repetition",
+      "taskRepetitionPlaceholder": "Choose a repetition",
+      "dueTime": "Time"
+    },
+    "repetition": {
+      "once": "Once",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "optional": "Optional",
+    "addNewTask": "Add New Task",
+    "add": "Add the Task"
   },
   "ecommerce": {
     "title": "E-commerce Dashboard",

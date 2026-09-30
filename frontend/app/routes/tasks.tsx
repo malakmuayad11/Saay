@@ -15,15 +15,17 @@ import {
 import type { TaskDto } from "~/types/tasks/TaskDto";
 import { AddTaskModal } from "~/components/tasks/AddTaskModal";
 import WeeklyCalendar from "~/components/ui/calendar/WeeklyCaledar";
+import { useLanguage } from "~/context/LanguageContext";
 
 export const meta = () => [{ title: "Tasks | Saay" }];
 
-type Title = "Today" | "Tomorrow" | "This Week";
+type Title = "tasks.today" | "tasks.tomorrow" | "tasks.thisWeek";
 
 export default function Tasks() {
   const currentUserId = useAuth()?.currentUserId;
+  // const lang = useLanguage().currentLanguage;
 
-  const [title, setTitle] = useState<Title>("Today");
+  const [title, setTitle] = useState<Title>("tasks.today");
   const [tasks, setTasks] = useState<TaskDto[] | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export default function Tasks() {
         const today = new Date();
 
         setDueDate(formatDate(today));
-        setTitle("Today");
+        setTitle("tasks.today");
 
         const result = await getUserTasksToday(currentUserId);
 
@@ -69,7 +71,7 @@ export default function Tasks() {
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         setDueDate(formatDate(tomorrow));
-        setTitle("Tomorrow");
+        setTitle("tasks.tomorrow");
 
         const result = await getUserTasksTomorrow(currentUserId);
 
@@ -83,7 +85,7 @@ export default function Tasks() {
       case "optionThree": {
         const result = await getUserTasksForWeek(currentUserId);
 
-        setTitle("This Week");
+        setTitle("tasks.thisWeek");
 
         if (typeof result !== "string") {
           setTasks(result);
@@ -120,7 +122,7 @@ export default function Tasks() {
 
   return (
     <div className="min-h-screen rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] xl:p-6">
-      <ComponentCard title="My Tasks">
+      <ComponentCard title={t("tasks.myTasks")}>
         {/* Header */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -129,19 +131,19 @@ export default function Tasks() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage and track your tasks
+              {t("tasks.description")}
             </p>
           </div>
 
           {selectedOption !== "optionThree" && (
             <Button size="sm" onClick={() => setModalOpen(true)}>
-              + Add Task
+              {t("tasks.addTask")}
             </Button>
           )}
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 border-b border-gray-200 dark:border-gray-800">
+        <div className="mb-6">
           <ChartTab
             onOptionOneSelected={() => loadTasks("optionOne")}
             onOptionTwoSelected={() => loadTasks("optionTwo")}
@@ -154,25 +156,25 @@ export default function Tasks() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-                {title}
+                {t(title)}
               </h3>
 
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {totalTasksCount === 0
-                  ? "No tasks"
+                  ? t("tasks.noTasks")
                   : `${totalTasksCount} ${
-                      totalTasksCount === 1 ? "task" : "tasks"
+                      totalTasksCount === 1 ? t("tasks.task") : t("tasks.tasks")
                     }`}
               </p>
             </div>
 
             <div className="flex items-center gap-2 text-sm">
               <span className="rounded-full bg-green-50 px-3 py-1 font-medium text-green-600 dark:bg-green-500/10 dark:text-green-400">
-                {completedTasksCount} Completed
+                {completedTasksCount} {t("tasks.completed")}
               </span>
 
               <span className="rounded-full bg-yellow-50 px-3 py-1 font-medium text-yellow-600 dark:bg-yellow-500/10 dark:text-yellow-300">
-                {totalTasksCount - completedTasksCount} Pending
+                {totalTasksCount - completedTasksCount} {t("tasks.pending")}
               </span>
             </div>
           </div>
@@ -196,7 +198,7 @@ export default function Tasks() {
             </div>
 
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-              Click on a date to add a new task
+              {t("tasks.calendarDescription")}
             </p>
           </div>
         )}

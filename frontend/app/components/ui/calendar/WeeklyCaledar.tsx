@@ -30,9 +30,12 @@ import type { TaskDto } from "~/types/tasks/TaskDto";
 
 const WeeklyCalendar: React.FC = () => {
   const currentUserId = useAuth()?.currentUserId;
+
   const { language: locale, dir } = useLanguage();
   const isRtlLayout = dir === "rtl";
+
   const { theme } = useTheme();
+
   const [tasks, setTasks] = useState<TaskDto[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [portalNode, setPortalNode] = useState<Element | null>(null);
@@ -40,7 +43,10 @@ const WeeklyCalendar: React.FC = () => {
 
   const calendarRef = useRef<CalendarRef>(null);
   const calendarContainerRef = useRef<HTMLDivElement>(null);
+
   const { isOpen, openModal, closeModal } = useModal();
+
+  const calendarLocale = locale === "ar" ? "ar-SA" : "en-US";
 
   const loadTasks = async () => {
     if (currentUserId == null) return;
@@ -80,6 +86,7 @@ const WeeklyCalendar: React.FC = () => {
     };
 
     checkMobile();
+
     window.addEventListener("resize", checkMobile);
 
     const frameId = requestAnimationFrame(() => {
@@ -109,13 +116,15 @@ const WeeklyCalendar: React.FC = () => {
         ref={calendarContainerRef}
       >
         <FullCalendar
-          key={`${isRtlLayout ? "rtl" : "ltr"}-weekly`}
+          key={`${calendarLocale}-${isRtlLayout ? "rtl" : "ltr"}-weekly`}
           ref={calendarRef}
           className="gap-0!"
           plugins={[...bundledPlugins, themePlugin]}
           initialView="dayGridWeek"
+
+          locale={calendarLocale}
           direction={isRtlLayout ? "rtl" : "ltr"}
-          // Toolbar Header configuration
+
           headerToolbar={{
             center: "title",
           }}
@@ -137,20 +146,23 @@ const WeeklyCalendar: React.FC = () => {
             return "ta-toolbar-section";
           }}
           buttonGroupClass="gap-2"
-          //
-          // View configurations
+
+          titleFormat={{
+            month: "long",
+            year: "numeric",
+          }}
           views={{
             dayGridWeek: {
               dayMaxEvents: isMobile ? 0 : undefined,
 
               dayHeaderContent: (arg: DayHeaderInfo) => {
-                const weekday = new Intl.DateTimeFormat(locale, {
+                const weekday = new Intl.DateTimeFormat(calendarLocale, {
                   weekday: "short",
                 })
                   .format(arg.date)
                   .toUpperCase();
 
-                const day = new Intl.DateTimeFormat(locale, {
+                const day = new Intl.DateTimeFormat(calendarLocale, {
                   day: "numeric",
                 }).format(arg.date);
 
@@ -170,7 +182,10 @@ const WeeklyCalendar: React.FC = () => {
                 }`,
             },
           }}
-          // Body configuration
+
+          /*
+           * Body configuration
+           */
           height="auto"
           borderless={true}
           viewClass="border-t! border-b-0! border-x-0! border-gray-200! bg-transparent! dark:border-gray-800! dark:bg-transparent!"
@@ -187,6 +202,10 @@ const WeeklyCalendar: React.FC = () => {
           tableClass="overflow-hidden bg-transparent!"
           rowEventClass="bg-transparent! border-0! px-1! py-0.5! shadow-none! hover:shadow-none! focus:outline-none"
           rowEventInnerClass="p-0! border-0! bg-transparent!"
+
+          /*
+           * Event popover date formatting
+           */
           popoverFormat={{
             month: "short",
             day: "numeric",
@@ -195,6 +214,11 @@ const WeeklyCalendar: React.FC = () => {
           popoverClass="z-99999! w-72 max-w-[calc(100vw-32px)] overflow-hidden rounded-2xl border! border-gray-200! bg-white! shadow-theme-lg dark:border-gray-800! dark:bg-gray-900!"
           popoverCloseClass="absolute end-3 top-2.5 flex size-7 cursor-pointer items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
           popoverCloseContent={() => <CloseIcon className="size-4" />}
+
+          /*
+           * Keep the portal target updated whenever
+           * FullCalendar changes its displayed dates.
+           */
           datesSet={() => {
             requestAnimationFrame(() => {
               const chunk = calendarContainerRef.current?.querySelector(
@@ -206,6 +230,7 @@ const WeeklyCalendar: React.FC = () => {
               }
             });
           }}
+
           events={calendarTasks}
           dateClick={handleDateClick}
           eventContent={(eventInfo: EventDisplayInfo) => (
@@ -213,6 +238,7 @@ const WeeklyCalendar: React.FC = () => {
           )}
         />
       </div>
+
       <AddTaskModal
         isOpen={isOpen}
         onClose={closeModal}

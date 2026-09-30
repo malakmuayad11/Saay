@@ -5,7 +5,8 @@
     "showing": "عرض",
     "of": "من أصل",
     "next": "التالي",
-    "previous": "السابق"
+    "previous": "السابق",
+    "required": "هذا الحقل مطلوب"
   },
   "signup": "قم بالتسجيل",
   "signin": {
@@ -100,6 +101,44 @@
       "done": "تم",
       "progress": "يتم.."
     }
+  },
+  "tasks": {
+    "myTasks": "مهامي",
+    "description": "قم بإدارة وتتبع مهامك",
+    "addTask": "+ أضف مهمة",
+    "adding": "يتم الإضافة...",
+    "today": "اليوم",
+    "tomorrow": "الغد",
+    "thisWeek": "هذا الأسبوع",
+    "noTasks": "لا يوجد مهام",
+    "noTasksDescription": "لا يوجد مهام. قم بإضافة مهام للبدء!",
+    "task": "مهمة",
+    "tasks": "مهام",
+    "completed": "مكتملة",
+    "pending": "قيد التنفيذ",
+    "categories": {
+      "Normal": "عادية",
+      "Important": "مهمة",
+      "Urgent": "عاجلة"
+    },
+    "calendarDescription": "قم بالضغط على أحد التواريخ لإضافة مهمة جديدة",
+    "fields": {
+      "taskTitle": "العنوان",
+      "taskCategory": "التصنيف",
+      "taskCategoryPlaceholder": "قم باختيار تصنيف",
+      "taskRepetition": "التكرار",
+      "taskRepetitionPlaceholder": "قم باختيار التكرار",
+      "dueTime": "الوقت"
+    },
+    "repetition": {
+      "once": "مرة واحدة",
+      "daily": "يوميًا",
+      "weekly": "أسبوعيًا",
+      "monthly": "شهريًا"
+    },
+    "optional": "اختياري",
+    "addNewTask": "أضف مهمة جديدة",
+    "add": "قم بالإضافة"
   },
   "ecommerce": {
     "title": "E-commerce Dashboard",
