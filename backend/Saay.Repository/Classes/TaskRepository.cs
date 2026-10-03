@@ -14,25 +14,90 @@ namespace Saay.Repository.Classes
             _context = context;
         }
 
-        public async Task<int?> AddTaskAsync(Data.Entities.Task task, int userId)
+        private async Task<bool> _AddTaskOnce(Data.Entities.Task task, int userId)
         {
             Data.Entities.Task newTask = new Data.Entities.Task
             {
                 UserId = userId,
                 TaskCategoryId = task.TaskCategoryId,
                 Title = task.Title,
-                Repetition = task.Repetition,
                 DueDate = task.DueDate,
                 DueTime = task.DueTime,
                 IsDone = false,
                 IsReminderSent = false
             };
-
             _context.Tasks.Add(newTask);
-            if (await _context.SaveChangesAsync() > 0)
-                return newTask.TaskId;
+            return await _context.SaveChangesAsync() > 0;
+        }
 
-            return null;
+        public async Task<bool> AddTaskAsync(Data.Entities.Task task, int userId, byte repetition)
+        {
+            if (repetition == 1) return await _AddTaskOnce(task, userId);
+
+            List<Data.Entities.Task> tasks = new List<Data.Entities.Task>();
+
+            // Weekly -> Add the task once each week for a month (4 weeks)
+            if (repetition == 4)
+            {
+                for(byte i = 0; i <= 3; i++)
+                {
+                    tasks.Add(
+                        new Data.Entities.Task
+                        {
+                            UserId = userId,
+                            TaskCategoryId = task.TaskCategoryId,
+                            Title = task.Title,
+                            DueDate = task.DueDate.AddDays(i * 7),
+                            DueTime = task.DueTime,
+                            IsDone = false,
+                            IsReminderSent = false
+                        }
+                    );
+                }
+            }
+
+            // Monthly -> Add the task once each month for a year (12 months)
+            if (repetition == 12)
+            {
+                for (byte i = 0; i < 12; i++)
+                {
+                    tasks.Add(
+                        new Data.Entities.Task
+                        {
+                            UserId = userId,
+                            TaskCategoryId = task.TaskCategoryId,
+                            Title = task.Title,
+                            DueDate = task.DueDate.AddMonths(i),
+                            DueTime = task.DueTime,
+                            IsDone = false,
+                            IsReminderSent = false
+                        }
+                    );
+                }
+            }
+
+            else if(repetition == 30)
+            {
+                for (byte i = 1; i <= repetition; i++)
+                {
+                    tasks.Add(
+                        new Data.Entities.Task
+                        {
+                            UserId = userId,
+                            TaskCategoryId = task.TaskCategoryId,
+                            Title = task.Title,
+                            DueDate = task.DueDate.AddDays(i - 1),
+                            DueTime = task.DueTime,
+                            IsDone = false,
+                            IsReminderSent = false
+                        }
+                    );
+                }
+            }
+
+            _context.Tasks.AddRange(tasks);
+            
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<List<TaskDto>> GetUserTasksTodayAsync(int userId,
@@ -113,7 +178,6 @@ namespace Saay.Repository.Classes
 
             task.TaskCategoryId = newTask.TaskCategoryId;
             task.Title = newTask.Title;
-            task.Repetition = newTask.Repetition;
             task.DueDate = newTask.DueDate;
             task.DueTime = newTask.DueTime;
             task.IsDone = newTask.IsDone;

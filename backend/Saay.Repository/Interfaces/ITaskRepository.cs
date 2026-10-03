@@ -4,7 +4,7 @@ namespace Saay.Repository.Interfaces
 {
     public interface ITaskRepository
     {
-        public Task<int?> AddTaskAsync(Data.Entities.Task task, int userId);
+        public Task<bool> AddTaskAsync(Data.Entities.Task task, int userId, byte repetation);
 
         public Task<List<TaskDto>> GetUserTasksTodayAsync(int userId, int pageNumber, int pageSize);
 

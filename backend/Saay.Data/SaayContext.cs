@@ -105,7 +105,7 @@ public partial class SaayContext : DbContext
             entity.Property(e => e.TaskId).HasColumnName("TaskID");
             entity.Property(e => e.TaskCategoryId).HasColumnName("TaskCategoryID");
             entity.Property(e => e.DueDate).HasDefaultValueSql("(CONVERT([date],getdate()))");
-            entity.Property(e => e.Repetition).HasComment("0- Once, 1- Daily, 2- Weekly, 3- Monthly");
+            //entity.Property(e => e.Repetition).HasComment("0- Once, 1- Daily, 2- Weekly, 3- Monthly");
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 

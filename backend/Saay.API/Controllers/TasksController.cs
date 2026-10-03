@@ -29,7 +29,7 @@ namespace Saay.API.Controllers
         [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -44,21 +44,12 @@ namespace Saay.API.Controllers
                 return Forbid();
             }
 
-            int? taskId = await _taskService.AddTaskAsync(addTaskDto);
+            bool? result = await _taskService.AddTaskAsync(addTaskDto);
 
-            if (taskId == null)
+            if (result == null)
                 return NotFound("User with the specified ID does not exist.");
 
-            return CreatedAtRoute("GetTaskById", new { taskId = taskId }, 
-                new
-                {
-                    TaskId = taskId.Value,
-                    UserId = addTaskDto.UserId,
-                    TaskCategoryId = addTaskDto.TaskCategoryId,
-                    Title = addTaskDto.Title,
-                    DueDate = addTaskDto.DueDate,
-                    DueTime = addTaskDto.DueTime,
-                });
+            return Ok(result);
         }
 
         [EnableRateLimiting("LightOpsLimiter")]

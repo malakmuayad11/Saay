@@ -4,7 +4,7 @@ namespace Saay.Services.Interfaces
 {
     public interface ITaskService
     {
-        public Task<int?> AddTaskAsync(AddTaskDto addTaskDto);
+        public Task<bool?> AddTaskAsync(AddTaskDto addTaskDto);
 
         public Task<List<TaskDto>> GetUserTasksTodayAsync(int userId, int pageNumber, int pageSize);
         public Task<List<TaskDto>> GetUserTasksTomorrowAsync(int userId, int pageNumber, int pageSize);

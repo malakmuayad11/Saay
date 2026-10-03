@@ -15,22 +15,35 @@ namespace Saay.Services.Classes
             _userRepository = userRepository;
         }
 
-        public async Task<int?> AddTaskAsync(Infrastructure.DTOs.TaskDTOs.AddTaskDto addTaskDto)
+        private byte _GetRepetitionDays(byte repetition)
+        {
+            return repetition switch
+            {
+                0 => 1,   // Once
+                1 => 30,  // Daily
+                2 => 4,   // Weekly
+                3 => 12,  // Monthly
+                _ => throw new ArgumentOutOfRangeException(nameof(repetition))
+            };
+        }
+
+        public async Task<bool?> AddTaskAsync(AddTaskDto addTaskDto)
         {
             if(!await _userRepository.DoesUserExist(addTaskDto.UserId))
                 return null; // User does not exist
-            
-            var taskEntity = new Data.Entities.Task
+
+            byte numOfDays = _GetRepetitionDays(addTaskDto.Repetition);
+
+            Data.Entities.Task taskEntity = new Data.Entities.Task
             {
                 UserId = addTaskDto.UserId,
                 TaskCategoryId = addTaskDto.TaskCategoryId,
                 Title = addTaskDto.Title,
-                Repetition = addTaskDto.Repetition,
                 DueDate = addTaskDto.DueDate,
                 DueTime = addTaskDto.DueTime
             };
 
-            return await _taskRepository.AddTaskAsync(taskEntity, addTaskDto.UserId);
+            return await _taskRepository.AddTaskAsync(taskEntity, addTaskDto.UserId, numOfDays);
         }
     
         public async Task<List<TaskDto>> GetUserTasksTodayAsync(int userId, int pageNumber, int pageSize)
@@ -77,7 +90,6 @@ namespace Saay.Services.Classes
                 TaskId = updateTaskDto.TaskId,
                 TaskCategoryId = updateTaskDto.TaskCategoryId,
                 Title = updateTaskDto.Title,
-                Repetition = updateTaskDto.Repetition,
                 DueDate = updateTaskDto.DueDate,
                 DueTime = updateTaskDto.DueTime,
                 IsDone = updateTaskDto.IsDone,
