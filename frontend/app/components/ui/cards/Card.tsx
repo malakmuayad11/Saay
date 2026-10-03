@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from "react";
+import type { ElementType } from "react";
 
 export type CardProps = {
   title: string;

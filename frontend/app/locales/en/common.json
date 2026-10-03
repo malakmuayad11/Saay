@@ -104,6 +104,11 @@
       "progress": "Pending"
     }
   },
+  "habits": {
+    "myHabits": "My Habits",
+    "description": "Manage and track your habits",
+    "addHabit": "Add Habit"
+  },
   "tasks": {
     "myTasks": "My Tasks",
     "description": "Manage and track your tasks",

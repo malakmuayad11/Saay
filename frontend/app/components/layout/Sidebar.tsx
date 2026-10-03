@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
     icon: <HabitIcon fontSize={24} />,
     name: "Habits",
     key: "habits",
-    path: "/habits",
+    path: "/dashboard/habits",
   },
   {
     icon: <TaskIcon fontSize={24} />,

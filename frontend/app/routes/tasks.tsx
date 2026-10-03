@@ -15,7 +15,6 @@ import {
 import type { TaskDto } from "~/types/tasks/TaskDto";
 import { AddTaskModal } from "~/components/tasks/AddTaskModal";
 import WeeklyCalendar from "~/components/ui/calendar/WeeklyCaledar";
-import { useLanguage } from "~/context/LanguageContext";
 
 export const meta = () => [{ title: "Tasks | Saay" }];
 
@@ -23,7 +22,6 @@ type Title = "tasks.today" | "tasks.tomorrow" | "tasks.thisWeek";
 
 export default function Tasks() {
   const currentUserId = useAuth()?.currentUserId;
-  // const lang = useLanguage().currentLanguage;
 
   const [title, setTitle] = useState<Title>("tasks.today");
   const [tasks, setTasks] = useState<TaskDto[] | null>(null);

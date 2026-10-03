@@ -1,22 +1,28 @@
-import { Modal } from "~/components/ui/Modal";
+import { Modal } from "~/components/ui/modal/Modal";
 import Button from "~/components/ui/button/Button";
 import Alert from "~/components/ui/Alert";
 
-type DeleteGoalModalProps = {
+type DeleteModalProps = {
   isOpen: boolean;
   onCancel: () => void;
   onSave: () => void;
+  title: string;
+  description?: string;
   error: string | null;
   success: boolean;
+  successMessage: string;
 };
 
-export function DeleteGoalModal({
+export function DeleteModal({
   isOpen,
   onCancel,
   onSave,
+  title,
+  description,
   error,
   success,
-}: DeleteGoalModalProps) {
+  successMessage,
+}: DeleteModalProps) {
   return (
     <Modal
       isOpen={isOpen}
@@ -33,22 +39,18 @@ export function DeleteGoalModal({
 
         {success && (
           <div className="mb-4">
-            <Alert
-              variant="success"
-              title="Success"
-              message="Goal is deleted successfully"
-            />
+            <Alert variant="success" title="Success" message={successMessage} />
           </div>
         )}
 
         {/* Content */}
         <div className="mb-6 -mt-2">
           <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">
-            Are you sure you want to delete this goal?
+            {title}
           </h3>
 
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            This action cannot be undone.
+            {description}
           </p>
         </div>
 

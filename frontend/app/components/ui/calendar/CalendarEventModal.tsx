@@ -1,4 +1,4 @@
-import { Modal } from "../Modal";
+import { Modal } from "../modal/Modal";
 import { cn } from "~/utils";
 import React, { useEffect, useState } from "react";
 import {

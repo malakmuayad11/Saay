@@ -7,5 +7,6 @@ export default [
   route("dashboard", "routes/dashboard.tsx", [
     route("goals", "routes/goals.tsx"),
     route("tasks", "routes/tasks.tsx"),
+    route("habits", "routes/habits.tsx"),
   ]),
 ] satisfies RouteConfig;

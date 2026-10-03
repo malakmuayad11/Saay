@@ -15,9 +15,9 @@ import GoalsTable from "~/components/ui/table/GoalsTable";
 import ComponentCard from "~/components/ui/cards/ComponentCard";
 import Button from "~/components/ui/button/Button";
 import { AddEditGoalModal } from "~/components/goals/Modals/AddEditGoalModal";
-import { DeleteGoalModal } from "~/components/goals/Modals/DeleteGoalModal";
 import MissionCard from "~/components/ui/cards/MissionCard";
 import { PaginationRow } from "~/components/ui/PaginationRow";
+import { DeleteModal } from "~/components/ui/modal/DeleteModal";
 
 export const meta = () => [{ title: "Goals | Saay" }];
 
@@ -141,11 +141,7 @@ export default function Goals() {
     loadUserGoals();
   }, [currentUserId, currentPage]);
 
-  const to =
-    // currentPage === 1
-    //   ? 10
-    //   :
-    totalGoals < currentPage * 10 ? totalGoals : currentPage * 10;
+  const to = totalGoals < currentPage * 10 ? totalGoals : currentPage * 10;
   const from = currentPage === 1 ? 1 : (currentPage - 1) * 11;
 
   return (
@@ -218,15 +214,18 @@ export default function Goals() {
             onGoalChanged={loadGoalData}
             goal={selectedGoal}
           />
-          <DeleteGoalModal
+          <DeleteModal
             isOpen={openDeleteModal}
             onCancel={() => {
               setOpenDeleteModal(false);
               setSelectedGoalId(null);
             }}
             onSave={handleDeleteGoal}
+            title="Are you sure you want to delete this goal?"
+            description="This action cannot be undone."
             error={deleteResult === false ? "Failed to delete goal" : null}
             success={deleteResult === true}
+            successMessage="Goal is deleted successfully"
           />
         </div>
       </div>

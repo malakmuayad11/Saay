@@ -1,4 +1,4 @@
-import { Modal } from "~/components/ui/Modal";
+import { Modal } from "~/components/ui/modal/Modal";
 import Label from "~/components/form/Label";
 import Input from "~/components/form/input/InputField";
 import Select from "~/components/form/input/Select";
