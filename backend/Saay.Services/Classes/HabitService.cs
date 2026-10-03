@@ -49,7 +49,8 @@ namespace Saay.Services.Classes
                     Title = habit.Title,
                     ReasonForHabit = habit.ReasonForHabit,
                     Steps = habit.Steps,
-                    TargetDuration = habit.TargetDuration
+                    TargetDuration = habit.TargetDuration,
+                    HabitStartDate = habit.HabitStartDate
                 });
             }
 
@@ -110,7 +111,8 @@ namespace Saay.Services.Classes
                 Title = habit.Title,
                 ReasonForHabit = habit.ReasonForHabit,
                 Steps = habit.Steps,
-                TargetDuration = habit.TargetDuration
+                TargetDuration = habit.TargetDuration,
+                HabitStartDate = habit.HabitStartDate
             };
         }
 

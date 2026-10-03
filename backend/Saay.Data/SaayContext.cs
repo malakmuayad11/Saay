@@ -75,6 +75,10 @@ public partial class SaayContext : DbContext
             entity.Property(e => e.TargetDuration).HasComment("0- 30 days, 1- 60 days, 2- 90 days");
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.HabitStartDate)
+            .HasColumnType("date")
+            .HasDefaultValueSql("CONVERT([date], GETDATE())")
+            .ValueGeneratedOnAdd();
 
             entity.HasOne(d => d.User).WithMany(p => p.Habits)
                 .HasForeignKey(d => d.UserId)

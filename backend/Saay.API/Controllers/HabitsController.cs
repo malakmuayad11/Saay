@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.HabitDTOs;
+using Saay.Infrastructure.DTOs.HabitLogDTOs;
 using Saay.Services.Interfaces;
 using System.Security.Claims;
 
@@ -247,14 +248,14 @@ namespace Saay.API.Controllers
         }
 
         [EnableRateLimiting("CriticalOpsLimiter")]
-        [HttpPost("mark-completed/{habitId}")]
+        [HttpPost("mark-completed/{habitId}/{dayNumber}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<IActionResult>MarkHabitAsCompletedTodayAsync(int habitId)
+        public async Task<IActionResult>MarkHabitAsCompletedTodayAsync(int habitId, byte dayNumber)
         {
             int userId = int.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -266,12 +267,41 @@ namespace Saay.API.Controllers
                 return Forbid();
             }
 
-            (bool? isMarked, string message) result = await _habitLogService.MarkHabitAsCompletedTodayAsync(habitId);
+            (bool? isMarked, string message) result = await _habitLogService.MarkHabitAsCompletedTodayAsync(habitId, dayNumber);
             if (result.isMarked == null)
                 return NotFound("Habit with the specified ID does not exist.");
             if (result.isMarked == false)
                 return BadRequest(result.message);
             return Ok(result.isMarked);
+        }
+
+        [EnableRateLimiting("LightOpsLimiter")]
+        [HttpGet("habit-logs/{habitId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<ICollection<HabitLogDto>>> GetHabitLogs(int habitId)
+        {
+            int userId = int.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            if (!await _ownershipAuthorizationService.IsHabitOwner(User, habitId))
+            {
+                _logger.LogWarning("User {userId} attmpted to mark a habit as completed without ownership.",
+                   userId);
+                return Forbid();
+            }
+
+            List<HabitLogDto> habitLogDtos = await _habitLogService.GetHabitLogs(habitId);
+
+            if (habitLogDtos == null)
+                return NotFound("Habit was not found.");
+
+            return Ok(habitLogDtos);
         }
     }
 }

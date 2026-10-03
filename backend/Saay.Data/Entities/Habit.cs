@@ -17,6 +17,8 @@ public partial class Habit
     /// </summary>
     public byte TargetDuration { get; set; }
 
+    public DateOnly HabitStartDate { get; set; }
+
     public virtual User User { get; set; } = null!;
 
     public ICollection<HabitLog> HabitLogs { get; set; } = new List<HabitLog>();

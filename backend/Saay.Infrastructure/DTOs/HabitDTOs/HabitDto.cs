@@ -8,5 +8,6 @@
         public string ReasonForHabit { get; set; } = null!;
         public string Steps { get; set; } = null!;
         public byte TargetDuration { get; set; }
+        public DateOnly HabitStartDate { get; set; }
     }
 }

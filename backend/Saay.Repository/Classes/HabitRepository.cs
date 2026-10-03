@@ -16,6 +16,8 @@ namespace Saay.Repository.Classes
 
         public async Task<int?> AddHabitAsync(Habit habit, int userId)
         {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
             Habit newHabit = new Habit
             {
                 UserId = userId,
@@ -26,9 +28,23 @@ namespace Saay.Repository.Classes
             };
 
             _context.Habits.Add(newHabit);
-            if (await _context.SaveChangesAsync() > 0)
-                return newHabit.HabitId;
 
+            HabitLog newHabitLog = new HabitLog
+            {
+                Habit = newHabit,
+                DayNumber = 1,
+                IsDone = false
+            };
+
+            _context.HabitsLogs.Add(newHabitLog);
+
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                await transaction.CommitAsync();
+                return newHabit.HabitId;
+            }
+
+            await transaction.RollbackAsync();
             return null;
         }
 
