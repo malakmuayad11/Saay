@@ -8,12 +8,14 @@ import { t } from "i18next";
 
 type TasksTableProps = {
   tableData: TaskDto[];
-  onEdit: (task: TaskDto) => void;
-  onDelete: (taskId: number) => void;
+  readOnly?: boolean;
+  onEdit?: (task: TaskDto) => void;
+  onDelete?: (taskId: number) => void;
 };
 
 export default function TasksTable({
   tableData,
+  readOnly = false,
   onEdit,
   onDelete,
 }: TasksTableProps) {
@@ -32,7 +34,11 @@ export default function TasksTable({
           <TableRow key={task.taskId}>
             {/* Complete */}
             <TableCell className="px-2 py-3 text-theme-sm text-gray-500 sm:px-4 dark:text-gray-400">
-              <Checkbox checked={task.isDone} onChange={() => onEdit(task)} />
+              <Checkbox
+                checked={task.isDone}
+                disabled={readOnly}
+                onChange={() => onEdit?.(task)}
+              />
             </TableCell>
 
             {/* Title */}
@@ -50,16 +56,18 @@ export default function TasksTable({
             </TableCell>
 
             {/* Delete */}
-            <TableCell className="px-2 py-3 text-theme-sm text-gray-500 sm:px-4 dark:text-gray-400">
-              <Button
-                size="sm"
-                variant="outline"
-                className="px-2 sm:px-3"
-                onClick={() => onDelete(task.taskId)}
-              >
-                <DeleteIcon />
-              </Button>
-            </TableCell>
+            {!readOnly && (
+              <TableCell className="px-2 py-3 text-theme-sm text-gray-500 sm:px-4 dark:text-gray-400">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="px-2 sm:px-3"
+                  onClick={() => onDelete?.(task.taskId)}
+                >
+                  <DeleteIcon />
+                </Button>
+              </TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>

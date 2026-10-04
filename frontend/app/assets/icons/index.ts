@@ -14,6 +14,9 @@ import SparklesIcon from "./sparkles.svg?react";
 import CalendarIcon from "./calendar.svg?react";
 import CloseIcon from "./close.svg?react";
 import DeleteIcon from "./delete.svg?react";
+import ArrowDownIcon from "./arrow-down.svg?react";
+import ArrowUpIcon from "./arrow-up.svg?react";
+import MoreDotIcon from "./moredot.svg?react";
 
 export {
   EyeIcon,
@@ -32,4 +35,7 @@ export {
   CalendarIcon,
   CloseIcon,
   DeleteIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+  MoreDotIcon,
 };
