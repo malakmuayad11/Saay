@@ -65,6 +65,7 @@ namespace Saay.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserTokenService, UserTokenService>();
             services.AddScoped<IOwnershipAuthorizationService, OwnershipAuthorizationService>();
+            services.AddScoped<IDashboardNumbersService, DashbaordNumbersService>();
 
             return services;
         }

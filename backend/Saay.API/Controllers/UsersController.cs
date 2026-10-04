@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Saay.Data.Entities;
 using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 using System.Security.Claims;

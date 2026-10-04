@@ -166,8 +166,16 @@ namespace Saay.Repository.Classes
                 .ToListAsync();
         }
 
-        public async Task<int> UserTasksCountAsync(int userId) => await _context.Tasks
-                .Where(task => task.UserId == userId)
+        public async Task<byte> UserTasksTodayCountAsync(int userId) =>
+            (byte)await _context.Tasks
+                .Where(task => task.UserId == userId &&
+                    task.DueDate == DateOnly.FromDateTime(DateTime.Today))
+                .CountAsync();
+
+        public async Task<int> UserUrgentTasksTodayCountAsync(int userId) =>
+            await _context.Tasks.Where(task => task.UserId == userId &&
+                    task.DueDate == DateOnly.FromDateTime(DateTime.Today) &&
+                    task.TaskCategoryId == 3)
                 .CountAsync();
 
         public async Task<bool?> UpdateTaskAsync(int taskId, Data.Entities.Task newTask)
@@ -194,14 +202,21 @@ namespace Saay.Repository.Classes
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<int> UserCompletedTasksCount(int userId) =>
-             await _context.Tasks
-                .Where(task => task.UserId == userId && task.IsDone)
+        public async Task<byte> UserCompletedTasksTodayCount(int userId) =>
+             (byte)await _context.Tasks
+                .Where(task => task.UserId == userId && task.IsDone && task.DueDate == DateOnly.FromDateTime(DateTime.Today))
                 .CountAsync();
 
-        public async Task<int> UserPendingTasksCount(int userId) =>
-             await _context.Tasks
-                .Where(task => task.UserId == userId && !task.IsDone)
+        public async Task<byte> UserPendingTasksTodayCount(int userId) =>
+             (byte)await _context.Tasks
+                .Where(task => task.UserId == userId && !task.IsDone && task.DueDate == DateOnly.FromDateTime(DateTime.Today))
+                .CountAsync();
+
+        public async Task<byte> UserUrgentTasksTodayCount(int userId) =>
+            (byte)await _context.Tasks
+                .Where(task => task.UserId == userId 
+                && task.DueDate == DateOnly.FromDateTime(DateTime.Today)
+                && task.TaskCategoryId == 3)
                 .CountAsync();
 
         public async Task<TaskDto> GetTaskByIdAsync(int taskId) =>
@@ -237,5 +252,20 @@ namespace Saay.Repository.Classes
 
         public async Task<bool> IsTaskOwner(int userId, int taskId) =>
             await _context.Tasks.AnyAsync(t => t.UserId == userId && t.TaskId == taskId);
+
+        public async Task<int> UserTasksCountAsync(int userId) =>
+            await _context.Tasks
+                .Where(t => t.UserId == userId)
+                .CountAsync();
+
+        public async Task<byte> UserCompletedTasksCount(int userId) =>
+            (byte)await _context.Tasks
+                .Where(t => t.UserId == userId && t.IsDone)
+                .CountAsync();
+
+        public async Task<byte> UserPendingTasksCount(int userId) =>
+            (byte)await _context.Tasks
+                .Where(t => t.UserId == userId && !t.IsDone)
+                .CountAsync();
     }
 }

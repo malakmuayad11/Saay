@@ -10,11 +10,6 @@ public partial class Task
 
     public string Title { get; set; } = null!;
 
-    /// <summary>
-    /// 0- Once, 1- Daily, 2- Weekly, 3- Monthly
-    /// </summary>
-    //public byte Repetition { get; set; }
-
     public DateOnly DueDate { get; set; }
 
     public TimeOnly? DueTime { get; set; }

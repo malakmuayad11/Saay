@@ -25,5 +25,15 @@ namespace Saay.Services.Interfaces
         public Task<bool?> MarkTaskAsCompletedAsync(int taskId);
 
         public Task<bool> IsTaskOwner(int userId, int taskId);
+
+        public Task<byte?> UserProgressToday(int userId);
+
+        public Task<byte?> UserCompletedTasksTodayCount(int userId);
+
+        public Task<byte?> UserPendingTasksTodayCount(int userId);
+
+        public Task<byte?> UserUrgentTasksTodayCount(int userId);
+
+        public Task<byte?> UserTasksTodayCountAsync(int userId);
     }
 }

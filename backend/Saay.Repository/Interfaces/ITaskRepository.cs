@@ -18,9 +18,15 @@ namespace Saay.Repository.Interfaces
 
         public Task<bool?> DeleteTaskAsync(int taskId);
 
-        public Task<int> UserCompletedTasksCount(int userId);
+        public Task<byte> UserCompletedTasksCount(int userId);
 
-        public Task<int> UserPendingTasksCount(int userId);
+        public Task<byte> UserPendingTasksCount(int userId);
+
+        public Task<byte> UserCompletedTasksTodayCount(int userId);
+
+        public Task<byte> UserPendingTasksTodayCount(int userId);
+
+        public Task<byte> UserUrgentTasksTodayCount(int userId);
 
         public Task<TaskDto> GetTaskByIdAsync(int taskId);
 
@@ -29,5 +35,7 @@ namespace Saay.Repository.Interfaces
         public Task<bool?> MarkTaskAsCompletedAsync(int taskId);
 
         public Task<bool?> MarkTaskAsUncompletedAsync(int taskId);
+
+        public Task<byte> UserTasksTodayCountAsync(int userId);
     }
 }

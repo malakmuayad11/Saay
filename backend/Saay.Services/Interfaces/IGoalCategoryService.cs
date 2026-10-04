@@ -6,6 +6,8 @@ namespace Saay.Services.Interfaces
     {
         public Task<List<GoalCategoryDto>> GetAllGoalCategoriesAsync();
 
+        public Task<List<GoalCategoryCountsDto>> GetAllGoalCategoriesWithCountsAsync(int userId);
+
         public enum GoalCategory : byte
         {
             Health = 1,

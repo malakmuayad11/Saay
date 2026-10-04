@@ -1,9 +1,12 @@
-﻿using Saay.Data.Entities;
+﻿using Saay.Infrastructure.DTOs.GoalCategoryDTOs;
+using Saay.Data.Entities;
 
 namespace Saay.Repository.Interfaces
 {
     public interface IGoalCategoryRepository
     {
         public Task<List<GoalCategory>> GetAllGoalCategoriesAsync();
+
+        public Task<List<GoalCategoryCountsDto>> GetAllGoalCategoriesWithCountsAsync(int userId);
     }
 }

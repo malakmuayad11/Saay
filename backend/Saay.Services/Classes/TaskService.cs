@@ -42,7 +42,6 @@ namespace Saay.Services.Classes
                 DueDate = addTaskDto.DueDate,
                 DueTime = addTaskDto.DueTime
             };
-
             return await _taskRepository.AddTaskAsync(taskEntity, addTaskDto.UserId, numOfDays);
         }
     
@@ -131,6 +130,45 @@ namespace Saay.Services.Classes
                 return await _taskRepository.MarkTaskAsUncompletedAsync(taskId);
            
             return await _taskRepository.MarkTaskAsCompletedAsync(taskId);
+        }
+
+        public async Task<byte?> UserProgressToday(int userId)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User not found
+            int? completedTasksCount = await _taskRepository.UserCompletedTasksTodayCount(userId);
+            int? totalTasks = await _taskRepository.UserTasksTodayCountAsync(userId);
+            if (totalTasks == 0)
+                return null;
+            return (byte)((completedTasksCount.GetValueOrDefault() * 100) / totalTasks.GetValueOrDefault());
+        }
+
+        public async Task<byte?> UserCompletedTasksTodayCount(int userId)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User not found
+            return await _taskRepository.UserCompletedTasksTodayCount(userId);
+        }
+
+        public async Task<byte?> UserPendingTasksTodayCount(int userId)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User not found
+            return await _taskRepository.UserPendingTasksTodayCount(userId);
+        }
+
+        public async Task<byte?> UserUrgentTasksTodayCount(int userId)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User not found
+            return await _taskRepository.UserUrgentTasksTodayCount(userId);
+        }
+
+        public async Task<byte?> UserTasksTodayCountAsync(int userId)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User not found
+            return await _taskRepository.UserTasksTodayCountAsync(userId);
         }
     }
 }

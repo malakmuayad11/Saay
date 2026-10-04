@@ -130,33 +130,6 @@ namespace Saay.API.Controllers
             return Ok(tasks);
         }
 
-        [EnableRateLimiting("LightOpsLimiter")]
-        [Authorize]
-        [HttpGet("count/{userId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult<int?>> GetUserTasksCountAsync(int userId)
-        {
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
-            {
-                _logger.LogWarning("User {userId} attmpted to get another user's tasks count without ownership.",
-                   userId);
-
-                return Forbid();
-            }
-
-            int? count = await _taskService.UserTasksCountAsync(userId);
-
-            if (count == null)
-                return NotFound("User with the specified ID does not exist.");
-
-            return Ok(count);
-        }
-
         [EnableRateLimiting("CriticalOpsLimiter")]
         [Authorize]
         [HttpPut]
@@ -218,59 +191,7 @@ namespace Saay.API.Controllers
                 return StatusCode(500, "An error occurred while deleting the task.");
             return Ok(result);
         }
-
-        [EnableRateLimiting("LightOpsLimiter")]
-        [Authorize]
-        [HttpGet("completed/count/{userId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult<int?>> GetUserCompletedTasksCountAsync(int userId)
-        {
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
-            {
-                _logger.LogWarning("User {userId} attmpted to get another user's completed tasks count without ownership.",
-                   userId);
-                return Forbid();
-            }
-
-            int? count = await _taskService.UserCompletedTasksCountAsync(userId);
-
-            if (count == null)
-                return NotFound("User with the specified ID does not exist.");
-
-            return Ok(count);
-        }
-
-        [EnableRateLimiting("LightOpsLimiter")]
-        [Authorize]
-        [HttpGet("pending/count/{userId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult<int?>> GetUserPendingTasksCountAsync(int userId)
-        {
-            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
-            {
-                _logger.LogWarning("User {userId} attmpted to get another user's pending tasks count without ownership.",
-                   userId);
-                return Forbid();
-            }
-
-            int? count = await _taskService.UserPendingTasksCountAsync(userId);
-
-            if (count == null)
-                return NotFound("User with the specified ID does not exist.");
-
-            return Ok(count);
-        }
-
+        
         [EnableRateLimiting("LightOpsLimiter")]
         [Authorize]
         [HttpGet("{taskId}", Name = "GetTaskById")]

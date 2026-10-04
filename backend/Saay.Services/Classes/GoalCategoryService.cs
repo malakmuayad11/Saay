@@ -27,5 +27,8 @@ namespace Saay.Services.Classes
 
             return categoryDtos;
         }
+
+        public Task<List<GoalCategoryCountsDto>> GetAllGoalCategoriesWithCountsAsync(int userId) =>
+              _goalCategoryRepository.GetAllGoalCategoriesWithCountsAsync(userId);
     }
 }
