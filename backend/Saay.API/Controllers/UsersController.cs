@@ -70,7 +70,7 @@ namespace Saay.API.Controllers
             
             bool? result = await _userService.DeleteUserAsync(userId);
             if (result == true)
-                return Ok("Account is deleted.");
+                return Ok(true);
             else if (result == null)
                 return NotFound("User not found.");
             else
@@ -113,7 +113,7 @@ namespace Saay.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
+        public async Task<ActionResult<bool>> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
             if (!await _ownershipAuthorizationService.IsOwnerAsync(User, updateUserDto.UserId))
             {
@@ -124,7 +124,7 @@ namespace Saay.API.Controllers
 
             bool? result = await _userService.UpdateUserAsync(updateUserDto);
             if (result == true)
-                return Ok("User is updated successfully.");
+                return Ok(true);
             else if (result == false)
                 return BadRequest("Email already exists.");
             else if (result == null)
@@ -154,7 +154,7 @@ namespace Saay.API.Controllers
 
             bool? result = await _userService.UpdatePasswordAsync(updatePasswordDto);
             if (result == true)
-                return Ok("Password is updated successfully.");
+                return Ok(true);
             else if (result == null)
                 return NotFound("User is not found.");
             else
