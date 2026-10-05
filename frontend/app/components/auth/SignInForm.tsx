@@ -153,7 +153,7 @@ export default function SignInForm() {
               <p className="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
                 {t("signin.noAccount")} {""}
                 <Link
-                  to="/"
+                  to="/signup"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
                 >
                   {t("signup")}

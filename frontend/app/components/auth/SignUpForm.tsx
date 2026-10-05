@@ -5,9 +5,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "~/validation";
 import { addUser } from "~/services/api/users";
-import type AddUserDto from "~/types/users/addUserDto";
+import type AddUserDto from "~/types/users/AddUserDto";
 import Alert from "../ui/Alert";
-import { Navigate } from "react-router";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -84,7 +83,7 @@ export default function SignUpForm() {
 
     setError(null);
     setSuccess(true);
-    navigator("/signin");
+    navigator("/");
   }
 
   return (
@@ -260,7 +259,7 @@ export default function SignUpForm() {
           <p className="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
             Already have an account?{" "}
             <Link
-              to="/signin"
+              to="/"
               className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
             >
               Sign In

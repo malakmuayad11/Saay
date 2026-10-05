@@ -1,6 +1,5 @@
 import { redirect } from "react-router";
 import SignInForm from "~/components/auth/SignInForm";
-import { useAuth } from "~/context/AuthContext";
 import { getCurrentUser } from "~/services/localStorage/users";
 
 export const meta = () => [{ title: "Sign In | Saay" }];

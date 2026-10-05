@@ -1,7 +1,6 @@
 "use client";
 
 import { ThemeToggleButton } from "../ui/button/ThemeToggleButton";
-// import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "../ui/header/UserDropdown";
 import { useSidebar } from "~/context/SidebarContext";
 import { cn } from "~/utils";
@@ -138,10 +137,6 @@ const Header: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
-
-            {/* <NotificationDropdown /> */}
-
-            {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
           <UserDropdown />

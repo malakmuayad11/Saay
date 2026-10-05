@@ -17,6 +17,7 @@ import DeleteIcon from "./delete.svg?react";
 import ArrowDownIcon from "./arrow-down.svg?react";
 import ArrowUpIcon from "./arrow-up.svg?react";
 import MoreDotIcon from "./moredot.svg?react";
+import PencilIcon from "./pencil.svg?react";
 
 export {
   EyeIcon,
@@ -38,4 +39,5 @@ export {
   ArrowDownIcon,
   ArrowUpIcon,
   MoreDotIcon,
+  PencilIcon,
 };

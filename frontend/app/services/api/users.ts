@@ -1,6 +1,7 @@
-import type AddUserDto from "~/types/users/addUserDto";
-import type { User } from "~/types/users/user";
+import type AddUserDto from "~/types/users/AddUserDto";
+import type { UserDto } from "~/types/users/UserDto";
 import { apiFetch } from "./main";
+import type { UpdateUserDto } from "~/types/users/UpdateUserDto";
 
 const Base_URL = "https://saay.runasp.net";
 
@@ -37,7 +38,7 @@ export async function addUser(user: AddUserDto): Promise<string | null> {
   }
 }
 
-export async function getUser(userId: number): Promise<User | string> {
+export async function getUser(userId: number): Promise<UserDto | string> {
   const url: URL = new URL(`api/saay/users/${userId}`, Base_URL);
 
   const options: RequestInit = {
@@ -61,7 +62,7 @@ export async function getUser(userId: number): Promise<User | string> {
     return "An error occurred. Please try again later.";
   }
 
-  return (await response.json()) as User;
+  return (await response.json()) as UserDto;
 }
 
 export async function getUserMission(userId: number): Promise<string | null> {
@@ -106,6 +107,103 @@ export async function updateMission(
       userId,
       newMission: mission,
     }),
+  };
+
+  const response = await apiFetch(url, options);
+
+  if (typeof response === "string") {
+    return response;
+  }
+
+  if (response.status === 404) {
+    return "User not found.";
+  }
+
+  if (!response.ok) {
+    return "An error occurred. Please try again later.";
+  }
+
+  return (await response.json()) as boolean;
+}
+
+export async function updateUser(
+  updateUserDto: UpdateUserDto,
+): Promise<boolean | string> {
+  const url: URL = new URL("api/saay/users/", Base_URL);
+
+  const options: RequestInit = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId: updateUserDto.userId,
+      firstName: updateUserDto.firstName,
+      lastName: updateUserDto.lastName,
+      email: updateUserDto.email,
+      profilePictureURL: null,
+    }),
+  };
+
+  const response = await apiFetch(url, options);
+
+  if (typeof response === "string") {
+    return response;
+  }
+
+  if (response.status === 404) {
+    return "User not found.";
+  }
+
+  if (!response.ok) {
+    return "An error occurred. Please try again later.";
+  }
+
+  return (await response.json()) as boolean;
+}
+
+export async function updatePassword(
+  userId: number,
+  newPassword: string,
+): Promise<boolean | string> {
+  const url: URL = new URL("api/saay/users/passwords", Base_URL);
+
+  const options: RequestInit = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId,
+      newPassword,
+    }),
+  };
+
+  const response = await apiFetch(url, options);
+
+  if (typeof response === "string") {
+    return response;
+  }
+
+  if (response.status === 404) {
+    return "User not found.";
+  }
+
+  if (!response.ok) {
+    return "An error occurred. Please try again later.";
+  }
+
+  return (await response.json()) as boolean;
+}
+
+export async function deleteUser(userId: number): Promise<boolean | string> {
+  const url: URL = new URL(`api/saay/users/${userId}`, Base_URL);
+
+  const options: RequestInit = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
   };
 
   const response = await apiFetch(url, options);

@@ -13,6 +13,7 @@ import { getCurrentUser } from "~/services/localStorage/users";
 type AuthContextType = {
   currentUserId: number | null;
   setCurrentUserId: Dispatch<SetStateAction<number | null>>;
+  refreshUserData: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -37,11 +38,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserProvider();
   }, []);
 
+  const [userDataVersion, setUserDataVersion] = useState(0);
+
+  const refreshUserData = () => {
+    setUserDataVersion((prev) => prev + 1);
+  };
   return (
     <AuthContext.Provider
       value={{
         currentUserId: currentUserId,
         setCurrentUserId: setCurrentUserId,
+        refreshUserData: refreshUserData,
       }}
     >
       {children}
