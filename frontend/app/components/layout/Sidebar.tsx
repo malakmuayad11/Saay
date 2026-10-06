@@ -50,7 +50,11 @@ const navItems: NavItem[] = [
   },
 ];
 
-const Sidebar: React.FC = () => {
+type SidebarProps = {
+  onButtonClick: () => void;
+};
+
+const Sidebar: React.FC<SidebarProps> = ({ onButtonClick }) => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered, setIsMobileOpen } =
     useSidebar();
   const { t } = useTranslation();
@@ -297,7 +301,9 @@ const Sidebar: React.FC = () => {
           </div>
         </nav>
 
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
+        {isExpanded || isHovered || isMobileOpen ? (
+          <SidebarWidget onButtonClick={onButtonClick} />
+        ) : null}
       </div>
     </aside>
   );

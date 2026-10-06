@@ -1,6 +1,11 @@
 import { useTranslation } from "react-i18next";
+import Button from "../ui/button/Button";
 
-export default function SidebarWidget() {
+type SidebarWidgetProps = {
+  onButtonClick: () => void;
+};
+
+export default function SidebarWidget({ onButtonClick }: SidebarWidgetProps) {
   const { t } = useTranslation();
 
   return (
@@ -12,12 +17,12 @@ export default function SidebarWidget() {
         <p className="mb-4 text-theme-sm text-gray-500 dark:text-gray-400">
           {t("sidebar.widget.description")}
         </p>
-        <a
-          href=""
+        <Button
+          onClick={onButtonClick}
           className="flex items-center justify-center rounded-lg bg-brand-500 p-3 text-theme-sm font-medium text-white hover:bg-brand-600"
         >
           {t("sidebar.widget.buttonText")}
-        </a>
+        </Button>
       </div>
     </div>
   );

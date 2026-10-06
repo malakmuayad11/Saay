@@ -10,6 +10,8 @@ interface BadgeProps {
   startIcon?: React.ReactNode; // Icon at the start
   endIcon?: React.ReactNode; // Icon at the end
   children: React.ReactNode; // Badge content
+  className?: string;
+  onClick?: () => void;
 }
 
 const Badge: React.FC<BadgeProps> = ({
@@ -19,6 +21,8 @@ const Badge: React.FC<BadgeProps> = ({
   startIcon,
   endIcon,
   children,
+  className,
+  onClick,
 }) => {
   const baseStyles =
     "inline-flex items-center px-2.5 py-0.5 justify-center gap-1 rounded-full font-medium";
@@ -60,7 +64,10 @@ const Badge: React.FC<BadgeProps> = ({
   const colorStyles = variants[variant][color];
 
   return (
-    <span className={`${baseStyles} ${sizeClass} ${colorStyles}`}>
+    <span
+      onClick={onClick}
+      className={`${baseStyles} ${sizeClass} ${colorStyles} ${className}`}
+    >
       {startIcon && <span className="me-1">{startIcon}</span>}
       {children}
       {endIcon && <span className="ms-1">{endIcon}</span>}
