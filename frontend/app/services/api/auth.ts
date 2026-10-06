@@ -2,6 +2,7 @@ import type { LoginResponseDto } from "~/types/auth/loginResponseDto";
 import { removeAccessToken, setAccessToken } from "../sessionStorage/auth";
 import { removeRefreshToken, setRefreshToken } from "../localStorage/auth";
 import { getCurrentUser, removeCurrentUser } from "../localStorage/users";
+import type { LogoutDto } from "~/types/auth/LogoutDto";
 
 const Base_URL = "https://saay.runasp.net/api/saay/auth/";
 
@@ -82,6 +83,37 @@ export async function refreshAccessToken(): Promise<
   } catch (error) {
     console.error("Refresh token error:", error);
 
+    return "An error occurred. Please try again later.";
+  }
+}
+
+export async function logout(logoutDto: LogoutDto): Promise<boolean | string> {
+  try {
+    const response = await fetch(new URL("logout", Base_URL), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: logoutDto.email,
+        refreshToken: logoutDto.refreshToken,
+      }),
+    });
+
+    if (response.status === 401) {
+      removeAccessToken();
+      removeRefreshToken();
+      removeCurrentUser();
+      return "Session expired. Please sign in again.";
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return (await response.json()) as boolean;
+  } catch (error) {
+    console.error("Logout error:", error);
     return "An error occurred. Please try again later.";
   }
 }

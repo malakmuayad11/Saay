@@ -190,7 +190,7 @@ namespace Saay.API.Controllers
             if (logoutResult == false)
                 return StatusCode(500, "An error occurred while logging out");
 
-            return Ok("Logged out successfully");
+            return Ok(true);
         }
     }
 }

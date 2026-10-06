@@ -8,7 +8,11 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
-const Header: React.FC = () => {
+type HeaderProps = {
+  onLogout: (logoutResult: boolean) => void;
+};
+
+const Header: React.FC<HeaderProps> = ({ onLogout }: HeaderProps) => {
   const { t } = useTranslation("header");
   const inputRef = useRef<HTMLInputElement>(null);
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -139,7 +143,7 @@ const Header: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown />
+          <UserDropdown onLogout={onLogout} />
         </div>
       </div>
     </header>
