@@ -89,5 +89,11 @@ namespace Saay.Repository.Classes
             .Where(u => u.UserId == userId)
             .Select(u => u.Mission)
             .FirstOrDefaultAsync();
+
+        public async Task<string?> GetNameAsync(int userId) =>
+            await _context.Users
+            .Where(u => u.UserId == userId)
+            .Select(u => u.FirstName)
+            .FirstOrDefaultAsync();
     }
 }

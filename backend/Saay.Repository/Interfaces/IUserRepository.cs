@@ -16,5 +16,6 @@ namespace Saay.Repository.Interfaces
         public Task<User?> GetUserByEmailAsync(string email);
         public Task<bool> IsEmailOwner(int userId, string email);
         public Task<string?> GetUserMission(int userId);
+        public Task<string?> GetNameAsync(int userId);
     }
 }

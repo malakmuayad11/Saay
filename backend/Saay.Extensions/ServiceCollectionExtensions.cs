@@ -66,6 +66,9 @@ namespace Saay.Extensions
             services.AddScoped<IUserTokenService, UserTokenService>();
             services.AddScoped<IOwnershipAuthorizationService, OwnershipAuthorizationService>();
             services.AddScoped<IDashboardNumbersService, DashbaordNumbersService>();
+            services.AddScoped<IAIConversationService, AIConversationService>();
+            services.AddScoped<IGeminiService, GeminiService>();
+            services.AddHttpClient<GeminiService>();
 
             return services;
         }
@@ -80,6 +83,7 @@ namespace Saay.Extensions
             services.AddScoped<IHabitLogRepository, HabitLogRepository>();
             services.AddScoped<IHabitRepository, HabitRepository>();
             services.AddScoped<IUserTokenRepository, UserTokenRpository>();
+            services.AddScoped<IAIConversationRepository, AIConversationRepository>();
 
             return services;
         }

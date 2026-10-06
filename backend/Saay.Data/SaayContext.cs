@@ -30,6 +30,8 @@ public partial class SaayContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<AIConversation> AIConversations { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TaskCategory>(entity =>
@@ -105,7 +107,6 @@ public partial class SaayContext : DbContext
             entity.Property(e => e.TaskId).HasColumnName("TaskID");
             entity.Property(e => e.TaskCategoryId).HasColumnName("TaskCategoryID");
             entity.Property(e => e.DueDate).HasDefaultValueSql("(CONVERT([date],getdate()))");
-            //entity.Property(e => e.Repetition).HasComment("0- Once, 1- Daily, 2- Weekly, 3- Monthly");
             entity.Property(e => e.Title).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
@@ -152,6 +153,29 @@ public partial class SaayContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("ProfilePictureURL");
+        });
+
+        modelBuilder.Entity<AIConversation>(entity =>
+        {
+            entity.ToTable("AIConversations");
+
+            entity.HasKey(e => e.ConversationId);
+
+            entity.Property(e => e.ConversationId)
+                .HasColumnName("ConversationID")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("UserID");
+
+            entity.Property(e => e.PreviousInteractionId)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.AIConversations)
+                .HasForeignKey(e => e.UserId)
+                .HasConstraintName("FK_AIConversations_Users");
         });
 
         OnModelCreatingPartial(modelBuilder);
