@@ -24,6 +24,8 @@ import SunIcon from "./sun.svg?react";
 import MoonIcon from "./moon.svg?react";
 import ArrowRightIcon from "./arrow-right.svg?react";
 import MenuIcon from "./menu.svg?react";
+import PauseIcon from "./pause.svg?react";
+import StartIcon from "./start.svg?react";
 
 export {
   EyeIcon,
@@ -52,4 +54,6 @@ export {
   MoonIcon,
   ArrowRightIcon,
   MenuIcon,
+  PauseIcon,
+  StartIcon,
 };
