@@ -15,6 +15,7 @@ import {
 import type { TaskDto } from "~/types/tasks/TaskDto";
 import { AddTaskModal } from "~/components/tasks/AddTaskModal";
 import WeeklyCalendar from "~/components/ui/calendar/WeeklyCaledar";
+import { CountdownTimer } from "~/components/ui/Timer";
 
 export const meta = () => [{ title: t("routes.tasks") }];
 
@@ -132,6 +133,7 @@ export default function Tasks() {
               {t("tasks.description")}
             </p>
           </div>
+          <CountdownTimer />
 
           {selectedOption !== "optionThree" && (
             <Button size="sm" onClick={() => setModalOpen(true)}>
