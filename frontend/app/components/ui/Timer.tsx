@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "./button/Button";
 import { PauseIcon, StartIcon } from "~/assets/icons";
+import TimerFinishAudio from "~/assets/timer-finish-audio.mp3";
 
 export function CountdownTimer() {
   const [secondsLeft, setSecondsLeft] = useState<number>(1500); // 25 (25 * 60) minutes
@@ -8,7 +9,12 @@ export function CountdownTimer() {
   const [started, setStarted] = useState<boolean>(false);
 
   useEffect(() => {
-    if (secondsLeft <= 0 || paused) return;
+    if (secondsLeft <= 0) {
+      const timerFinishAudio = new Audio(TimerFinishAudio);
+      timerFinishAudio.play();
+      return;
+    }
+    if (paused) return;
 
     const intervalId = setInterval(() => {
       if (!paused) setSecondsLeft((prev) => prev - 1);

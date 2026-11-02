@@ -209,6 +209,7 @@ export default function Tasks() {
             </p>
           </div>
           <CountdownTimer />
+          <CountdownTimer />
 
           {selectedOption !== "optionThree" && (
             <Button size="sm" onClick={() => setModalOpen(true)}>
