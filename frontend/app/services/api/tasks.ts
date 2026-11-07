@@ -181,6 +181,7 @@ export async function addTask(
       repetition: addTaskDto.repetition,
       dueDate: addTaskDto.dueDate,
       dueTime: addTaskDto.dueTime,
+      prayerNumber: addTaskDto.prayerNumber ?? null,
     }),
   };
 

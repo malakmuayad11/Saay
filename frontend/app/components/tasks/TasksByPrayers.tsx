@@ -1,5 +1,5 @@
 import { useAuth } from "~/context/AuthContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { TasksByPrayerDto } from "~/types/tasks/TasksByPrayerDto";
 import { getTasksByPrayers } from "~/services/api/tasks";
 import PrayerCard from "../ui/cards/PrayerCard";
@@ -8,13 +8,15 @@ import { t } from "i18next";
 type TasksByPrayersProps = {
   latitude: string;
   longtitude: string;
-  onDelete: (taskId: number) => void;
+  onDelete: (taskId: number) => void | Promise<void>;
+  refreshTrigger: number;
 };
 
 export default function TasksByPrayers({
   latitude,
   longtitude,
   onDelete,
+  refreshTrigger,
 }: TasksByPrayersProps) {
   const currentUserId = useAuth()?.currentUserId;
 
@@ -24,10 +26,8 @@ export default function TasksByPrayers({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadTasksByPrayers() {
+  const loadTasksByPrayers = useCallback(
+    async (signal?: AbortSignal) => {
       if (currentUserId == null || !latitude || !longtitude) {
         setIsLoading(false);
         return;
@@ -43,32 +43,39 @@ export default function TasksByPrayers({
           longtitude,
         );
 
-        if (ignore) return;
-
         if (typeof response === "string") {
           setError(response);
           return;
         }
 
         setTasksByPrayersData(response);
-        console.log(response);
-      } catch {
-        if (!ignore) {
-          setError("Failed to load tasks by prayer times.");
-        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unexpected error occurred.",
+        );
       } finally {
-        if (!ignore) {
+        if (!signal?.aborted) {
           setIsLoading(false);
         }
       }
-    }
+    },
+    [currentUserId, latitude, longtitude],
+  );
 
-    void loadTasksByPrayers();
+  async function handleDelete(taskId: number) {
+    await onDelete(taskId);
+    await loadTasksByPrayers();
+  }
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    void loadTasksByPrayers(controller.signal);
 
     return () => {
-      ignore = true;
+      controller.abort();
     };
-  }, [currentUserId, latitude, longtitude]);
+  }, [loadTasksByPrayers, refreshTrigger]);
 
   if (isLoading) {
     return (
@@ -99,7 +106,7 @@ export default function TasksByPrayers({
         time={tasksByPrayersData.prayerTimes[0]}
         statNum={tasksByPrayersData.fajrTasks.length}
         tasks={tasksByPrayersData.fajrTasks}
-        onDelete={onDelete}
+        onDelete={handleDelete}
       />
 
       <PrayerCard
@@ -107,7 +114,7 @@ export default function TasksByPrayers({
         time={tasksByPrayersData.prayerTimes[1]}
         statNum={tasksByPrayersData.dhuhaTasks.length}
         tasks={tasksByPrayersData.dhuhaTasks}
-        onDelete={onDelete}
+        onDelete={handleDelete}
       />
 
       <PrayerCard
@@ -115,7 +122,7 @@ export default function TasksByPrayers({
         time={tasksByPrayersData.prayerTimes[2]}
         statNum={tasksByPrayersData.dhuhrTasks.length}
         tasks={tasksByPrayersData.dhuhrTasks}
-        onDelete={onDelete}
+        onDelete={handleDelete}
       />
 
       <PrayerCard
@@ -123,7 +130,7 @@ export default function TasksByPrayers({
         time={tasksByPrayersData.prayerTimes[3]}
         statNum={tasksByPrayersData.asrTasks.length}
         tasks={tasksByPrayersData.asrTasks}
-        onDelete={onDelete}
+        onDelete={handleDelete}
       />
 
       <PrayerCard
@@ -131,7 +138,7 @@ export default function TasksByPrayers({
         time={tasksByPrayersData.prayerTimes[4]}
         statNum={tasksByPrayersData.maghribTasks.length}
         tasks={tasksByPrayersData.maghribTasks}
-        onDelete={onDelete}
+        onDelete={handleDelete}
       />
 
       <PrayerCard
@@ -139,14 +146,15 @@ export default function TasksByPrayers({
         time={tasksByPrayersData.prayerTimes[5]}
         statNum={tasksByPrayersData.ishaTasks.length}
         tasks={tasksByPrayersData.ishaTasks}
-        onDelete={onDelete}
+        onDelete={handleDelete}
       />
+
       <PrayerCard
         title={t("tasks.tasksWithoutPrayers")}
         time=""
         statNum={tasksByPrayersData.tasksWithoutPrayers.length}
         tasks={tasksByPrayersData.tasksWithoutPrayers}
-        onDelete={onDelete}
+        onDelete={handleDelete}
         className="md:col-span-2"
       />
     </div>

@@ -156,7 +156,11 @@ export function AddTaskModal({
       repetition: Number(repetition),
       dueDate,
       dueTime: dueTime || null,
+      prayerNumber: Number(prayer),
     });
+
+    console.log(prayer);
+    console.log(Number(prayer));
 
     if (typeof result === "string") {
       setError(result);

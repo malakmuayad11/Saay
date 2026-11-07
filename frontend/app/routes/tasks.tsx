@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ComponentCard from "~/components/ui/cards/ComponentCard";
 import Button from "~/components/ui/button/Button";
 import ChartTab, { type Option } from "~/components/ui/ChartTab";
@@ -17,13 +17,22 @@ import { AddTaskModal } from "~/components/tasks/AddTaskModal";
 import WeeklyCalendar from "~/components/ui/calendar/WeeklyCaledar";
 import TasksByPrayers from "~/components/tasks/TasksByPrayers";
 import { CountdownTimer } from "~/components/ui/Timer";
+import { getView, updateView } from "~/services/localStorage/view";
 
 export const meta = () => [{ title: t("routes.tasks") }];
 
 type Title = "tasks.today" | "tasks.tomorrow" | "tasks.thisWeek";
+type View = "normal" | "prayers";
 
 export default function Tasks() {
   const currentUserId = useAuth()?.currentUserId;
+
+  // Restore the previously saved view.
+  const [initialView] = useState<View>(() =>
+    getView() === "prayers" ? "prayers" : "normal",
+  );
+
+  const [view, setView] = useState<View>(initialView);
 
   const [title, setTitle] = useState<Title>("tasks.today");
   const [tasks, setTasks] = useState<TaskDto[] | null>(null);
@@ -32,17 +41,27 @@ export default function Tasks() {
   const [dueDate, setDueDate] = useState<string>(formatDate(new Date()));
   const [selectedOption, setSelectedOption] = useState<Option>("optionOne");
 
-  const [filterByPrayerTimes, setFilterByPrayerTimes] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longtitude, setLongtitude] = useState("");
-  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [isGettingLocation, setIsGettingLocation] = useState(
+    initialView === "prayers",
+  );
+
   const [prayerLocationError, setPrayerLocationError] = useState<string | null>(
     null,
   );
 
+  const [refreshPrayerTasks, setRefreshPrayerTasks] = useState(0);
+
+  // Prevent duplicate initial location requests in React Strict Mode.
+  const initialLocationRequested = useRef(false);
+
   const completedTasksCount = tasks?.filter((task) => task.isDone).length ?? 0;
 
   const totalTasksCount = tasks?.length ?? 0;
+
+  const isPrayerViewActive =
+    selectedOption === "optionOne" && view === "prayers";
 
   function formatDate(date: Date): string {
     return [
@@ -52,16 +71,82 @@ export default function Tasks() {
     ].join("-");
   }
 
+  // Persist the selected view.
+  useEffect(() => {
+    updateView(view);
+  }, [view]);
+
+  // Request location when restoring the prayer view after a page refresh.
+  useEffect(() => {
+    if (initialView !== "prayers" || initialLocationRequested.current) {
+      return;
+    }
+
+    initialLocationRequested.current = true;
+    requestLocation();
+  }, [initialView]);
+
+  // Get the user's location.
+  const requestLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setPrayerLocationError("Your browser does not support location access.");
+      setView("normal");
+      return;
+    }
+
+    setIsGettingLocation(true);
+    setPrayerLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude.toString());
+        setLongtitude(position.coords.longitude.toString());
+
+        setView("prayers");
+        setIsGettingLocation(false);
+      },
+      (error) => {
+        setIsGettingLocation(false);
+        setView("normal");
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setPrayerLocationError(
+              "Location permission was denied. Please allow location access in your browser.",
+            );
+            break;
+
+          case error.POSITION_UNAVAILABLE:
+            setPrayerLocationError(
+              "Your current location is unavailable. Please try again.",
+            );
+            break;
+
+          case error.TIMEOUT:
+            setPrayerLocationError(
+              "Getting your location timed out. Please try again.",
+            );
+            break;
+
+          default:
+            setPrayerLocationError(
+              "Unable to get your location. Please try again.",
+            );
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 300000,
+      },
+    );
+  }, []);
+
+  // Load tasks according to the selected tab.
   async function loadTasks(option: Option = selectedOption) {
     if (currentUserId == null) return;
 
     setSelectedOption(option);
-
-    if (option !== "optionOne") {
-      setFilterByPrayerTimes(false);
-      setPrayerLocationError(null);
-      setIsGettingLocation(false);
-    }
 
     switch (option) {
       case "optionOne": {
@@ -133,66 +218,22 @@ export default function Tasks() {
     }
   }
 
+  // Toggle between normal and prayer views.
   function handleFilterByPrayerTimesClick() {
-    if (filterByPrayerTimes) {
-      setFilterByPrayerTimes(false);
+    if (view === "prayers") {
+      setView("normal");
       setPrayerLocationError(null);
       return;
     }
 
-    if (!navigator.geolocation) {
-      setPrayerLocationError("Your browser does not support location access.");
+    // Reuse the previously obtained coordinates if available.
+    if (latitude && longtitude) {
+      setView("prayers");
       return;
     }
 
-    setIsGettingLocation(true);
-    setPrayerLocationError(null);
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude.toString());
-        setLongtitude(position.coords.longitude.toString());
-        setFilterByPrayerTimes(true);
-        setIsGettingLocation(false);
-      },
-      (error) => {
-        setIsGettingLocation(false);
-
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            setPrayerLocationError(
-              "Location permission was denied. Please allow location access in your browser.",
-            );
-            break;
-
-          case error.POSITION_UNAVAILABLE:
-            setPrayerLocationError(
-              "Your current location is unavailable. Please try again.",
-            );
-            break;
-
-          case error.TIMEOUT:
-            setPrayerLocationError(
-              "Getting your location timed out. Please try again.",
-            );
-            break;
-
-          default:
-            setPrayerLocationError(
-              "Unable to get your location. Please try again.",
-            );
-        }
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 300000,
-      },
-    );
+    requestLocation();
   }
-
-  const isPrayerViewActive =
-    selectedOption === "optionOne" && filterByPrayerTimes;
 
   return (
     <div className="min-h-screen rounded-2xl border border-gray-200 bg-white p-2 dark:border-gray-800 dark:bg-gray-900">
@@ -208,7 +249,8 @@ export default function Tasks() {
               {t("tasks.description")}
             </p>
           </div>
-          <CountdownTimer />
+
+          {selectedOption === "optionOne" && <CountdownTimer />}
 
           {selectedOption !== "optionThree" && (
             <Button size="sm" onClick={() => setModalOpen(true)}>
@@ -258,13 +300,13 @@ export default function Tasks() {
                     <button
                       type="button"
                       role="switch"
-                      aria-checked={filterByPrayerTimes}
+                      aria-checked={isPrayerViewActive}
                       aria-label="عرض حسب أوقات الصلوات"
                       aria-busy={isGettingLocation}
                       disabled={isGettingLocation}
                       onClick={handleFilterByPrayerTimesClick}
                       className={`flex h-5 w-9 shrink-0 items-center rounded-full p-0.5 transition-colors duration-200 disabled:cursor-wait disabled:opacity-60 ${
-                        filterByPrayerTimes
+                        isPrayerViewActive
                           ? "justify-end bg-[#1a3a9a]"
                           : "justify-start bg-gray-300 dark:bg-gray-600"
                       }`}
@@ -313,6 +355,7 @@ export default function Tasks() {
             latitude={latitude}
             longtitude={longtitude}
             onDelete={handleDelete}
+            refreshTrigger={refreshPrayerTasks}
           />
         ) : selectedOption !== "optionThree" ? (
           <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
@@ -338,7 +381,10 @@ export default function Tasks() {
         <AddTaskModal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
-          onTaskAdded={() => void loadTasks()}
+          onTaskAdded={() => {
+            void loadTasks();
+            setRefreshPrayerTasks((prev) => prev + 1);
+          }}
           dueDate={dueDate}
         />
       </ComponentCard>

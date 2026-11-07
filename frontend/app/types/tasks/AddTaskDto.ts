@@ -5,4 +5,5 @@ export interface AddTaskDto {
   repetition: number;
   dueDate: string;
   dueTime: string | null;
+  prayerNumber?: number;
 }

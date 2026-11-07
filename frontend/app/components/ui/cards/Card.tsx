@@ -19,11 +19,9 @@ export default function Card({
     >
       {Icon && (
         <div className="flex items-center justify-between">
-          (
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700">
             <Icon className="size-6 text-gray-800 dark:text-white/90" />
           </div>
-          )
         </div>
       )}
 
