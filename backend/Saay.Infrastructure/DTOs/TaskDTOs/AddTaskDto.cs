@@ -26,5 +26,7 @@ namespace Saay.Infrastructure.DTOs.TaskDTOs
 
         [FutureTime(ErrorMessage = "DueTime must be a future time.")]
         public TimeOnly? DueTime { get; set; }
+
+        public byte? PrayerNumber { get; set; }
     }
 }

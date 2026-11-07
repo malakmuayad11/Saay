@@ -24,7 +24,8 @@ namespace Saay.Repository.Classes
                 DueDate = task.DueDate,
                 DueTime = task.DueTime,
                 IsDone = false,
-                IsReminderSent = false
+                IsReminderSent = false,
+                PrayerNumber = task.PrayerNumber
             };
             _context.Tasks.Add(newTask);
             return await _context.SaveChangesAsync() > 0;
@@ -50,7 +51,8 @@ namespace Saay.Repository.Classes
                             DueDate = task.DueDate.AddDays(i * 7),
                             DueTime = task.DueTime,
                             IsDone = false,
-                            IsReminderSent = false
+                            IsReminderSent = false,
+                            PrayerNumber = task.PrayerNumber
                         }
                     );
                 }
@@ -70,7 +72,8 @@ namespace Saay.Repository.Classes
                             DueDate = task.DueDate.AddMonths(i),
                             DueTime = task.DueTime,
                             IsDone = false,
-                            IsReminderSent = false
+                            IsReminderSent = false,
+                            PrayerNumber = task.PrayerNumber
                         }
                     );
                 }
@@ -89,7 +92,8 @@ namespace Saay.Repository.Classes
                             DueDate = task.DueDate.AddDays(i - 1),
                             DueTime = task.DueTime,
                             IsDone = false,
-                            IsReminderSent = false
+                            IsReminderSent = false,
+                            PrayerNumber = task.PrayerNumber
                         }
                     );
                 }

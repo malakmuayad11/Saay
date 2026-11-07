@@ -42,7 +42,8 @@ namespace Saay.Services.Classes
                 TaskCategoryId = addTaskDto.TaskCategoryId,
                 Title = addTaskDto.Title,
                 DueDate = addTaskDto.DueDate,
-                DueTime = addTaskDto.DueTime
+                DueTime = addTaskDto.DueTime,
+                PrayerNumber = addTaskDto.PrayerNumber
             };
             return await _taskRepository.AddTaskAsync(taskEntity, addTaskDto.UserId, numOfDays);
         }
