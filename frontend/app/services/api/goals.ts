@@ -2,6 +2,7 @@ import type { Goal } from "~/types/goals/Goal";
 import { apiFetch } from "./main";
 import type { GoalCategoryDto } from "~/types/goals/GoalCategoryDto";
 import type { UpdateGoalDto } from "~/types/goals/UpdateGoalDto";
+import type { GoalOptionDto } from "~/types/goals/GoalOptionDto";
 
 const Base_URL: string = "https://saay.runasp.net";
 
@@ -247,4 +248,33 @@ export async function deleteGoal(goalId: number): Promise<boolean | string> {
   }
 
   return (await response.json()) as boolean;
+}
+
+export async function getUserGoalOptions(
+  userId: number,
+): Promise<GoalOptionDto[] | string> {
+  const url: URL = new URL(`api/saay/goals/options/${userId}/`, Base_URL);
+
+  const options: RequestInit = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  const response = await apiFetch(url, options);
+
+  if (typeof response === "string") {
+    return response;
+  }
+
+  if (response.status === 404) {
+    return "User not found.";
+  }
+
+  if (!response.ok) {
+    return "An error occurred. Please try again later.";
+  }
+
+  return (await response.json()) as GoalOptionDto[];
 }

@@ -182,6 +182,7 @@ export async function addTask(
       dueDate: addTaskDto.dueDate,
       dueTime: addTaskDto.dueTime,
       prayerNumber: addTaskDto.prayerNumber ?? null,
+      goalId: addTaskDto.goalId ?? null,
     }),
   };
 

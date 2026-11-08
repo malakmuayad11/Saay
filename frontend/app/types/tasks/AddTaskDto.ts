@@ -6,4 +6,5 @@ export interface AddTaskDto {
   dueDate: string;
   dueTime: string | null;
   prayerNumber?: number;
+  goalId?: number;
 }

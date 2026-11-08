@@ -515,6 +515,8 @@
     "calendarDescription": "Click on a date to add a new task",
     "fields": {
       "taskTitle": "Title",
+      "taskLinkToGoal": "Link to a goal (Optional)",
+      "taskLinkToGoalPlaceholder": "Choose a goal",
       "taskCategory": "Task Category",
       "taskCategoryPlaceholder": "Choose a category",
       "taskRepetition": "Repetition",

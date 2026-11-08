@@ -55,6 +55,13 @@ export default function TasksTable({
               </Badge>
             </TableCell>
 
+            {/* Goal linked to */}
+            <TableCell className="px-2 py-3 sm:px-4 text-center">
+              <Badge color="light">
+                {task.goalTitle?.slice(0, 13).concat("...") ?? "-"}
+              </Badge>
+            </TableCell>
+
             {/* Delete */}
             {!readOnly && (
               <TableCell className="px-2 py-3 text-theme-sm text-gray-500 sm:px-4 dark:text-gray-400">

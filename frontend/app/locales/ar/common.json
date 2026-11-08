@@ -511,6 +511,8 @@
     "calendarDescription": "قم بالضغط على أحد التواريخ لإضافة مهمة جديدة",
     "fields": {
       "taskTitle": "العنوان",
+      "taskLinkToGoal": "ربط بهدف (اختياري)",
+      "taskLinkToGoalPlaceholder": "قم باختيار هدف",
       "taskCategory": "التصنيف",
       "taskCategoryPlaceholder": "قم باختيار تصنيف",
       "taskRepetition": "التكرار",

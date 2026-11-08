@@ -9,6 +9,8 @@ import { useAuth } from "~/context/AuthContext";
 import Alert from "~/components/ui/Alert";
 import type { TaskCategoryDto } from "~/types/tasks/TaskCategoryDto";
 import { t } from "i18next";
+import type { GoalOptionDto } from "~/types/goals/GoalOptionDto";
+import { getUserGoalOptions } from "~/services/api/goals";
 
 type AddTaskModalProps = {
   isOpen: boolean;
@@ -28,6 +30,7 @@ export function AddTaskModal({
   const [taskTitle, setTaskTitle] = useState("");
   const [taskTitleValid, setTaskTitleValid] = useState(true);
 
+  const [goalId, setGoalId] = useState("");
   const [taskCategoryId, setTaskCategoryId] = useState("");
   const [taskCategoryValid, setTaskCategoryValid] = useState(true);
 
@@ -43,6 +46,7 @@ export function AddTaskModal({
   const [success, setSuccess] = useState(false);
 
   const [categories, setCategories] = useState<TaskCategoryDto[]>([]);
+  const [goals, setGoals] = useState<GoalOptionDto[]>([]);
 
   /*
    * Load task categories.
@@ -64,6 +68,28 @@ export function AddTaskModal({
       ignore = true;
     };
   }, []);
+
+  /*
+   * Load user goals.
+   */
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadGoals() {
+      if (!currentUserId) return;
+      const result = await getUserGoalOptions(currentUserId);
+
+      if (!ignore && typeof result !== "string") {
+        setGoals(result);
+      }
+    }
+
+    loadGoals();
+
+    return () => {
+      ignore = true;
+    };
+  }, [currentUserId]);
 
   /*
    * Reset the form whenever the modal opens.
@@ -109,11 +135,18 @@ export function AddTaskModal({
     { value: "5", label: String(t("tasks.prayers.isha")) },
   ];
 
+  const goalOptions = goals.map((goal) => ({
+    value: String(goal.goalId),
+    label: String(goal.title).slice(0, 11) + "...",
+  }));
+
   function resetForm() {
     setTaskTitle("");
+    setGoalId("");
     setTaskCategoryId("");
     setRepetition("");
     setDueTime("");
+    setPrayer("");
 
     setTaskTitleValid(true);
     setTaskCategoryValid(true);
@@ -156,11 +189,9 @@ export function AddTaskModal({
       repetition: Number(repetition),
       dueDate,
       dueTime: dueTime || null,
-      prayerNumber: Number(prayer),
+      prayerNumber: prayer ? Number(prayer) : undefined,
+      goalId: goalId ? Number(goalId) : undefined,
     });
-
-    console.log(prayer);
-    console.log(Number(prayer));
 
     if (typeof result === "string") {
       setError(result);
@@ -227,6 +258,22 @@ export function AddTaskModal({
                 }
                 onBlur={() => setTaskTitleValid(taskTitle.trim() !== "")}
                 error={!taskTitleValid}
+              />
+            </div>
+
+            {/* Link to a goal */}
+            <div>
+              <Label>{t("tasks.fields.taskLinkToGoal")}</Label>
+
+              <Select
+                options={goalOptions}
+                value={goalId}
+                placeholder={String(
+                  t("tasks.fields.taskLinkToGoalPlaceholder"),
+                )}
+                onChange={(value) => {
+                  setGoalId(value);
+                }}
               />
             </div>
 

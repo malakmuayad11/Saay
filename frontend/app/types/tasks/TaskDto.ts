@@ -5,4 +5,5 @@ export interface TaskDto {
   isDone: boolean;
   dueDate: string;
   dueTime: string | null;
+  goalTitle: string | null;
 }

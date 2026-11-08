@@ -69,7 +69,6 @@ export default function UserDropdown({ onLogout }: UserDropdownProps) {
       if (currentUserId === null || currentUserId === undefined) return;
       const result = await getUser(currentUserId);
       if (!ignore && typeof result !== "string") {
-        console.log("User profile URL:", result.profilePictureUrl);
         setUser(result);
       }
     }
