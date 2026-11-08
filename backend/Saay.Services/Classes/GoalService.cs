@@ -9,7 +9,7 @@ namespace Saay.Services.Classes
     {
         private readonly IGoalRepository _goalRepository;
         private readonly IUserRepository _userRepository;
-        
+
 
         public GoalService(IGoalRepository goalRepository, IUserRepository userRepository)
         {
@@ -95,7 +95,7 @@ namespace Saay.Services.Classes
 
         public async Task<GoalDto> GetGoalByIdAsync(int goalId)
         {
-           Goal goal = await _goalRepository.GetGoalByIdAsync(goalId);
+            Goal goal = await _goalRepository.GetGoalByIdAsync(goalId);
 
             if (goal == null) return null;
 
@@ -112,5 +112,19 @@ namespace Saay.Services.Classes
 
         public async Task<bool> IsGoalOwner(int userId, int goalId) =>
             await _goalRepository.IsGoalOwner(userId, goalId);
+
+        public async Task<List<GoalOptionDto>> GetUserGoalOptions(int userId)
+        {
+            if (!await _userRepository.DoesUserExist(userId))
+                return null; // User does not exist
+
+            List<Goal> goals = await _goalRepository.GetUserGoalsAsync(userId, 1, 1000);
+
+            return goals.Select(goal => new GoalOptionDto
+            {
+                GoalId = goal.GoalId,
+                Title = goal.Title
+            }).ToList();
+        }
     }
 }

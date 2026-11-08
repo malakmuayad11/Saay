@@ -20,7 +20,11 @@ public partial class Task
 
     public byte? PrayerNumber { get; set; }
 
+    public int? GoalId { get; set; }
+
     public virtual TaskCategory TaskCategory { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
+
+    public virtual Goal? Goal { get; set; }
 }

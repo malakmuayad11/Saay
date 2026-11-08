@@ -269,5 +269,31 @@ namespace Saay.API.Controllers
 
             return Ok(tasksCategories);
         }
+
+        [EnableRateLimiting("LightOpsLimiter")]
+        [Authorize]
+        [HttpGet("options/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<ICollection<GoalDto>>> GetUserGoalOptions(int userId)
+        {
+            if (!await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attmpted to view a goal without ownership.",
+                  userId);
+                return Forbid();
+            }
+
+            List<GoalOptionDto> goals = await _goalService.GetUserGoalOptions(userId);
+
+            if (goals == null)
+                return NotFound("User with the specified ID does not exist.");
+
+            return Ok(goals);
+        }
     }
 }

@@ -43,7 +43,8 @@ namespace Saay.Services.Classes
                 Title = addTaskDto.Title,
                 DueDate = addTaskDto.DueDate,
                 DueTime = addTaskDto.DueTime,
-                PrayerNumber = addTaskDto.PrayerNumber
+                PrayerNumber = addTaskDto.PrayerNumber,
+                GoalId = addTaskDto.GoalId,
             };
             return await _taskRepository.AddTaskAsync(taskEntity, addTaskDto.UserId, numOfDays);
         }
@@ -95,7 +96,8 @@ namespace Saay.Services.Classes
                 DueDate = updateTaskDto.DueDate,
                 DueTime = updateTaskDto.DueTime,
                 IsDone = updateTaskDto.IsDone,
-                IsReminderSent = updateTaskDto.IsReminderSent
+                IsReminderSent = updateTaskDto.IsReminderSent,
+                GoalId = updateTaskDto.GoalId
             };
 
             return await _taskRepository.UpdateTaskAsync(updateTaskDto.TaskId, task);

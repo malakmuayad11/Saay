@@ -130,6 +130,12 @@ public partial class SaayContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Tasks_Users");
+
+            entity.HasOne(d => d.Goal)
+                .WithMany(p => p.Tasks)
+                .HasForeignKey(d => d.GoalId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_Tasks_Goals");
         });
 
         modelBuilder.Entity<Token>(entity =>

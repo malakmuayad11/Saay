@@ -22,4 +22,6 @@ public partial class Goal
     public virtual GoalCategory GoalCategory { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
+
+    public virtual ICollection<Saay.Data.Entities.Task> Tasks { get; set; } = new List<Saay.Data.Entities.Task>();
 }

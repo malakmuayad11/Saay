@@ -25,7 +25,8 @@ namespace Saay.Repository.Classes
                 DueTime = task.DueTime,
                 IsDone = false,
                 IsReminderSent = false,
-                PrayerNumber = task.PrayerNumber
+                PrayerNumber = task.PrayerNumber,
+                GoalId = task.GoalId
             };
             _context.Tasks.Add(newTask);
             return await _context.SaveChangesAsync() > 0;
@@ -52,7 +53,8 @@ namespace Saay.Repository.Classes
                             DueTime = task.DueTime,
                             IsDone = false,
                             IsReminderSent = false,
-                            PrayerNumber = task.PrayerNumber
+                            PrayerNumber = task.PrayerNumber,
+                            GoalId = task.GoalId
                         }
                     );
                 }
@@ -73,7 +75,8 @@ namespace Saay.Repository.Classes
                             DueTime = task.DueTime,
                             IsDone = false,
                             IsReminderSent = false,
-                            PrayerNumber = task.PrayerNumber
+                            PrayerNumber = task.PrayerNumber,
+                            GoalId = task.GoalId
                         }
                     );
                 }
@@ -93,7 +96,8 @@ namespace Saay.Repository.Classes
                             DueTime = task.DueTime,
                             IsDone = false,
                             IsReminderSent = false,
-                            PrayerNumber = task.PrayerNumber
+                            PrayerNumber = task.PrayerNumber,
+                            GoalId = task.GoalId
                         }
                     );
                 }
@@ -116,7 +120,8 @@ namespace Saay.Repository.Classes
                     Title = task.Title,
                     IsDone = task.IsDone,
                     DueDate = task.DueDate,
-                    DueTime = task.DueTime
+                    DueTime = task.DueTime,
+                    GoalTitle = task.GoalId.HasValue ? task.Goal.Title : null,
                 })
                 .OrderBy(task => task.DueTime == null)
                 .ThenBy(task => task.DueTime)
@@ -136,7 +141,8 @@ namespace Saay.Repository.Classes
                     Title = task.Title,
                     IsDone = task.IsDone,
                     DueDate = task.DueDate,
-                    DueTime = task.DueTime
+                    DueTime = task.DueTime,
+                    GoalTitle = task.GoalId.HasValue ? task.Goal.Title : null
                 })
                 .OrderBy(task => task.DueTime == null)
                 .ThenBy(task => task.DueTime)
@@ -160,7 +166,8 @@ namespace Saay.Repository.Classes
                     Title = task.Title,
                     IsDone = task.IsDone,
                     DueDate = task.DueDate,
-                    DueTime = task.DueTime
+                    DueTime = task.DueTime,
+                    GoalTitle = task.GoalId.HasValue ? task.Goal.Title : null
                 })
                 .OrderBy(task => task.DueDate)
                 .ThenBy(task => task.DueTime)
@@ -194,6 +201,7 @@ namespace Saay.Repository.Classes
             task.DueTime = newTask.DueTime;
             task.IsDone = newTask.IsDone;
             task.IsReminderSent = newTask.IsReminderSent;
+            task.GoalId = newTask.GoalId;
 
             return await _context.SaveChangesAsync() >= 0;
         }
@@ -230,7 +238,8 @@ namespace Saay.Repository.Classes
                 TaskId = task.TaskId,
                 TaskCategoryTitle = task.TaskCategory.Title,
                 Title = task.Title,
-                IsDone = task.IsDone
+                IsDone = task.IsDone,
+                GoalTitle = task.GoalId.HasValue ? task.Goal.Title : null,
             })
             .FirstOrDefaultAsync(task => task.TaskId == taskId);
 
@@ -274,51 +283,81 @@ namespace Saay.Repository.Classes
 
         public async Task<List<TaskDto>> GetTasksByPrayerAsync(int userId, byte prayerNumber, DateOnly dueDate)
         {
-            List<Data.Entities.Task> tasks =
-             await _context.Tasks
-             .Include(t => t.TaskCategory)
-             .Where(t => t.UserId == userId && t.PrayerNumber == prayerNumber && t.DueDate == dueDate)
-             .ToListAsync();
+            //List<Data.Entities.Task> tasks =
+            // await _context.Tasks
+            // .Include(t => t.TaskCategory)
+            // .Where(t => t.UserId == userId && t.PrayerNumber == prayerNumber && t.DueDate == dueDate)
+            // .ToListAsync();
 
-            List<TaskDto> taskDtos = new List<TaskDto>();
-
-            foreach(Data.Entities.Task task in tasks) {
-                taskDtos.Add(new TaskDto
+            return await _context.Tasks
+                .Where(t => t.UserId == userId && t.PrayerNumber == prayerNumber && t.DueDate == dueDate)
+                .Select(t => new TaskDto
                 {
-                    TaskId = task.TaskId,
-                    TaskCategoryTitle = task.TaskCategory.Title,
-                    Title = task.Title,
-                    IsDone = task.IsDone,
-                    DueDate = task.DueDate,
-                    DueTime = task.DueTime
-                });
-            }
-            return taskDtos;
+                    TaskId = t.TaskId,
+                    TaskCategoryTitle = t.TaskCategory.Title,
+                    Title = t.Title,
+                    IsDone = t.IsDone,
+                    DueDate = t.DueDate,
+                    DueTime = t.DueTime,
+                    GoalTitle = t.Goal.Title ?? null
+                })
+                .ToListAsync();
+
+            //List<TaskDto> taskDtos = new List<TaskDto>();
+
+            //foreach(Data.Entities.Task task in tasks) {
+            //    taskDtos.Add(new TaskDto
+            //    {
+            //        TaskId = task.TaskId,
+            //        TaskCategoryTitle = task.TaskCategory.Title,
+            //        Title = task.Title,
+            //        IsDone = task.IsDone,
+            //        DueDate = task.DueDate,
+            //        DueTime = task.DueTime,
+            //        GoalTitle = task.Goal?.Title ?? null
+            //    });
+            //}
+            //return taskDtos;
         }
 
         public async Task<List<TaskDto>> GetTasksWithoutPrayerAsync(int userId, DateOnly dueDate)
         {
-            List<Data.Entities.Task> tasks =
-             await _context.Tasks
-             .Include(t => t.TaskCategory)
-             .Where(t => t.UserId == userId && t.PrayerNumber == null && t.DueDate == dueDate)
-             .ToListAsync();
-
-            List<TaskDto> taskDtos = new List<TaskDto>();
-
-            foreach (Data.Entities.Task task in tasks)
-            {
-                taskDtos.Add(new TaskDto
+            return await _context.Tasks
+                .Where(t => t.UserId == userId && t.PrayerNumber == null && t.DueDate == dueDate)
+                .Select(t => new TaskDto
                 {
-                    TaskId = task.TaskId,
-                    TaskCategoryTitle = task.TaskCategory.Title,
-                    Title = task.Title,
-                    IsDone = task.IsDone,
-                    DueDate = task.DueDate,
-                    DueTime = task.DueTime
-                });
-            }
-            return taskDtos;
+                    TaskId = t.TaskId,
+                    TaskCategoryTitle = t.TaskCategory.Title,
+                    Title = t.Title,
+                    IsDone = t.IsDone,
+                    DueDate = t.DueDate,
+                    DueTime = t.DueTime,
+                    GoalTitle = t.Goal.Title ?? null
+                })
+                .ToListAsync();
+            //List<Data.Entities.Task> tasks =
+            // await _context.Tasks
+            // .Include(t => t.TaskCategory)
+            // .Include(t => t.Goal)
+            // .Where(t => t.UserId == userId && t.PrayerNumber == null && t.DueDate == dueDate)
+            // .ToListAsync();
+
+            //List<TaskDto> taskDtos = new List<TaskDto>();
+
+            //foreach (Data.Entities.Task task in tasks)
+            //{
+            //    taskDtos.Add(new TaskDto
+            //    {
+            //        TaskId = task.TaskId,
+            //        TaskCategoryTitle = task.TaskCategory.Title,
+            //        Title = task.Title,
+            //        IsDone = task.IsDone,
+            //        DueDate = task.DueDate,
+            //        DueTime = task.DueTime,
+            //        GoalTitle = task.Goal?.Title ?? null
+            //    });
+            //}
+            //return taskDtos;
         }
 
     }

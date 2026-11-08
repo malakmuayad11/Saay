@@ -8,6 +8,6 @@
         public bool IsDone { get; set; }
         public DateOnly DueDate { get; set; }
         public TimeOnly? DueTime { get; set; }
-
+        public string? GoalTitle { get; set; }
     }
 }

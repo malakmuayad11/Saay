@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Saay.Infrastructure.DTOs.CategoryDTOs;
 using Saay.Infrastructure.DTOs.TaskDTOs;
-using Saay.Infrastructure.DTOs.UserDTOs;
 using Saay.Services.Interfaces;
 using System.Security.Claims;
 

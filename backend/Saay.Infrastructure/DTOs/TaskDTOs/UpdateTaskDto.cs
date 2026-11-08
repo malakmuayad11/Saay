@@ -33,5 +33,8 @@ namespace Saay.Infrastructure.DTOs.TaskDTOs
 
         [Required]
         public bool IsReminderSent { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "GoalId must be a positive integer.")]
+        public int? GoalId { get; set; }
     }
 }
