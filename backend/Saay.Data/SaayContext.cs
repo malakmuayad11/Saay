@@ -30,9 +30,8 @@ public partial class SaayContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<AIConversation> AIConversations { get; set; }
-
     public DbSet<EmailConfirmationToken> EmailConfirmationTokens { get; set; }
+
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -175,29 +174,6 @@ public partial class SaayContext : DbContext
                 .HasDefaultValue(false);
         });
 
-        modelBuilder.Entity<AIConversation>(entity =>
-        {
-            entity.ToTable("AIConversations");
-
-            entity.HasKey(e => e.ConversationId);
-
-            entity.Property(e => e.ConversationId)
-                .HasColumnName("ConversationID")
-                .ValueGeneratedOnAdd();
-
-            entity.Property(e => e.UserId)
-                .HasColumnName("UserID");
-
-            entity.Property(e => e.PreviousInteractionId)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.AIConversations)
-                .HasForeignKey(e => e.UserId)
-                .HasConstraintName("FK_AIConversations_Users")
-                .OnDelete(DeleteBehavior.Cascade);
-        });
 
         modelBuilder.Entity<EmailConfirmationToken>(entity =>
         {
