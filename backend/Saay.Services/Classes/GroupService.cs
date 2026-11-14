@@ -70,6 +70,13 @@ namespace Saay.Services.Classes
             }
         }
 
+        public async Task<List<GroupDto>> GetUserGroupsAsync(int userId)
+        {
+            if (!await _userRepository.DoesUserExist(userId)) return null;
+
+            return await _groupRepository.GetUserGroupsAsync(userId);
+        }
+
         public async Task<bool?> InviteUserToGroup(int groupId, string email)
         {
             if (!await _userRepository.DoesEmailExist(email))

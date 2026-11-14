@@ -1,4 +1,5 @@
 ﻿using Saay.Data.Entities;
+using Saay.Infrastructure.DTOs.GroupDTOs;
 
 namespace Saay.Repository.Interfaces
 {
@@ -7,5 +8,7 @@ namespace Saay.Repository.Interfaces
         public Task<int?> AddGroupAsync(Group group);
 
         public Task<string?> GetGroupName (int groupId);
+
+        public Task<List<GroupDto>> GetUserGroupsAsync(int userId);
     }
 }
