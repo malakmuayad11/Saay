@@ -6,6 +6,7 @@ export default [
   route("signin", "routes/signin.tsx"),
   route("signup", "routes/signup.tsx"),
   route("confirm", "routes/confirm.tsx"),
+  route("invitation-confirm", "routes/invitation-confirm.tsx"),
   route("notConfirmed", "routes/notConfirmed.tsx"),
   route("reset-password", "routes/forgetPassword.tsx"),
 

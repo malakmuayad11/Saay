@@ -1,6 +1,7 @@
 {
   "routes": {
     "confirm": "Confirm | Saay",
+    "acceptInvitation": "Accept Group Invitation",
     "goals": "Goals | Saay",
     "habits": "Habits | Saay",
     "home": "Home | Saay",
@@ -622,5 +623,27 @@
     "title": "ERROR",
     "message": "We can’t seem to find the page you are looking for!",
     "backHome": "Back to Home Page"
+  },
+  "acceptInvitation": {
+    "title": "You've Been Invited!",
+    "description": "You've received an invitation to join a group on Saay. Accept the invitation to become a member and start connecting with your group.",
+    "success": {
+      "title": "Welcome to the Group!",
+      "description": "You've successfully accepted the invitation and joined the group. You can now connect and collaborate with other members."
+    },
+    "actions": {
+      "accept": "Accept Invitation",
+      "accepting": "Accepting Invitation...",
+      "home": "Go to Home"
+    },
+    "errors": {
+      "title": "Unable to Accept Invitation",
+      "missingToken": "The invitation link is invalid or missing its token. Please use the invitation link you received.",
+      "unexpected": "Something went wrong while accepting your invitation. Please try again later."
+    },
+    "footer": {
+      "notice": "By accepting this invitation, you agree to join the group.",
+      "tagline": "Build better habits, together."
+    }
   }
 }
