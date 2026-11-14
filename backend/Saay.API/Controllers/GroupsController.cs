@@ -66,7 +66,7 @@ namespace Saay.API.Controllers
             {
                 _logger.LogWarning("User {userId} attempted to invite a member to a group without ownership.",
                    userId);
-                return Unauthorized();
+                return Forbid();
             }
 
             bool? result = await _groupService.InviteUserToGroup(inviteMemberDto.GroupId, inviteMemberDto.UserEmail);
@@ -80,6 +80,7 @@ namespace Saay.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPost("users")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -97,6 +98,33 @@ namespace Saay.API.Controllers
                 return BadRequest("User is already a member of the group.");
 
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("{userId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ICollection<GroupDto>>> GetUserGroupsAsync(int userId)
+        {
+            string? userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(userIdClaim, out int id) ||
+                !await _ownershipAuthorizationService.IsOwnerAsync(User, userId))
+            {
+                _logger.LogWarning("User {userId} attempted to invite a member to a group without ownership.",
+                   userId);
+                return Forbid();
+            }
+
+            List<GroupDto> groups = await _groupService.GetUserGroupsAsync(userId);
+
+            if (groups == null) return NotFound("User not found");
+
+            return Ok(groups);
         }
     }
 }
