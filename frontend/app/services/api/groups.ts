@@ -5,7 +5,7 @@ const Base_URL: string = "https://saay.runasp.net";
 export async function acceptGroupInvitation(
   token: string,
 ): Promise<boolean | string> {
-  const url: URL = new URL("api/saay/groups", Base_URL);
+  const url: URL = new URL("api/saay/groups/users", Base_URL);
 
   const options: RequestInit = {
     method: "POST",
