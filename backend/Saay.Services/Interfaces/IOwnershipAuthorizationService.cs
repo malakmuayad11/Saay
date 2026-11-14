@@ -13,5 +13,7 @@ namespace Saay.Services.Interfaces
         public Task<bool> IsHabitOwner(ClaimsPrincipal user, int habitId);
 
         public Task<bool> IsTaskOwner(ClaimsPrincipal user, int taskId);
+
+        public Task<bool> IsGroupOwner(ClaimsPrincipal user, int groupId);
     }
 }

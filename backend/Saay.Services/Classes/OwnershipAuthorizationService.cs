@@ -70,5 +70,15 @@ namespace Saay.Services.Classes
 
             return result.Succeeded;
         }
+
+        public async Task<bool> IsGroupOwner(ClaimsPrincipal user, int groupId)
+        {
+            var result = await _authorizationService.AuthorizeAsync(
+                user,
+                groupId,
+                "GroupOwner");
+            return result.Succeeded;
+        }
+
     }
 }

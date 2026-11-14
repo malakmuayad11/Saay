@@ -14,6 +14,7 @@ using Saay.Services.Authorization.Handlers;
 using Saay.Services.Authorization.Requirements;
 using Saay.Services.Classes;
 using Saay.Services.Interfaces;
+using Saay.Services.Interfacess;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -76,6 +77,9 @@ namespace Saay.Extensions
             services.AddScoped<IImageStorageService, ImgBBImageStorageService>();
             services.AddHttpClient<AladhanPrayerService>();
             services.AddScoped<IPrayerService, AladhanPrayerService>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IUserGroupService, UserGroupService>();
+            services.AddScoped<IGroupInvitationTokenService, GroupInvitationTokenService>();
 
             return services;
         }
@@ -92,6 +96,9 @@ namespace Saay.Extensions
             services.AddScoped<IUserTokenRepository, UserTokenRpository>();
             services.AddScoped<IEmailConfirmationRepository, EmailConfirmationRepository>();
             services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IUserGroupRepository, UserGroupRepository>();
+            services.AddScoped<IGroupInvitationTokenRepository, GroupInvitationTokenRepository>();
 
             return services;
         }
@@ -193,6 +200,13 @@ namespace Saay.Extensions
                     policy.Requirements.Add(new TaskOwnerRequirement()));
             });
             services.AddScoped<IAuthorizationHandler, TaskOwnerHandler>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupOwner", policy =>
+                    policy.Requirements.Add(new GroupOwnerRequirement()));
+            });
+            services.AddScoped<IAuthorizationHandler, GroupOwnerHandler>();
 
             return services;
         }

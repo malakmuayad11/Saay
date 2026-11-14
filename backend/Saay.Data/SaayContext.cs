@@ -34,6 +34,14 @@ public partial class SaayContext : DbContext
 
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
+    public virtual DbSet<Group> Groups { get; set; }
+
+    public virtual DbSet<UserGroup> UsersGroups { get; set; }
+
+    public virtual DbSet<Challenge> Challenges { get; set; }
+
+    public DbSet<GroupInvitationToken> GroupInvitationTokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TaskCategory>(entity =>
@@ -226,6 +234,132 @@ public partial class SaayContext : DbContext
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PasswordResetTokens_Users");
+        });
+
+        modelBuilder.Entity<Group>(entity =>
+        {
+            entity.ToTable("Groups");
+
+            entity.HasKey(e => e.GroupId)
+                .HasName("PK_Groups_GroupID");
+
+            entity.Property(e => e.GroupId)
+                .HasColumnName("GroupID")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(200);
+
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("date")
+                .HasDefaultValueSql("CAST(GETDATE() AS DATE)")
+                .ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<UserGroup>(entity =>
+        {
+            entity.ToTable("UsersGroups");
+
+            entity.HasKey(e => new { e.GroupId, e.UserId })
+                .HasName("PK_UsersGroups_GroupID_UserID");
+
+            entity.Property(e => e.GroupId)
+                .HasColumnName("GroupID");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("UserID");
+
+            entity.Property(e => e.Role)
+                .HasColumnType("tinyint")
+                .IsRequired();
+
+            entity.HasOne(e => e.Group)
+                .WithMany(g => g.UsersGroups)
+                .HasForeignKey(e => e.GroupId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_UsersGroups_Groups");
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.UsersGroups)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_UsersGroups_Users");
+        });
+
+        modelBuilder.Entity<Challenge>(entity =>
+        {
+            entity.ToTable("Challenges", table =>
+                table.HasCheckConstraint(
+                    "CK_Challenges_Dates",
+                    "[EndDate] >= [StartDate]"));
+
+            entity.HasKey(e => e.ChallengeId)
+                .HasName("PK_Challenges_ChallengeID");
+
+            entity.Property(e => e.ChallengeId)
+                .HasColumnName("ChallengeID")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Title)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(200);
+
+            entity.Property(e => e.StartDate)
+                .HasColumnType("date");
+
+            entity.Property(e => e.EndDate)
+                .HasColumnType("date");
+
+            entity.Property(e => e.GroupId)
+                .HasColumnName("GroupID");
+
+            entity.HasOne(e => e.Group)
+                .WithMany(g => g.Challenges)
+                .HasForeignKey(e => e.GroupId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Challenges_Groups");
+        });
+
+        modelBuilder.Entity<GroupInvitationToken>(entity =>
+        {
+            entity.ToTable("GroupInvitationTokens");
+
+            entity.HasKey(e => e.GroupInvitationTokenId);
+
+            entity.Property(e => e.TokenHash)
+                .IsRequired()
+                .HasMaxLength(64)
+                .IsUnicode(false);
+
+            entity.HasIndex(e => e.TokenHash)
+                .IsUnique();
+
+            entity.Property(e => e.ExpiresAt)
+                .HasColumnType("datetime2")
+                .IsRequired();
+
+            entity.Property(e => e.UsedAt)
+                .HasColumnType("datetime2")
+                .IsRequired(false);
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_GroupInvitationTokens_Users");
+
+            entity.HasOne(e => e.Group)
+                .WithMany()
+                .HasForeignKey(e => e.GroupId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_GroupInvitationTokens_Groups");
         });
 
         OnModelCreatingPartial(modelBuilder);

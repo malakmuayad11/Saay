@@ -117,5 +117,52 @@ namespace Saay.Services.Classes
             _logger.LogInformation($"Email sent successfully to {to}");
             return true;
         }
+
+        private MimeMessage _GenerateGroupInvitationMessage(string EmailFrom, string EmailTo, string Receiver, string Sender, string invitationURL)
+        {
+            MimeMessage message = new MimeMessage();
+            message.From.Add(new MailboxAddress(Sender, EmailFrom));
+            message.To.Add(new MailboxAddress(Receiver, EmailTo));
+            message.Subject = "Join a New Group on Saay!";
+            message.Body = new TextPart("html")
+            {
+                Text = $"""
+                <h2>Hello, {Receiver}!</h2>
+
+                <p>You are invited to join a new group on Saay. Please click the following link to accept this invitation.
+                </p>
+
+                <p>
+                    <a href="{invitationURL}">
+                        Join the new group.
+                    </a>
+                <p>If you don't want to join the group, please skip this email.</p>
+                """
+            };
+            return message;
+        }
+        
+        public async Task<bool> SendGroupInvitationAsync(string to, string subject, string recipientName, string groupName, string invitationUrl)
+        {
+            MimeMessage Message = _GenerateGroupInvitationMessage(_emailFrom, to, recipientName, "Saay سعي", invitationUrl);
+
+            try
+            {
+                using (var Client = new SmtpClient())
+                {
+                    await Client.ConnectAsync(_SMTPServer, Convert.ToInt32(_portNumber), MailKit.Security.SecureSocketOptions.StartTls);
+                    await Client.AuthenticateAsync(_emailFrom, _authenticationPassword);
+                    _logger.LogInformation(await Client.SendAsync(Message));
+                    await Client.DisconnectAsync(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error sending email: {ex.Message}");
+                return false;
+            }
+            _logger.LogInformation($"Email sent successfully to {to}");
+            return true;
+        }
     }
 }

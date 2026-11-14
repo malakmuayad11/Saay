@@ -61,7 +61,7 @@ namespace Saay.Services.Classes
                 // Generate a secure confirmation token.
                 string token = _tokenService.GenerateEmailConfirmationToken();
 
-                var confirmationToken = new EmailConfirmationToken
+                EmailConfirmationToken confirmationToken = new EmailConfirmationToken
                 {
                     UserId = user.UserId,
                     TokenHash = _hashService.HashToken(token),
@@ -115,7 +115,7 @@ namespace Saay.Services.Classes
 
             string token = _tokenService.GenerateEmailConfirmationToken();
 
-            var confirmationToken = new EmailConfirmationToken
+            EmailConfirmationToken confirmationToken = new EmailConfirmationToken
             {
                 UserId = (int)userId,
                 TokenHash = _hashService.HashToken(token),
