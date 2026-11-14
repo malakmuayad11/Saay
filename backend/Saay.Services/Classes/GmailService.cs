@@ -25,28 +25,63 @@ namespace Saay.Services.Classes
             _emailFrom = _configuration["EmailFrom"];
         }
 
-        private MimeMessage _GenerateConfirmationMessage(string EmailFrom, string EmailTo, string Receiver, string Sender, string confirmationUrl)
+        private MimeMessage _GenerateConfirmationMessage(
+            string EmailFrom,
+            string EmailTo,
+            string Receiver,
+            string Sender,
+            string confirmationUrl)
         {
             MimeMessage message = new MimeMessage();
             message.From.Add(new MailboxAddress(Sender, EmailFrom));
             message.To.Add(new MailboxAddress(Receiver, EmailTo));
-            message.Subject = "Confirm your account";
+            message.Subject = "Confirm Your Saay Account";
+
             message.Body = new TextPart("html")
             {
                 Text = $"""
-                <h2>Welcome to Saay, {Receiver}!</h2>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #333; line-height: 1.6;">
 
-                <p>Please verify your email address by clicking the link below:</p>
+            <h2 style="color: #1a3a9a;">Welcome to Saay, {Receiver}!</h2>
 
-                <p>
-                    <a href="{confirmationUrl}">
-                        Verify my email
-                    </a>
-                </p>
-                <p>Please note that this link will expire in 24 hours.</p>
-                <p>If you didn't create a Saay account, you can ignore this email.</p>
-                """
+            <p>Thank you for creating a Saay account. We're excited to have you with us!</p>
+
+            <p>To get started, please verify your email address by clicking the button below:</p>
+
+            <p style="margin: 30px 0;">
+                <a href="{confirmationUrl}"
+                   style="background-color: #1a3a9a; color: #ffffff; padding: 12px 24px;
+                          text-decoration: none; border-radius: 6px; font-weight: bold;
+                          display: inline-block;">
+                    Verify My Email
+                </a>
+            </p>
+
+            <p>This confirmation link will expire in <strong>24 hours</strong>.</p>
+
+            <p>If the button doesn't work, copy and paste the following link into your browser:</p>
+
+            <p style="word-break: break-all;">
+                <a href="{confirmationUrl}" style="color: #1a3a9a;">
+                    {confirmationUrl}
+                </a>
+            </p>
+
+            <p>If you didn't create a Saay account, you can safely ignore this email.</p>
+
+            <p style="margin-top: 30px;">
+                Best regards,<br />
+                <strong>The Saay Team</strong>
+            </p>
+
+            <p style="color: #777; font-size: 13px; text-align: center; margin-top: 30px;">
+                Build better habits, together.
+            </p>
+
+        </div>
+        """
             };
+
             return message;
         }
 
@@ -118,51 +153,125 @@ namespace Saay.Services.Classes
             return true;
         }
 
-        private MimeMessage _GenerateGroupInvitationMessage(string EmailFrom, string EmailTo, string Receiver, string Sender, string invitationURL)
+
+        private MimeMessage _GenerateGroupInvitationMessage(
+            string emailFrom,
+            string emailTo,
+            string receiver,
+            string sender,
+            string groupName,
+            string invitationUrl)
         {
             MimeMessage message = new MimeMessage();
-            message.From.Add(new MailboxAddress(Sender, EmailFrom));
-            message.To.Add(new MailboxAddress(Receiver, EmailTo));
-            message.Subject = "Join a New Group on Saay!";
+
+            message.From.Add(new MailboxAddress(sender, emailFrom));
+            message.To.Add(new MailboxAddress(receiver, emailTo));
+
+            message.Subject = $"You're Invited to Join {groupName} on Saay!";
+
             message.Body = new TextPart("html")
             {
                 Text = $"""
-                <h2>Hello, {Receiver}!</h2>
+        <!DOCTYPE html>
+        <html>
+        <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
 
-                <p>You are invited to join a new group on Saay. Please click the following link to accept this invitation.
-                </p>
+            <h2>Hello, {receiver}!</h2>
 
-                <p>
-                    <a href="{invitationURL}">
-                        Join the new group.
-                    </a>
-                <p>If you don't want to join the group, please skip this email.</p>
-                """
+            <p>
+                You've been invited to join <strong>{groupName}</strong>
+                on <strong>Saay</strong>!
+            </p>
+
+            <p style="margin: 30px 0;">
+                <a href="{invitationUrl}"
+                   style="background-color: #1a3a9a;
+                          color: #ffffff;
+                          padding: 12px 24px;
+                          text-decoration: none;
+                          border-radius: 8px;
+                          font-weight: bold;
+                          display: inline-block;">
+                    Accept Invitation
+                </a>
+            </p>
+
+            <p>
+                If the button doesn't work, copy and paste the following
+                link into your browser:
+            </p>
+
+            <p>
+                <a href="{invitationUrl}">{invitationUrl}</a>
+            </p>
+
+            <p>
+                If you weren't expecting this invitation or don't wish
+                to join the group, you can safely ignore this email.
+            </p>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin-top: 30px;">
+
+            <p style="color: #777; font-size: 13px;">
+                Best regards,<br>
+                The Saay Team
+            </p>
+
+            <p style="color: #999; font-size: 12px;">
+                Build better habits, together.
+            </p>
+
+        </body>
+        </html>
+        """
             };
+
             return message;
         }
-        
-        public async Task<bool> SendGroupInvitationAsync(string to, string subject, string recipientName, string groupName, string invitationUrl)
+
+        public async Task<bool> SendGroupInvitationAsync(
+            string to,
+            string subject,
+            string recipientName,
+            string groupName,
+            string invitationUrl)
         {
-            MimeMessage Message = _GenerateGroupInvitationMessage(_emailFrom, to, recipientName, "Saay سعي", invitationUrl);
+            MimeMessage message = _GenerateGroupInvitationMessage(
+                _emailFrom,
+                to,
+                recipientName,
+                "Saay سعي",
+                groupName,
+                invitationUrl);
 
             try
             {
-                using (var Client = new SmtpClient())
+                using (var client = new SmtpClient())
                 {
-                    await Client.ConnectAsync(_SMTPServer, Convert.ToInt32(_portNumber), MailKit.Security.SecureSocketOptions.StartTls);
-                    await Client.AuthenticateAsync(_emailFrom, _authenticationPassword);
-                    _logger.LogInformation(await Client.SendAsync(Message));
-                    await Client.DisconnectAsync(true);
+                    await client.ConnectAsync(
+                        _SMTPServer,
+                        Convert.ToInt32(_portNumber),
+                        MailKit.Security.SecureSocketOptions.StartTls);
+
+                    await client.AuthenticateAsync(
+                        _emailFrom,
+                        _authenticationPassword);
+
+                    _logger.LogInformation(await client.SendAsync(message));
+
+                    await client.DisconnectAsync(true);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error sending email: {ex.Message}");
+                _logger.LogError(ex, "Error sending group invitation email to {Email}", to);
                 return false;
             }
-            _logger.LogInformation($"Email sent successfully to {to}");
+
+            _logger.LogInformation("Group invitation email sent successfully to {Email}", to);
+
             return true;
         }
+
     }
 }

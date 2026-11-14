@@ -1,6 +1,8 @@
-﻿using Saay.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Saay.Data;
 using Saay.Data.Entities;
 using Saay.Repository.Interfaces;
+
 namespace Saay.Repository.Classes
 {
     public class GroupRepository : IGroupRepository
@@ -20,5 +22,10 @@ namespace Saay.Repository.Classes
                 return group.GroupId;
             return null;    
         }
+
+        public async Task<string?> GetGroupName(int groupId) =>
+            await _context.Groups
+            .Where(g => g.GroupId == groupId)
+            .Select(g => g.Name).SingleOrDefaultAsync();
     }
 }

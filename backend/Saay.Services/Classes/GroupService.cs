@@ -83,6 +83,10 @@ namespace Saay.Services.Classes
 
             if(userId == null) return null; // User not found
 
+            string groupName = await _groupRepository.GetGroupName(groupId);
+
+            if(groupName == null) return null; // Group not found
+
             string token = _tokenService.GenerateEmailConfirmationToken();
 
             if(await _groupInvitationTokenService.AddGroupInvitationTokenAsync(groupId, userId, token) == null)
@@ -91,7 +95,7 @@ namespace Saay.Services.Classes
             string confirmationUrl =
                 $"https://saay.vercel.app/invitation-confirm?token={Uri.EscapeDataString(token)}";
 
-            return await _emailService.SendGroupInvitationAsync(email, "Join a New Group on Saay!", userName, "group", confirmationUrl);
+            return await _emailService.SendGroupInvitationAsync(email, "Join a New Group on Saay!", userName, groupName, confirmationUrl);
         }
     }
 }
