@@ -10,5 +10,7 @@ namespace Saay.Repository.Interfaces
         public Task<string?> GetGroupName (int groupId);
 
         public Task<List<GroupDto>> GetUserGroupsAsync(int userId);
+
+        public Task<bool?> DeleteGroup(int groupId);
     }
 }

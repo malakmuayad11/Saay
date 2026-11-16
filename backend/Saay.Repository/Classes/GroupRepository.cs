@@ -24,6 +24,20 @@ namespace Saay.Repository.Classes
             return null;    
         }
 
+        public async Task<bool?> DeleteGroup(int groupId)
+        {
+            Group group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null) return null;
+
+            _context.Groups.Remove(group);
+
+            if (await _context.SaveChangesAsync() > 0)
+                return true;
+
+            return false;
+        }
+
         public async Task<string?> GetGroupName(int groupId) =>
             await _context.Groups
             .Where(g => g.GroupId == groupId)
@@ -34,6 +48,9 @@ namespace Saay.Repository.Classes
                 .Where(ug => ug.UserId == userId)
                 .Select(ug => new GroupDto
                 {
+                    GroupId = ug.Group.GroupId,
+                    GroupDescription = ug.Group.Description,
+                    IsRequestedUserOwner = ug.Role == 0,
                     GroupName = ug.Group.Name,
 
                     MembersCount = (byte)ug.Group.UsersGroups.Count,
@@ -41,9 +58,9 @@ namespace Saay.Repository.Classes
                     Members = ug.Group.UsersGroups
                         .Select(member => new MemberDto
                         {
+                            UserId = member.User.UserId,
                             FullName = member.User.FirstName + " " + member.User.LastName,
                             ProfilePictureUrl = member.User.ProfilePictureUrl,
-                            IsOwner = member.Role == 0
                         })
                         .ToList()
                 })

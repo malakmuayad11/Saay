@@ -126,5 +126,33 @@ namespace Saay.API.Controllers
 
             return Ok(groups);
         }
+
+        [Authorize]
+        [HttpDelete("{groupId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> DeleteGroup(int groupId)
+        {
+            if (!await _ownershipAuthorizationService.IsGroupOwner(User, groupId))
+            {
+                _logger.LogWarning("User {userId} attempted to delete group without ownership.",
+                    groupId);
+                return Forbid();
+            }
+
+            bool? result = await _groupService.DeleteGroupAsync(groupId);
+
+            if (result == null)
+                return NotFound("Group not found");
+
+            if(result == false)
+                return StatusCode(500, "An error occurred while deleting the group.");
+
+            return Ok(result);
+        }
     }
 }

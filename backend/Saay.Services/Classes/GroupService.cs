@@ -104,5 +104,7 @@ namespace Saay.Services.Classes
 
             return await _emailService.SendGroupInvitationAsync(email, "Join a New Group on Saay!", userName, groupName, confirmationUrl);
         }
+
+        public Task<bool?> DeleteGroupAsync(int groupId) => _groupRepository.DeleteGroup(groupId);
     }
 }
