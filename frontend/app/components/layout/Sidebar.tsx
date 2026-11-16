@@ -2,7 +2,13 @@ import { useSidebar } from "~/context/SidebarContext";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
-import { GridIcon, TaskIcon, GoalIcon, HabitIcon } from "~/assets/icons";
+import {
+  GridIcon,
+  TaskIcon,
+  GoalIcon,
+  HabitIcon,
+  GroupsIcon,
+} from "~/assets/icons";
 import { cn } from "~/utils";
 import SidebarWidget from "./SidebarWidget";
 import { useTheme } from "~/context/ThemeContext";
@@ -48,6 +54,12 @@ const navItems: NavItem[] = [
     name: "Tasks",
     key: "tasks",
     path: "/dashboard/tasks",
+  },
+  {
+    icon: <GroupsIcon fontSize={24} />,
+    name: "Groups",
+    key: "groups",
+    path: "/dashboard/groups",
   },
 ];
 

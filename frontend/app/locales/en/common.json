@@ -4,6 +4,7 @@
     "acceptInvitation": "Accept Group Invitation",
     "goals": "Goals | Saay",
     "habits": "Habits | Saay",
+    "groups": "Groups | Saay",
     "home": "Home | Saay",
     "landing": "Saay",
     "notFound": "Page Not Found | Saay",
@@ -138,7 +139,8 @@
     "logoutSuccessMessage": "You will be redirected to the sign-in page.",
     "success": "Operation completed successfully!",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "sending": "Sending..."
   },
   "forgotPassword": {
     "steps": {
@@ -320,7 +322,8 @@
       "dashboard": "Dashboard",
       "tasks": "Tasks",
       "goals": "Goals",
-      "habits": "Habits"
+      "habits": "Habits",
+      "groups": "Groups"
     },
     "widget": {
       "title": "Need assistance with building your system?",
@@ -537,6 +540,51 @@
     "add": "Add the Task",
     "addSuccess": "Task is added successfully!",
     "adding": "Adding..."
+  },
+  "groups": {
+    "myGroups": "My Groups",
+    "createGroup": "Create Group",
+    "loadingGroups": "Loading groups...",
+    "noGroupsFound": "No groups found.",
+    "modal": {
+      "addTitle": "Create a New Group"
+    },
+    "fields": {
+      "name": "Group Name",
+      "description": "Description"
+    },
+    "placeholders": {
+      "name": "Enter a group name",
+      "description": "Describe the purpose of your group (optional)"
+    },
+    "validation": {
+      "required": "Group name is required.",
+      "maxLength": "Group name must not exceed 100 characters and description must not exceed 200 characters."
+    },
+    "alerts": {
+      "error": "Error",
+      "success": "Success",
+      "added": "Group created successfully!"
+    },
+    "buttons": {
+      "add": "Create Group",
+      "adding": "Creating..."
+    },
+    "members": "Members",
+    "memberCount_one": "{count} member",
+    "memberCount_other": "{count} members",
+    "inviteMember": "Invite Member",
+    "invitationSent": "Invitation sent successfully!",
+    "emailAddress": "Email Address",
+    "emailPlaceholder": "example@email.com",
+    "cancel": "Cancel",
+    "send": "Send",
+    "removeGroup": "Remove Group",
+    "removeGroupConfirmation": "Are you sure you want to remove the {groupName} group?",
+    "deleteWarning": "This action cannot be undone.",
+    "deleteFailed": "Failed to delete the group.",
+    "groupDeleted": "Group deleted successfully!",
+    "profilePictureAlt": "{{name}}'s profile picture"
   },
   "aiChatbot": {
     "welcome": "Welcome to Saay Assistant. How can I help you today?",

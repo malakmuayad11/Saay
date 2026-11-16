@@ -28,7 +28,7 @@ export function DeleteModal({
     <Modal
       isOpen={isOpen}
       onClose={onCancel}
-      className="w-[calc(100%-2rem)] max-w-[450px] sm:w-[450px]"
+      className="w-[calc(100%)] max-w-[500px]"
     >
       <div className="p-6">
         {/* Alert */}

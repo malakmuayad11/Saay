@@ -26,6 +26,7 @@ import ArrowRightIcon from "./arrow-right.svg?react";
 import MenuIcon from "./menu.svg?react";
 import PauseIcon from "./pause.svg?react";
 import StartIcon from "./start.svg?react";
+import GroupsIcon from "./groups.svg?react";
 
 export {
   EyeIcon,
@@ -56,4 +57,5 @@ export {
   MenuIcon,
   PauseIcon,
   StartIcon,
+  GroupsIcon,
 };

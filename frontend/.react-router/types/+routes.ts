@@ -44,6 +44,9 @@ type Pages = {
   "/dashboard/habits": {
     params: {};
   };
+  "/dashboard/groups": {
+    params: {};
+  };
   "/dashboard/settings": {
     params: {};
   };
@@ -57,7 +60,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/signin" | "/signup" | "/confirm" | "/invitation-confirm" | "/notConfirmed" | "/reset-password" | "/dashboard" | "/dashboard/goals" | "/dashboard/tasks" | "/dashboard/habits" | "/dashboard/settings" | "/*";
+    page: "/" | "/signin" | "/signup" | "/confirm" | "/invitation-confirm" | "/notConfirmed" | "/reset-password" | "/dashboard" | "/dashboard/goals" | "/dashboard/tasks" | "/dashboard/habits" | "/dashboard/groups" | "/dashboard/settings" | "/*";
   };
   "routes/landing.tsx": {
     id: "routes/landing";
@@ -89,7 +92,7 @@ type RouteFiles = {
   };
   "routes/dashboard.tsx": {
     id: "routes/dashboard";
-    page: "/dashboard" | "/dashboard/goals" | "/dashboard/tasks" | "/dashboard/habits" | "/dashboard/settings";
+    page: "/dashboard" | "/dashboard/goals" | "/dashboard/tasks" | "/dashboard/habits" | "/dashboard/groups" | "/dashboard/settings";
   };
   "routes/home.tsx": {
     id: "routes/home";
@@ -106,6 +109,10 @@ type RouteFiles = {
   "routes/habits.tsx": {
     id: "routes/habits";
     page: "/dashboard/habits";
+  };
+  "routes/groups.tsx": {
+    id: "routes/groups";
+    page: "/dashboard/groups";
   };
   "routes/settings.tsx": {
     id: "routes/settings";
@@ -131,6 +138,7 @@ type RouteModules = {
   "routes/goals": typeof import("./app/routes/goals.tsx");
   "routes/tasks": typeof import("./app/routes/tasks.tsx");
   "routes/habits": typeof import("./app/routes/habits.tsx");
+  "routes/groups": typeof import("./app/routes/groups.tsx");
   "routes/settings": typeof import("./app/routes/settings.tsx");
   "routes/not-found": typeof import("./app/routes/not-found.tsx");
 };

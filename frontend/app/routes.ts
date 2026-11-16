@@ -15,6 +15,7 @@ export default [
     route("goals", "routes/goals.tsx"),
     route("tasks", "routes/tasks.tsx"),
     route("habits", "routes/habits.tsx"),
+    route("groups", "routes/groups.tsx"),
     route("settings", "routes/settings.tsx"),
   ]),
   route("*", "routes/not-found.tsx"),

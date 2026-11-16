@@ -4,6 +4,7 @@
     "acceptInvitation": "قبول دعوة المجموعة",
     "goals": "الأهداف | سعي",
     "habits": "العادات | سعي",
+    "groups": "المجموعات | سعي",
     "home": "الرئيسة | سعي",
     "landing": "سعي",
     "notFound": "لم يتم العثور على الصفحة | سعي",
@@ -137,7 +138,8 @@
     "logoutSuccessMessage": "ستتم إعادة توجيهك إلى صفحة تسجيل الدخول.",
     "success": "تمت العملية بنجاح!",
     "delete": "حذف",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "sending": "جارٍ الإرسال..."
   },
   "forgotPassword": {
     "steps": {
@@ -320,7 +322,8 @@
       "dashboard": "الرئيسية",
       "tasks": "المهام",
       "goals": "الأهداف",
-      "habits": "العادات"
+      "habits": "العادات",
+      "groups": "المجموعات"
     },
     "widget": {
       "title": "هل تحتاج إلى مساعدة في بناء نظامك؟",
@@ -478,6 +481,55 @@
       "completedStatus": "اكتملت العادة 🎉",
       "logProgress": "تسجيل تقدم اليوم"
     }
+  },
+  "groups": {
+    "myGroups": "مجموعاتي",
+    "createGroup": "إنشاء مجموعة",
+    "loadingGroups": "جارٍ تحميل المجموعات...",
+    "noGroupsFound": "لا توجد مجموعات.",
+    "modal": {
+      "addTitle": "إنشاء مجموعة جديدة"
+    },
+    "fields": {
+      "name": "اسم المجموعة",
+      "description": "الوصف"
+    },
+    "placeholders": {
+      "name": "أدخل اسم المجموعة",
+      "description": "اكتب وصفًا لمجموعة (اختياري)"
+    },
+    "validation": {
+      "required": "اسم المجموعة مطلوب.",
+      "maxLength": "يجب ألا يتجاوز اسم المجموعة 100 حرف، وألا يتجاوز الوصف 200 حرف."
+    },
+    "alerts": {
+      "error": "خطأ",
+      "success": "تم بنجاح",
+      "added": "تم إنشاء المجموعة بنجاح!"
+    },
+    "buttons": {
+      "add": "إنشاء المجموعة",
+      "adding": "جارٍ الإنشاء..."
+    },
+    "members": "الأعضاء",
+    "memberCount_zero": "لا يوجد أعضاء",
+    "memberCount_one": "عضو واحد",
+    "memberCount_two": "عضوان",
+    "memberCount_few": "{count} أعضاء",
+    "memberCount_many": "{count} عضوًا",
+    "memberCount_other": "{count} عضو",
+    "inviteMember": "دعوة عضو",
+    "invitationSent": "تم إرسال الدعوة بنجاح!",
+    "emailAddress": "البريد الإلكتروني",
+    "emailPlaceholder": "example@email.com",
+    "cancel": "إلغاء",
+    "send": "إرسال",
+    "removeGroup": "حذف المجموعة",
+    "removeGroupConfirmation": "هل أنت متأكد من رغبتك في حذف مجموعة {groupName}؟",
+    "deleteWarning": "لا يمكن التراجع عن هذا الإجراء.",
+    "deleteFailed": "فشل حذف المجموعة.",
+    "groupDeleted": "تم حذف المجموعة بنجاح!",
+    "profilePictureAlt": "الصورة الشخصية لـ {{name}}"
   },
   "tasks": {
     "myTasks": "مهامي",
